@@ -1,0 +1,11 @@
+*{margin: 0;padding: 0;}
+body{
+    font-size: 12px;
+    line-height: 1.5;
+}
+.box{
+    height: 300px;
+    width: 500px;
+    box-shadow: 0 5px 0 red;
+    background: url('../images/avatar_bg.png') no-repeat center;
+}
