@@ -1,4 +1,4 @@
-﻿# jquery-pc
+﻿# gulp-project
 
 > 一个基于gulp构建的项目
 
