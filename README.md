@@ -6,16 +6,24 @@
 
 ``` bash
 
-# 安装nodejs环境
+#### 1、安装nodejs环境
 
-# 全局安装gulp
+#### 2、全局安装gulp
     命令: (sudo) npm install -g gulp
 
-# 在项目根目录执行npm初始化
+#### 3、在项目根目录执行npm初始化
     命令: npm install
 
-# 启动项目
+#### 4、启动项目
     开发模式: npm run dev
     生产模式: npm run build
+
+```
+
+## gulp启本地服务
+
+#### 1、安装browser-sync
+
+``` bash
 
 ```

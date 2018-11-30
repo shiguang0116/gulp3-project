@@ -1,4 +1,4 @@
 {
     "presets": ["@babel/env"],
-    "plugins": ["transform-remove-strict-mode"]
+    "plugins": []
 }

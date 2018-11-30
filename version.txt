@@ -1,4 +1,1 @@
-{
-        "BUILD_VERSION": "",
-        "BUILD_URL": ""
-    }
+{ "BUILD_VERSION": "", "BUILD_URL": "" }

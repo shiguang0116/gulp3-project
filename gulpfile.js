@@ -38,15 +38,16 @@ var watch = require('gulp-watch');          // 监听文件（修改、新建、
 var runSequence = require('run-sequence');  // 按顺序执行task
 
 // 设置环境变量
-var env = 'dev';
+process.env.NODE_ENV = 'dev';
+
 function set_env(env){
-    env = env || 'dev';
-    fs.writeFile("./env.js", 'export default ' + env + ';', function(err){
+    process.env.NODE_ENV = env || 'dev';
+    fs.writeFile("./env.js", 'export default ' + process.env.NODE_ENV + ';', function(err){
         err && console.log(err);
     });
 }
 
-// 模板处理
+// html模板处理
 gulp.task('html', function() {
     return gulp.src('./src/*.html')
         .pipe(htmltpl({
@@ -72,8 +73,16 @@ gulp.task('js_main', ['uglify_check'], function(){
     return gulp.src('./src/js/*.js')
         .pipe(concat('main.min.js'))    // 合并文件并命名
         .pipe(babel())                  // 编译es6语法
-        .pipe(gulpif(env==='build', uglify()))  // 压缩js
+        .pipe(gulpif(process.env.NODE_ENV==='build', uglify()))  // 压缩js
         .pipe(gulp.dest('./dist/js'));
+    
+    // return pump([
+    //     gulp.src('./src/js/*.js'),
+    //     concat('main.min.js'),          // 合并文件并命名
+    //     babel(),                        // 编译es6语法
+    //     gulpif(env==='build', uglify()), // 压缩js
+    //     gulp.dest('./dist/js')
+    // ], cb);
 });
 /**
  * @description 检查压缩JS时的错误，作为'js_main'的依赖执行。
@@ -82,7 +91,7 @@ gulp.task('js_main', ['uglify_check'], function(){
  * 2、解决修改的代码有语法错误时，服务会终止的问题
  */
 gulp.task('uglify_check', function (cb) {
-    return pump([
+    pump([
         gulp.src('./src/js/*.js'),
         babel(),
         uglify()
@@ -140,10 +149,7 @@ gulp.task('set_version', function() {
 });
 // 生成版本文件
 gulp.task('version.txt', function () {
-    var buf = `{
-        "BUILD_VERSION": "",
-        "BUILD_URL": ""
-    }`;
+    var buf = `{ "BUILD_VERSION": "", "BUILD_URL": "" }`;
     fs.writeFile("./version.txt", buf, function(err){
         err && console.log(err);
     });
