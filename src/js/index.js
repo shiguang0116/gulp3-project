@@ -1,4 +1,10 @@
-// 'use strict';
+/*
+ * @Author: guang.shi 
+ * @Date: 2018-12-01 19:22:31 
+ * @Last Modified by:   guang.shi 
+ * @Last Modified time: 2018-12-01 19:22:31 
+ */
+'use strict';
 
 $(function(){
     var data = {
