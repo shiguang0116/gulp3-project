@@ -31,13 +31,12 @@
 > [gulp构建项目（五）：gulp-if条件判断及环境变量设置](https://blog.csdn.net/guang_s/article/details/84674028)
 > [gulp构建项目（六）：gulp-html-tpl处理公用模板](https://blog.csdn.net/guang_s/article/details/84675106)
 > [gulp构建项目（七）：gulp-uglify压缩js以及检查js语法错误](https://blog.csdn.net/guang_s/article/details/84677383)
+> [gulp构建项目（八）：gulp编译less，添加CSS前缀以及压缩css](https://blog.csdn.net/guang_s/article/details/84679430)
+> [gulp构建项目（九）：gulp-imagemin压缩图片及gulp-cache缓存](https://blog.csdn.net/guang_s/article/details/84751813)
 
-## gulp构建项目（八）：gulp编译less，添加CSS前缀以及压缩css
-## gulp构建项目（九）：gulp压缩图片
-## gulp构建项目（十）：gulp-rev-collector添加版本号
-## gulp构建项目（十一）：gulp压缩html
-## gulp构建项目（十二）：gulp-filter文件过滤
+## gulp构建项目（十一）：gulp-htmlmin压缩html
 ## gulp构建项目（十三）：gulp-babel编译es6
 ## gulp构建项目（十四）：gulp-babel编译es6 api
 
 GitHub路径
+

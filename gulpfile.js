@@ -14,18 +14,18 @@ var htmltpl = require('gulp-html-tpl');     // 引用html模板
 var artTemplate = require('art-template');  // 模板渲染
 var concat = require('gulp-concat');        // 合并文件
 var clean = require('gulp-clean');          // 清空文件夹
-var filter = require('gulp-filter');        // 过滤文件
 var gulpif = require('gulp-if');            // 条件判断
-var uglify = require('gulp-uglify');        // js 压缩
+var uglify = require('gulp-uglify');        // js压缩
 var pump = require('pump');
 var csso = require('gulp-csso');            // css压缩
 var less = require('gulp-less');	        // less编译
 var autoprefixer = require('gulp-autoprefixer');	// 自动添加CSS前缀
-var htmlmin = require('gulp-htmlmin');      // html 压缩
+var htmlmin = require('gulp-htmlmin');      // html压缩
 var imagemin = require('gulp-imagemin');    // 图片压缩
-var revAll = require('gulp-rev-all');       // 增加版本号    
-var revCollector = require('./rev/gulp-rev-collector');
-var browserSync = require('browser-sync').create();	// 用来打开一个浏览器
+var cache = require('gulp-cache');          // 图片缓存（只压缩修改的图片）
+var rev = require('gulp-rev-dxb');          // 生成版本号清单    
+var revCollector = require('gulp-rev-collector-dxb');   // 替换成版本号文件
+var browserSync = require('browser-sync').create();	    // 用来打开一个浏览器
 var watch = require('gulp-watch');          // 监听文件（修改、新建、删除）
 var runSequence = require('run-sequence');  // 按顺序执行task
 
@@ -77,7 +77,7 @@ gulp.task('js_main', ['uglify_check'], function(){
 gulp.task('uglify_check', function (cb) {
     pump([
         gulp.src('./src/js/*.js'),
-        // babel(),
+        babel(),
         uglify(),
     ], cb);
 });
@@ -89,8 +89,11 @@ gulp.task('css_libs', function(){
 });
 gulp.task('css_main', function(){
     return gulp.src('./src/css/**/*.css')
-        .pipe(less())
-		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+        .pipe(less())           // 编译less
+		.pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false      // 是否美化
+        }))
         .pipe(concat('main.min.css'))
         .pipe(gulpif(env==='build', csso()))    // 判断是否压缩压缩css
         .pipe(gulp.dest('./dist/css'));
@@ -99,36 +102,35 @@ gulp.task('css_main', function(){
 // 打包其他资源
 gulp.task('images', function () {
     return gulp.src('./src/images/**')
-        .pipe(gulpif(env==='build', imagemin({  // 判断是否压缩压缩images
-            progressive: true,
-        })))
+        .pipe(gulpif(env==='dev', cache(imagemin({
+            optimizationLevel: 5,   // 取值范围：0-7（优化等级），默认：3  
+            progressive: true,      // 无损压缩jpg图片，默认：false 
+            interlaced: true,       // 隔行扫描gif进行渲染，默认：false 
+            multipass: true         // 多次优化svg直到完全优化，默认：false 
+        }))))
         .pipe(gulp.dest('./dist/images'));
+});
+gulp.task('cache.clear', function(){
+    cache.clearAll();
 });
 
 // 生成版本号清单
 gulp.task('rev', function() {
     return gulp.src(['./dist/js/**', './dist/css/**'])
-        .pipe(revAll.revision({
-            transformFilename: function (file, hash) {
-                return path.basename(file.path) + '?' + hash.substr(0, 10);
-            }
-        }))
-        .pipe(revAll.manifestFile())
-        .pipe(gulp.dest("./rev"))
-        .pipe(revAll.versionFile())
-        .pipe(gulp.dest("./rev"));
+        .pipe(rev())
+        .pipe(rev.manifest())
+        .pipe(gulp.dest("./"));
 });
 // 添加版本号（路径替换）
 gulp.task('set_version', function() {
-    return gulp.src(['./rev/rev-manifest.json', './dist/*.html'])
+    return gulp.src(['./rev-manifest.json', './dist/*.html'])
         .pipe(revCollector())   // 根据.json文件 执行文件内js/css名的替换
-        .pipe(htmlmin({ 
+        .pipe(gulpif(env==='build', htmlmin({ 
             removeComments: true,       // 清除HTML注释
             collapseWhitespace: true,   // 压缩HTML
             minifyJS: true,             // 压缩页面JS
             minifyCSS: true             // 压缩页面CSS
-        }))
-        .pipe(filter('**/*.html'))
+        })))
         .pipe(gulp.dest('./dist'));
 });
 // 生成版本文件
