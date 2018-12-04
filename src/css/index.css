@@ -12,6 +12,11 @@ body{
 .box{
     height: 300px;
     width: 500px;
-    box-shadow: 0 5px 0 red;
+    box-shadow: 0 5px 0 pink;
     background: url('../images/avatar_bg.png') no-repeat center;
+}
+.es6{
+    padding: 20px;
+    font-size: 30px;
+    background-color: #abcdef;
 }

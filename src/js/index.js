@@ -16,6 +16,6 @@ $(function(){
         });
     };
     foo();
-    var keys = Object.keys(data);
-    $('.box').html(keys);
+    var values = Object.values(data);
+    $('.es6 span').html(values);
 });

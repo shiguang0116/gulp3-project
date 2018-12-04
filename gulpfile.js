@@ -65,7 +65,7 @@ gulp.task('js_main', ['uglify_check'], function(){
     return gulp.src('./src/js/*.js')
         .pipe(concat('main.min.js'))    // 合并文件并命名
         .pipe(babel())                  // 编译es6语法
-        .pipe(gulpif(env==='build', uglify()))  // 判断是否压缩压缩js
+        .pipe(gulpif(env==='build', uglify()))  // 判断是否压缩js
         .pipe(gulp.dest('./dist/js'));
 });
 /**
@@ -90,12 +90,16 @@ gulp.task('css_libs', function(){
 gulp.task('css_main', function(){
     return gulp.src('./src/css/**/*.css')
         .pipe(less())           // 编译less
+        .on('error', function(err) {    // 解决编译出错，监听被阻断的问题
+            console.log('Less Error!', err.message);
+            this.end();
+        })
 		.pipe(autoprefixer({
             browsers: ['last 2 versions'],
             cascade: false      // 是否美化
         }))
         .pipe(concat('main.min.css'))
-        .pipe(gulpif(env==='build', csso()))    // 判断是否压缩压缩css
+        .pipe(gulpif(env==='build', csso()))    // 判断是否压缩css
         .pipe(gulp.dest('./dist/css'));
 });
 
