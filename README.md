@@ -34,6 +34,9 @@
 > - [gulp构建项目（八）：gulp编译less，添加CSS前缀以及压缩css](https://blog.csdn.net/guang_s/article/details/84679430)
 > - [gulp构建项目（九）：gulp-imagemin压缩图片及gulp-cache缓存](https://blog.csdn.net/guang_s/article/details/84751813)
 > - [gulp构建项目（十）：gulp-rev-collector-dxb添加版本号（?hash）](https://blog.csdn.net/guang_s/article/details/84768953)
-> - gulp构建项目（十一）：gulp-htmlmin压缩html
-> - gulp构建项目（十三）：gulp-babel编译es6
+> - [gulp构建项目（十一）：gulp-htmlmin压缩html](https://blog.csdn.net/guang_s/article/details/84773382)
+> - [gulp构建项目（十二）：gulp-babel编译es6](https://blog.csdn.net/guang_s/article/details/84775233)
+> - [gulp构建项目（十三）：babel-polyfill编译es6新增api](https://blog.csdn.net/guang_s/article/details/84828003)
+> .
+> - [gulp构建项目（附录一）：gulp发生错误时，进程挂掉的问题](https://blog.csdn.net/guang_s/article/details/84795548)
 > - gulp构建项目（十四）：gulp-babel编译es6 api

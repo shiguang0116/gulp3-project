@@ -1,9 +1,9 @@
-/**
- * 写一个脚本  自动更改gulp-rev-collector/index.js文件
- * 文件顺序无法保证
- * 代理     config.js
+/*
+ * @Author: guang.shi 
+ * @Date: 2018-11-20 19:20:17 
+ * @Last Modified by:   guang.shi 
+ * @Last Modified time: 2018-12-01 19:22:31 
  */
-
 'use strict';
 
 var gulp = require('gulp');
