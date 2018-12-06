@@ -37,6 +37,6 @@
 > - [gulp构建项目（十一）：gulp-htmlmin压缩html](https://blog.csdn.net/guang_s/article/details/84773382)
 > - [gulp构建项目（十二）：gulp-babel编译es6](https://blog.csdn.net/guang_s/article/details/84775233)
 > - [gulp构建项目（十三）：babel-polyfill编译es6新增api](https://blog.csdn.net/guang_s/article/details/84828003)
+> - [gulp构建项目（十四）：gulp-rename重定义打包生成文件的路径](https://blog.csdn.net/guang_s/article/details/84861940)
 > .
 > - [gulp构建项目（附录一）：gulp发生错误时，进程挂掉的问题](https://blog.csdn.net/guang_s/article/details/84795548)
-> - gulp构建项目（十四）：gulp-babel编译es6 api

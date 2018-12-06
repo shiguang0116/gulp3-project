@@ -1,8 +1,8 @@
 /*
  * @Author: guang.shi 
  * @Date: 2018-11-20 19:20:17 
- * @Last Modified by:   guang.shi 
- * @Last Modified time: 2018-12-01 19:22:31 
+ * @Last Modified by: guang.shi
+ * @Last Modified time: 2018-12-06 17:27:54
  */
 'use strict';
 
@@ -13,6 +13,7 @@ var babel = require('gulp-babel');
 var htmltpl = require('gulp-html-tpl');     // 引用html模板
 var artTemplate = require('art-template');  // 模板渲染
 var concat = require('gulp-concat');        // 合并文件
+var rename = require('gulp-rename');        // 重命名
 var clean = require('gulp-clean');          // 清空文件夹
 var gulpif = require('gulp-if');            // 条件判断
 var uglify = require('gulp-uglify');        // js压缩
@@ -58,11 +59,14 @@ gulp.task('html', function() {
 
 // 打包js
 gulp.task('js_libs', function(){
-    return gulp.src('./src/libs/js/*.js')
+    return gulp.src('./src/libs/**/*.js')
+        .pipe(rename({
+            dirname: '' // 清空路径
+        }))
         .pipe(gulp.dest('./dist/js'));
 });
 gulp.task('js_main', ['uglify_check'], function(){
-    return gulp.src('./src/js/*.js')
+    return gulp.src('./src/js/**/*.js')
         .pipe(concat('main.min.js'))    // 合并文件并命名
         .pipe(babel())                  // 编译es6语法
         .pipe(gulpif(env==='build', uglify()))  // 判断是否压缩js
@@ -76,7 +80,7 @@ gulp.task('js_main', ['uglify_check'], function(){
  */
 gulp.task('uglify_check', function (cb) {
     pump([
-        gulp.src('./src/js/*.js'),
+        gulp.src('./src/js/**/*.js'),
         babel(),
         uglify(),
     ], cb);
@@ -84,7 +88,8 @@ gulp.task('uglify_check', function (cb) {
 
 // 打包css
 gulp.task('css_libs', function(){
-    return gulp.src('./src/libs/css/*.css')
+    return gulp.src('./src/libs/**/*.css')
+        .pipe(rename({ dirname: '' }))
         .pipe(gulp.dest('./dist/css'));
 });
 gulp.task('css_main', function(){
@@ -106,6 +111,7 @@ gulp.task('css_main', function(){
 // 打包其他资源
 gulp.task('images', function () {
     return gulp.src('./src/images/**')
+        .pipe(rename({ dirname: '' }))
         .pipe(gulpif(env==='dev', cache(imagemin({
             optimizationLevel: 5,   // 取值范围：0-7（优化等级），默认：3  
             progressive: true,      // 无损压缩jpg图片，默认：false 
@@ -113,6 +119,11 @@ gulp.task('images', function () {
             multipass: true         // 多次优化svg直到完全优化，默认：false 
         }))))
         .pipe(gulp.dest('./dist/images'));
+});
+gulp.task('fonts', function () {
+    return gulp.src('./src/libs/**/fonts/*')
+        .pipe(rename({ dirname: '' }))
+        .pipe(gulp.dest('./dist/fonts'));
 });
 gulp.task('cache.clear', function(){
     cache.clearAll();
@@ -197,7 +208,7 @@ gulp.task('build', function(cb) {
     set_env('build');
     runSequence(
         ['clean'],  // 首先清理文件，否则会把新打包的文件清掉
-        ['html', 'js_libs', 'js_main', 'css_libs', 'css_main', 'images'], // 不分先后的任务最好并行执行，提高效率
+        ['html', 'js_libs', 'js_main', 'css_libs', 'css_main', 'images', 'fonts'], // 不分先后的任务最好并行执行，提高效率
         ['rev'], // 所有文件打包完毕之后开始生成版本清单文件
         ['set_version', 'version.txt'], // 根据清单文件替换html里的资源文件
         cb);
