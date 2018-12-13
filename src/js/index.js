@@ -1,8 +1,7 @@
-/*
- * @Author: guang.shi 
- * @Date: 2018-12-01 19:22:31 
- * @Last Modified by: guang.shi
- * @Last Modified time: 2018-12-06 16:47:21
+/**
+ * @description: 首页
+ * @author: guang.shi <https://blog.csdn.net/guang_s> 
+ * @date: 2018-12-13 15:35:35 
  */
 'use strict';
 
