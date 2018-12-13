@@ -40,3 +40,4 @@
 > - [gulp构建项目（十四）：gulp-rename重定义打包生成文件的路径](https://blog.csdn.net/guang_s/article/details/84861940)
 > .
 > - [gulp构建项目（附录一）：gulp发生错误时，进程挂掉的问题](https://blog.csdn.net/guang_s/article/details/84795548)
+> - [gulp构建项目（附录二）：run-sequence逐个执行任务不生效的问题](https://blog.csdn.net/guang_s/article/details/84873750)
