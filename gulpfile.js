@@ -10,9 +10,9 @@
 'use strict';
 
 var gulp = require('gulp');
-var path= require('path');
-var fs = require('fs');
-var babel = require('gulp-babel');
+var path = require('path');
+var fs = require('fs');                     // 创建文件
+var babel = require('gulp-babel');          // 编译es6
 var htmltpl = require('gulp-html-tpl');     // 引用html模板
 var artTemplate = require('art-template');  // 模板渲染
 var concat = require('gulp-concat');        // 合并文件

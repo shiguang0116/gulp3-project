@@ -9,20 +9,14 @@ const indexPage = {
     data : {
         name: 'index'
     },
-    init : function(){
-        this.check_util();
-        this.check_es6();
-        this.bindEvent();
-        this.queryPage();
-    },
-    check_util : function(){
-        util.cookie.remove('name')
+    checkUtil(){
+        util.cookie.remove('name') 
         util.storage.set('name', this.data)
         
         console.log(util.storage.get('name').name)
         console.log(util.browser.type())
     },
-    check_es6 : function(){
+    checkEs6(){
         const foo = () => {
             this.data = Object.assign(this.data, {
                 age: '18'
@@ -32,14 +26,20 @@ const indexPage = {
         var values = Object.values(this.data);
         $('.es6 span').html(values);
     },
-    bindEvent : function(){
+    bindEvent(){
         const self = this;
         
     },
-    queryPage : function(){
+    onLoad(){
         // util.ajax({
             // url: '/product/list',
         // });
+    },
+    init(){
+        this.checkUtil();
+        this.checkEs6();
+        this.bindEvent();
+        this.onLoad();
     }
 };
 

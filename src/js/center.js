@@ -9,18 +9,18 @@ const centerPage = {
     data : {
         name: 'center'
     },
-    init : function(){
-        console.log(this.data);
-
-        this.bindEvent();
-        this.queryPage();
-    },
-    bindEvent : function(){
+    bindEvent(){
         const self = this;
         
     },
-    queryPage : function(){
+    onLoad(){
         
+    },
+    init(){
+        console.log(this.data);
+
+        this.bindEvent();
+        this.onLoad();
     }
 };
 
