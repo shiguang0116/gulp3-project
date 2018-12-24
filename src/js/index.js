@@ -5,16 +5,44 @@
  */
 'use strict';
 
-$(function(){
-    var data = {
+const indexPage = {
+    data : {
         name: 'index'
-    };
-    const foo = () => {
-        data = Object.assign(data, {
-            age: '18'
-        });
-    };
-    foo();
-    var values = Object.values(data);
-    $('.es6 span').html(values);
-});
+    },
+    init : function(){
+        this.check_util();
+        this.check_es6();
+        this.bindEvent();
+        this.queryPage();
+    },
+    check_util : function(){
+        util.cookie.remove('name')
+        util.storage.set('name', this.data)
+        
+        console.log(util.storage.get('name').name)
+        console.log(util.browser.type())
+    },
+    check_es6 : function(){
+        const foo = () => {
+            this.data = Object.assign(this.data, {
+                age: '18'
+            });
+        };
+        foo();
+        var values = Object.values(this.data);
+        $('.es6 span').html(values);
+    },
+    bindEvent : function(){
+        const self = this;
+        
+    },
+    queryPage : function(){
+        // util.ajax({
+            // url: '/product/list',
+        // });
+    }
+};
+
+$(function(){
+    $('#indexPage').length && indexPage.init();
+})

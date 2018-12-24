@@ -5,9 +5,25 @@
  */
 'use strict';
 
-$(function(){
-    var data = {
+const centerPage = {
+    data : {
         name: 'center'
-    };
-    console.log(data);
-});
+    },
+    init : function(){
+        console.log(this.data);
+
+        this.bindEvent();
+        this.queryPage();
+    },
+    bindEvent : function(){
+        const self = this;
+        
+    },
+    queryPage : function(){
+        
+    }
+};
+
+$(function(){
+    $('#centerPage').length && centerPage.init();
+})

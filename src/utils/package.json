@@ -1,0 +1,17 @@
+{
+  "name": "sg-util",
+  "version": "0.0.6",
+  "description": "javascript通用工具类",
+  "main": "util.js",
+  "scripts": {
+    "stop": "taskkill /f /t /im node.exe"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shiguang0116"
+  },
+  "author": "guang.shi",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {}
+}

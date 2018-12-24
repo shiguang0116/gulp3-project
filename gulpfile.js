@@ -197,11 +197,7 @@ gulp.task('watch', function () {
 
     function w(path, task){
         watch(path, function () {
-            /**
-             * 打包完成后，再刷新浏览器
-             * 监听任务不要带cb参数，否则会报错：回调次数太多
-             */
-            runSequence(task, 'browser_reload');
+            runSequence(task, 'browser_reload'); // 打包完成后，再刷新浏览器。监听任务不要带cb参数，否则会报错：回调次数太多
         });
     }
 });
