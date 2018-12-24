@@ -1,8 +1,11 @@
-/*
- * @Author: guang.shi 
- * @Date: 2018-11-20 19:20:17 
- * @Last Modified by: guang.shi
- * @Last Modified time: 2018-12-07 13:56:31
+/**
+ * @description: gulp配置文件
+ * @author: guang.shi <https://blog.csdn.net/guang_s> 
+ * @date: 2018-12-13 17:53:40 
+ * 
+ * @task: npm run dev       开发环境
+ * @task: npm run build     生产环境（打包）
+ * @task: gulp uglify_check 检查js语法错误
  */
 'use strict';
 
@@ -30,22 +33,31 @@ var browserSync = require('browser-sync').create();	    // 用来打开一个浏
 var watch = require('gulp-watch');          // 监听文件（修改、新建、删除）
 var runSequence = require('run-sequence');  // 按顺序执行task
 
+// 路径
+var html_path = 'src/html/**/*.html';
+var js_libs_path = 'src/libs/**/*.js';
+var js_main_path = ['src/js/**/*.js', 'src/utils/**/*.js'];
+var css_libs_path = 'src/libs/**/*.css';
+var css_main_path = 'src/css/**/*.css';
+var images_path = 'src/images/**';
+var fonts_path = 'src/libs/**/fonts/**';
+
 // 设置环境变量
 var env = 'dev';    // 用于执行gulp任务时的判断
 function set_env(type){
     env = type || 'dev';
     // 生成env.js文件，用于开发页面时，判断环境
-    fs.writeFile("./env.js", 'export default ' + env + ';', function(err){
+    fs.writeFile("dist/env.js", 'export default ' + env + ';', function(err){
         err && console.log(err);
     });
 }
 
 // html模板处理
 gulp.task('html', function() {
-    return gulp.src('./src/*.html')
+    return gulp.src(html_path)
         .pipe(htmltpl({
             tag: 'template',
-            paths: ['./src/common'],
+            paths: ['src/common'],
             engine: function(template, data) {
                 return template && artTemplate.compile(template)(data);
             },
@@ -54,23 +66,23 @@ gulp.task('html', function() {
                 g2: false
             }
         }))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('dist'));
 });
 
 // 打包js
 gulp.task('js_libs', function(){
-    return gulp.src('./src/libs/**/*.js')
+    return gulp.src(js_libs_path)
         .pipe(rename({
             dirname: '' // 清空路径
         }))
-        .pipe(gulp.dest('./dist/js'));
+        .pipe(gulp.dest('dist/js'));
 });
 gulp.task('js_main', ['uglify_check'], function(){
-    return gulp.src('./src/js/**/*.js')
+    return gulp.src(js_main_path)
         .pipe(concat('main.min.js'))    // 合并文件并命名
         .pipe(babel())                  // 编译es6语法
         .pipe(gulpif(env==='build', uglify()))  // 判断是否压缩js
-        .pipe(gulp.dest('./dist/js'));
+        .pipe(gulp.dest('dist/js'));
 });
 /**
  * @description 检查压缩JS时的错误，作为'js_main'的依赖执行。
@@ -80,7 +92,7 @@ gulp.task('js_main', ['uglify_check'], function(){
  */
 gulp.task('uglify_check', function (cb) {
     pump([
-        gulp.src('./src/js/**/*.js'),
+        gulp.src(js_main_path),
         babel(),
         uglify(),
     ], cb);
@@ -88,12 +100,12 @@ gulp.task('uglify_check', function (cb) {
 
 // 打包css
 gulp.task('css_libs', function(){
-    return gulp.src('./src/libs/**/*.css')
+    return gulp.src(css_libs_path)
         .pipe(rename({ dirname: '' }))
-        .pipe(gulp.dest('./dist/css'));
+        .pipe(gulp.dest('dist/css'));
 });
 gulp.task('css_main', function(){
-    return gulp.src('./src/css/**/*.css')
+    return gulp.src(css_main_path)
         .pipe(less())           // 编译less
         .on('error', function(err) {    // 解决编译出错，监听被阻断的问题
             console.log('Less Error!', err.message);
@@ -105,12 +117,12 @@ gulp.task('css_main', function(){
         }))
         .pipe(concat('main.min.css'))
         .pipe(gulpif(env==='build', csso()))    // 判断是否压缩css
-        .pipe(gulp.dest('./dist/css'));
+        .pipe(gulp.dest('dist/css'));
 });
 
 // 打包其他资源
 gulp.task('images', function () {
-    return gulp.src('./src/images/**')
+    return gulp.src(images_path)
         .pipe(rename({ dirname: '' }))
         .pipe(gulpif(env==='dev', cache(imagemin({
             optimizationLevel: 5,   // 取值范围：0-7（优化等级），默认：3  
@@ -118,12 +130,12 @@ gulp.task('images', function () {
             interlaced: true,       // 隔行扫描gif进行渲染，默认：false 
             multipass: true         // 多次优化svg直到完全优化，默认：false 
         }))))
-        .pipe(gulp.dest('./dist/images'));
+        .pipe(gulp.dest('dist/images'));
 });
 gulp.task('fonts', function () {
-    return gulp.src('./src/libs/**/fonts/*')
+    return gulp.src(fonts_path)
         .pipe(rename({ dirname: '' }))
-        .pipe(gulp.dest('./dist/fonts'));
+        .pipe(gulp.dest('dist/fonts'));
 });
 gulp.task('cache.clear', function(){
     cache.clearAll();
@@ -131,14 +143,14 @@ gulp.task('cache.clear', function(){
 
 // 生成版本号清单
 gulp.task('rev', function() {
-    return gulp.src(['./dist/js/**', './dist/css/**'])
+    return gulp.src(['dist/js/**', 'dist/css/**'])
         .pipe(rev())
         .pipe(rev.manifest())
         .pipe(gulp.dest("./"));
 });
 // 添加版本号（路径替换）
 gulp.task('set_version', function() {
-    return gulp.src(['./rev-manifest.json', './dist/*.html'])
+    return gulp.src(['rev-manifest.json', 'dist/*.html'])
         .pipe(revCollector())   // 根据.json文件 执行文件内js/css名的替换
         .pipe(gulpif(env==='build', htmlmin({ 
             removeComments: true,       // 清除HTML注释
@@ -146,26 +158,26 @@ gulp.task('set_version', function() {
             minifyJS: true,             // 压缩页面JS
             minifyCSS: true             // 压缩页面CSS
         })))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('dist'));
 });
 // 生成版本文件
 gulp.task('version.txt', function () {
     var buf = `{ "BUILD_VERSION": "", "BUILD_URL": "" }`;
-    fs.writeFile("./version.txt", buf, function(err){
+    fs.writeFile("dist/version.txt", buf, function(err){
         err && console.log(err);
     });
 });
 
 // 清空dist文件夹
 gulp.task('clean', function(){
-	return gulp.src(['./dist/*'])
+	return gulp.src(['dist/*'])
 		.pipe(clean());
 });
 
 // 启本地服务，并打开浏览器
 gulp.task('browser', function(){
 	browserSync.init({
-        server: './dist'    // 访问目录，自动指向该目录下的 index.html 文件
+        server: 'dist'    // 访问目录，自动指向该目录下的 index.html 文件
         // proxy: "你的域名或IP"    // 设置代理
     });
 });
@@ -175,12 +187,13 @@ gulp.task('browser_reload', function(){
 
 // 监听文件变化（'add', 'change', 'unlink'）
 gulp.task('watch', function () {
-    w('./src/**/*.html', 'html');
-    w('./src/js/**', 'js_main');
-    w('./src/libs/js/*.js', 'js_libs');
-    w('./src/css/**', 'css_main');
-    w('./src/libs/css/*.css', 'css_libs');
-    w('./src/images/**', 'images');
+    w(html_path, 'html');
+    w(js_libs_path, 'js_libs');
+    w(js_main_path, 'js_main');
+    w(css_libs_path, 'css_libs');
+    w(css_main_path, 'css_main');
+    w(images_path, 'images');
+    w(fonts_path, 'fonts');
 
     function w(path, task){
         watch(path, function () {
@@ -198,7 +211,7 @@ gulp.task('dev', function(cb) {
     set_env('dev');
     runSequence(
         ['clean'],
-        ['html', 'js_libs', 'js_main', 'css_libs', 'css_main', 'images'],
+        ['html', 'js_libs', 'js_main', 'css_libs', 'css_main', 'images', 'fonts'],
         ['browser', 'watch'],
         cb);
 });
