@@ -8,7 +8,7 @@
 
 #### 2、全局安装gulp
 ``` bash
-    命令: (sudo) npm install -g gulp
+    命令: (sudo) npm install -g gulp@3
 ```
 
 #### 3、在项目根目录执行npm初始化

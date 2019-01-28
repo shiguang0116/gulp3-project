@@ -31,7 +31,8 @@
     "gulp-uglify": "^3.0.1",
     "gulp-watch": "^5.0.1",
     "pump": "^3.0.0",
-    "run-sequence": "^2.2.1"
+    "run-sequence": "^2.2.1",
+    "sg-util": "0.0.5"
   },
   "dependencies": {
     "gulp": "^3.9.1"

@@ -14,7 +14,7 @@
             ls = os.localStorage();
         }
         return ls;
-    };
+    }
 
     /******************************************** 本地储存 **************************************************/
     
@@ -114,10 +114,74 @@
         u.cookie.set(name, '', -1);
     };
     
+    /******************************************** 类型 ***************************************************/
+    
+    /**
+     * @description 判断元素是否为空
+     * @param {*} source undefind/null/number/string/array/object
+     * @return {Boolen}
+     */
+    u.isEmpty = function (source) {
+        if (source == undefined || source == null) return true;
+        if (typeof (source) == 'string') return source.length == 0;
+        if (u.isArray(source)) return source.length == 0;
+        if (typeof (source) == 'object' && JSON.stringify(source) === '{}') return true;
+        else return source.toString().length == 0;
+    };
+    /**
+     * @description 判断元素是否为数组
+     * @param {*} source 
+     * @return {Boolen}
+     */
+    u.isArray = function (source) {
+        if (Array.isArray) return Array.isArray(source);
+        else return source instanceof Array;
+    };
+    /**
+     * @description 判断元素是否为对象
+     * @param {*} source 
+     * @return {Boolen}
+     */
+    u.isObject = function (source) {
+        return Object.prototype.toString.call(source) === '[object Object]';
+    };
+    /**
+     * @description 判断元素的长度
+     * @param {*} source 
+     * @return {Number} len
+     */
+    u.length = function(source) {
+        if (source == undefined || source == null) return 0;
+        if (typeof (source) == 'string') return source.length;
+        if (u.isArray(source)) return source.length;
+        if (u.isObject()) {
+            var len = 0;
+            for(var key in source){
+                len ++;
+            }
+            return len;
+        }
+    };
+    
     /******************************************** 字符串 ***************************************************/
     
     u.string = {};
 
+    /**
+     * @description 字符串常用方法
+     * indexOf(searchvalue, fromindex);     检索字符串。返回某个指定的字符串值在字符串中首次出现的位置，没有则返回 -1
+     * charAt(index);                       返回指定位置的字符，如果参数 index 不在 0 与 length 之间，则返回一个空字符串
+     * sub();	                            把字符串显示为下标。
+     * substr(start, length);               从起始索引号提取字符串中指定数目的字符。返回一个新的字符串，包含从 start（包括start）开始的 length 个字符。如果没有指定length，那么返回的字符串包含从 start 到结尾的字符。start 可以为负数（-1表示最后一个字符）
+     * substring(start, stop);	            提取字符串中两个指定的索引号之间的字符。返回一个新的字符串，包含从 start 处到 stop-1 处的所有字符，其长度为 stop 减 start。
+     * slice(start, end);                   提取字符串中两个指定的索引号之间的字符。返回一个新的字符串，包含从 start 处到 stop-1 处的所有字符，其长度为 stop 减 start。（参数可谓负数，-1 表示最后一个字符）
+     * split(separator, howmany);           把字符串分割为字符串数组。返回一个字符串数组
+     * replace(regexp/substr, replacement); 在字符串中用一些字符替换另一些字符，或替换一个与正则表达式匹配的子串。
+     * toLowerCase();	                    把字符串转换为小写
+     * toUpperCase();	                    把字符串转换为大写
+     * fontcolor(color);                    使用指定的颜色来显示字符串。
+     */
+    
     /**
      * @description 去除字符串前后空格
      * @param {String} str
@@ -134,18 +198,28 @@
     u.trimAll = function (str) {
         return str.replace(/\s*/g, '');
     };
-
-    u.isString = function (str) {
-        return typeof (str) == 'string';
+    /**
+    * @description 判断两个字符串是否相等
+    * @param {string} str1 
+    * @param {string} str2 
+    * @param {boolen} ignoreCase 是否忽略掉大小写，不传则为false
+    */
+    u.string.equal = function (str1, str2, ignoreCase) {
+        if (u.isEmpty(str1) && u.isEmpty(str2)) return true;
+        if (ignoreCase) {
+            str1 = String.prototype.toLowerCase.call(str1);
+            str2 = String.prototype.toLowerCase.call(str2);
+        }
+        return str1 == str2;
     };
     /**
      * @description 判断字符串是否以指定字符串开头
-     * @param {String} str
+     * @param {String} str 源字符串
      * @param {String} searchString 要查询的字符串
-     * @param {Boolean} ignoreCase 是否忽略大小写
+     * @param {Boolean} ignoreCase 是否忽略大小写，默认false
      * @return {Boolean} 
      */
-    u.string.isStartWith = function (str, searchString) {
+    u.string.isStartWith = function (str, searchString, ignoreCase) {
         if (str == null || str == undefined) return false;
         var preSubStr = str.substr(0, searchString.length) + '';
         if (ignoreCase) {
@@ -153,12 +227,12 @@
             searchString = (searchString + '').toLowerCase();
         }
         return preSubStr === searchString;
-    }
+    };
     /**
-     * @description 判断字符串是否以指定字符串开头
-     * @param {String} str
+     * @description 判断字符串是否以指定字符串结束
+     * @param {String} str 源字符串
      * @param {String} searchString 要查询的字符串
-     * @param {Boolean} ignoreCase 是否忽略大小写
+     * @param {Boolean} ignoreCase 是否忽略大小写，默认false
      * @return {Boolean} 
      */
     u.string.isEndWith = function (str, searchString, ignoreCase) {
@@ -169,111 +243,41 @@
             searchString = (searchString + '').toLowerCase();
         }
         return lastSubStr === searchString;
-    }
-    /**
-     * @description 判断字符串是否为空
-     * @return {Boolen} 是否为空
-     */
-    u.string.isEmpty = function (str) {
-        if (str == undefined || str == null) return true;
-        if (typeof (str) == 'string') return str.length == 0;
-        else return str.toString().length == 0;
-    }
-    /**
-     * @description 以指定的分割符分割字符串
-     * @param {String} source 源字符串
-     * @param {String} separator 分隔符
-     * @param {Boolen} ignoreSpaceOrEmpty 是否忽略掉空白
-     */
-    u.string.split = function (source, separator, ignoreSpaceOrEmpty) {
-        if (u.stringIsEmpty(source)) return [];
-        var items = source.split(separator);
-        if (ignoreSpaceOrEmpty) {
-            var tmp = [];
-            u.forEach(items, function (i, item) {
-                item = u.trim(item);
-                if (u.stringIsEmpty(item)) return;
-                tmp.push(item);
-            });
-            items = tmp;
-        }
-        return items;
     };
-    u.string.equal = function (str1, str2, ignoreCase) {
-        if (u.string.isEmpty(str1) && u.string.isEmpty(str2)) return true;
-        if (ignoreCase) {
-            str1 = u.string.toLower(str1);
-            str2 = u.string.toLower(str2);
-        };
-        return str1 == str2;
-    };
-
-    /**
-     * @description 字符串替换
-     */
-    u.string.replace = function (str, regexp, replacement) {
-        return String.prototype.replace.call(str, regexp, replacement);
-    };
-
     /**
     * @description 以指定的分割符分割字符串
     * @param {string} source 源字符串
     * @param {string} separator 分隔符
-    * @param {boolen} ignoreSpaceOrEmpty 是否忽略掉空白
+    * @param {boolen} ignoreSpaceOrEmpty 是否忽略掉空白，不传则为false
     */
     u.string.split = function (source, separator, ignoreSpaceOrEmpty) {
-        if (u.string.isEmpty(source)) return [];
+        if (u.isEmpty(source)) return [];
 
         var items = source.split(separator);
         if (ignoreSpaceOrEmpty) {
             var tmp = [];
             u.forEach(items, function (i, item) {
                 item = u.trim(item);
-                if (u.stringIsEmpty(item)) return;
+                if (u.isEmpty(item)) return;
                 tmp.push(item);
             });
             items = tmp;
         }
         return items;
-    };
-    /**
-     * @description 转换为小写
-     * @param {String} str 字符串
-     */
-    u.string.toLower = function (str) {
-        if (u.string.isEmpty(str)) return null;
-        return String.prototype.toLowerCase.call(str);
-    };
-    /**
-     * @description 转换为大写
-     * @param {String} str 字符串
-     */
-    u.string.toUpper = function (str) {
-        return String.prototype.toUpperCase.call(str);
     };
     /**
      * @description 首字母小写
      */
     u.string.firstLowerCase = function (str) {
-        if (u.string.isEmpty(str)) return str;
+        if (u.isEmpty(str)) return str;
         return str.replace(/^\S/, function (s) { return s.toLowerCase(); });
     };
     /**
      * @description 首字母大写
      */
     u.string.firstUpperCase = function (str) {
-        if (u.string.isEmpty(str)) return str;
+        if (u.isEmpty(str)) return str;
         return str.replace(/^\S/, function (s) { return s.toUpperCase(); });
-    };
-    /**
-     * @description 截取指定的字符串
-     * @param {String} str 待截取的字符传
-     * @param {Number} start 一个非负的整数，规定要提取的子串的第一个字符在 stringObject 中的位置。
-     * @param {Number} stop 一个非负的整数，比要提取的子串的最后一个字符在 stringObject 中的位置多 1。如果省略该参数，那么返回的子串会一直到字符串的结尾。
-     */
-    u.string.subString = function (str, start, stop) {
-        if (u.string.isEmpty(str)) return null;
-        return String.prototype.substring.call(str, start, stop);
     };
     /**
      * @description 字母和数字混合的编号自加1
@@ -282,7 +286,6 @@
      * @return {String} 编号+1。例：'XM0002'
      */
     u.string.getNext = function (code, xyz){
-        var code = code || '';
         var count = code.split(xyz)[1];
         var newCount = (parseInt(count)+1).toString();
         var zeroLen = count.length - newCount.length;
@@ -312,7 +315,6 @@
         }
         return value;
     };
-
     /**
      * @description 转换成float类型
      * @param input
@@ -327,7 +329,6 @@
         }
         return value;
     };
-
     /**
      * @description 使用定点表示法来格式化一个数
      * @param input 输入的数
@@ -343,8 +344,8 @@
      */
     u.number.Mul = function (arg1,arg2){
 		 var m=0,s1=arg1.toString(),s2=arg2.toString();    
-		 try{m+=s1.split(".")[1].length}catch(e){}    
-		 try{m+=s2.split(".")[1].length}catch(e){}    
+		 try{m+=s1.split(".")[1].length} catch(e){}
+		 try{m+=s2.split(".")[1].length} catch(e){}    
 		 return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m)
     };
     /**
@@ -356,47 +357,246 @@
     	try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}    
     	m=Math.pow(10,Math.max(r1,r2))    
     	return (arg1*m+arg2*m)/m    
-    }
+    };
     u.number.getRandom = function (min, max) {
         var random = 0;
         random = min + Math.random() * (max - min);
         return Math.round(random);
     };
     
-    u.number.get0 = function (obj){
-        for(var i in obj){
-            obj[i] == '' ? obj[i] = 0 : ''
-        }
-        return obj
-    };
-    
     /*********************************************数组***************************************************/
     
     u.array = {};
 
-    u.isArray = function (obj) {
-        if (Array.isArray) {
-            return Array.isArray(obj);
-        } else {
-            return obj instanceof Array;
+    var arr1 = [1,['w','q','r'],['q','w']];
+    var arr3 = [2,['w','q','r'],['q','w']];
+    // var arr1 = ['w','q','r'];
+    // var arr3 = ['w','q','r'];
+
+    var arr2 = [
+        { status: '1',id:'a' },
+        { status: '1',id:'a' },
+        { status: '1',id:'b' },
+        { status: '2',id:'b' },
+        { status: '3',id:'c' },
+    ];
+
+    /**
+     * @description 字符串常用方法
+     * push()	            向数组的末尾添加一个或更多元素，并返回新的长度。
+     * unshift()	        向数组的开头添加一个或更多元素，并返回新的长度。
+     * shift()	            删除并返回数组的第一个元素。
+     * pop()	            删除并返回数组的最后一个元素。
+     * splice(index,howmany,itemX)  从数组中添加或删除元素。
+     * slice(start, end)	        返回一个新的数组，包含从 start 到 end （不包括该元素）的数组中的元素。
+     * reverse()	                反转数组的元素顺序。
+     * sort(sortby)	                对数组的元素进行排序。如果不传参数则按照字符编码的顺序
+     * forEach(function(item, index){})             调用数组的每个元素，并将元素传递给回调函数。（*** 不能break）
+     * filter(function(item, index){ return *** })  返回一个新的数组，新数组中的元素是 return true 的所有元素。不会改变原始数组
+     */
+
+    /**
+     * @description 遍历数组、对象。相比原生的 forEach() ，增加了break
+     * @param {*} source 对象或数组，（字符串也适用）
+     * @param {Function} func 执行函数，function(i, item) 或 function(key, value)
+     */
+    u.forEach = function (source, func) {
+        if (u.isEmpty(source)) return;
+        if (typeof (func) != "function") return;
+        var i = 0;
+        for (var ikey in source) {
+            var flag = func.apply(window, [(typeof (source) === "object" ? ikey : i++), source[ikey]]);
+            if (flag == false) break;
         }
     };
-    u.array.isEmpty = function (array) {
-        if (array == undefined || array == null) return true;
-        else if (u.isArray(array) && array.length == 0) return true;
-        return false;
+    /**
+    * @description 判断两个数组是否相等
+    * @param {Array} arr1 
+    * @param {Array} arr2 
+    * @param {Boolean} ignoreSort 是否忽略排序，不传则为false
+    * @return {Boolean} 是否相等
+    */
+    u.array.equal = function (arr1, arr2, ignoreSort) {
+        if (!u.isArray(arr1) || !u.isArray(arr2)) return;
+        if(arr1.length != arr2.length) return false;
+        if(ignoreSort){
+            arr1.sort();
+            arr2.sort();
+        }
+        u.forEach(arr1, function(i, item){
+            if(u.isArray(item) && u.isArray(arr2[i])){
+                u.array.equal(item, arr2[i]);
+            }
+            else if(u.isObject(item) && u.isObject(arr2[i])){
+                u.object.equal(item, arr2[i]);
+            }
+            else{
+                u.string.equal(item, arr2[i]);
+            }
+        });
+        return arr1 == arr2;
+    };
+    u.equal = function (source1, source2, ignoreCase, ignoreSort) {
+        var equal = true;
+        // 同为数组或同为对象
+        if((u.isArray(source1) && u.isArray(source2)) || (u.isObject(source1) && u.isObject(source2))){
+            if(u.isArray(source1)){
+                if(source1.length != source2.length) return false;
+                if(ignoreSort){
+                    source1.sort();
+                    source2.sort();
+                }
+            }else{
+                if(u.object.length(source1) != u.object.length(source2)) return false;
+            }
+
+            u.forEach(source1, function(ikey, item){
+                return u.equal(item, source2[ikey], ignoreCase, ignoreSort);
+            });
+            return equal;
+        }
+        // 字符串
+        else{
+            if (ignoreCase) {
+                source1 = String.prototype.toLowerCase.call(source1.toString());
+                source2 = String.prototype.toLowerCase.call(source2.toString());
+            }
+            if(source1 != source2) equal = false;
+            return equal;
+        }
+        // return equal;
+    };
+    console.log(u.equal(arr1,arr3));
+
+    /**
+     * @description 检索数组
+     * @param {Array} source [''] [{}]
+     * @param {*} searchElement '' 或 [''] 或 {id:'a'}
+     * @return {Number} 索引或-1
+     */
+    u.array.indexOf = function(source, searchElement){
+        var index = -1;
+        // 元素为对象
+        if(u.isObject(searchElement)){
+            u.forEach(source, function(i, item){
+                var searchValueString = '';
+                var itemValueString = '';
+                u.forEach(searchElement, function(searchKey, searchValue){
+                    searchValueString += searchValue;
+                    itemValueString += item[searchKey];
+                });
+                if(itemValueString == searchValueString){
+                    index = i;
+                    return false;
+                }
+            });
+            return index;
+        }
+        // 元素为数组
+        if(u.isArray(searchElement)){
+            u.forEach(source, function(i, item){
+                // if(item == searchElement){
+                //     index = i;
+                //     return false;
+                // }
+            });
+            return index;
+        }
+        // 元素为字符串
+        else{
+            return source.indexOf(searchElement);
+        }
+    };
+    // console.log(u.array.indexOf(arr1, ['w','q','r']));
+
+    /**
+     * @description 数组去重（字符串或对象）
+     * @param {Array} array [''] [{}]
+     * @param {String Array} keys '' ['']
+     * @return {Array} 新数组 
+     */
+    u.array.unique = function(array, keys){
+        var ret = []; 
+        u.forEach(array, function(i, item){
+            if(keys){ //根据属性去重
+                if (!u.isArray(keys)) keys = [keys];
+                var searchProperties = u.object.selectProperties(item, keys);
+                if(u.array.indexOf(ret, searchProperties) == -1) ret.push(item);
+            }
+            else{
+                if(u.array.indexOf(ret, item) == -1) ret.push(item);
+            }
+        });
+        return ret;
+    };
+    // console.log(u.array.unique(arr1))
+    /**
+     * @description 筛选出符合条件的数组，生成新的数组
+     * @param {Array} source 原数组 [{}]
+     * @param {Object} filterProperty 条件对象 {status: ['1','2']}
+     * @param {Boolean} getDeleteData 是否返回被过滤掉的数组，默认false
+     * @return {Array} 新数组
+     */
+    u.array.filter = function (source, filterProperty, getDeleteData) {
+        if (u.isEmpty(source) || u.isEmpty(filterProperty)) return [];
+
+        var ret = [];
+        var retByDelete = [];
+        u.forEach(source, function (i, item) {
+            var equal = true;
+            u.forEach(filterProperty, function (filterKey, filterValue) {
+                var itemValue = item[filterKey];
+                if (!u.isArray(filterValue)) filterValue = [filterValue];
+                if (filterValue.indexOf(itemValue) == -1) {
+                    equal = false;
+                    return false;
+                }
+            });
+            if (equal) ret.push(item);
+            else retByDelete.push(item);
+        });
+        if(getDeleteData) return retByDelete;
+        return ret;
+    };
+    /**
+     * @description 选择数组中的一个（多个）属性
+     * @param {Array} source 源数组 [{}]
+     * @param {String Array} keys 属性（集合）
+     * @return {Array} 新数组 [''] [{}]
+     */
+    u.array.selectProperties = function (source, keys) {
+        if (!source) return [];
+        if (u.isArray(source) || u.isEmpty(keys)) return source;
+
+        var ret = [];
+        u.forEach(source, function (i, item) {
+            if (u.isArray(keys)) {
+                var obj = {};
+                u.forEach(keys, function (j, key) {
+                    obj[key] = item[key];
+                });
+                ret.push(obj);
+            }
+            else {
+                ret.push(item[keys]);
+            }
+        });
+        return ret;
     };
     /**
      * @description 合并两个数组，生成新的数组
-     * @param source 原数组
-     * @param array 待合并的数组
-     * @param keys 数组元素主键，如允许重复可不设置此参数
-     * @return obj 对象
+     * @param {Array} source 原数组
+     * @param {Array} array 待合并的数组
+     * @param {Array} keys 数组元素主键，如允许重复可不设置此参数
+     * @return {Object} 
      */
     u.array.concat = function (source, array, keys) {
-        if (!source || !array) return;
+        if (u.isEmpty(source)) return array;
+        if (u.isEmpty(array)) return source;
+        if (!u.isArray(keys)) keys = [keys];
+
         var ret = [];
-        if (keys && keys.length > 0) {
+        if (keys && keys.length) {
             ret = source.concat([]);
             u.forEach(array, function (i, item) {
                 var searchObj = {};
@@ -406,6 +606,7 @@
 
                 //检查目标数组中是否存在该元素
                 var obj = u.getByObject(source, searchObj);
+                // u.object.selectProperties
                 if (!obj) {
                     ret.push(item);
                 }
@@ -416,61 +617,13 @@
         }
         return ret;
     };
-    
     /**
-     * @description 筛选出符合条件的数组，生成新的数组
-     * @param source 原数组
-     * @param filter 条件对象
-     * @return {Array} 新的数组
-     */
-    u.filterArray = function (source, filter) {
-        if (!source) return [];
-        if (!u.isArray(source)) source = [source];
-        if (!filter) return source;
-
-        var ret = [];
-        u.forEach(source, function (i, item) {
-            var equal = true;
-            u.forEach(filter, function (property, filterPropertyValue) {
-                var itemPropertyValue = u.object.getPropertyValue(item, property);
-                if (!u.isArray(filterPropertyValue)) filterPropertyValue = [filterPropertyValue];
-                if (u.array.indexOf(filterPropertyValue, itemPropertyValue) == -1) {
-                    equal = false;
-                    return false;
-                }
-            });
-            if (equal) ret.push(item);
-        });
-        return ret;
-    };
-
-    /**
-     * @description 根据主键删除数组中的元素
-     * @param source 原数组
-     * @param keyField 主键字段
-     * @param keyValues 主键值
-     */
-    u.array.deleteByKeys = function (source, keyField, keyValues) {
-        if (!source || !keyField || !keyValues) return;
-        if (!u.isArray(keyValues)) keyValues = [keyValues];
-        u.forEach(keyValues, function (i, item) {
-            var param = [];
-            param[keyField] = item;
-
-            var index = -1;
-            do {
-                index = u.getIndexByObject(source, param);
-                if (index != -1) source.splice(index, 1);
-            } while (index > -1);
-        });
-    };
-        /**
      * @description 对数组中的元素进行分组
      * @param array 数组对象
      * @param fields 分组的依据字段
      * @return {Array} 分组后的新数组
      */
-    u.groupArray = function (array, fields) {
+    u.array.group = function (array, fields) {
         var self = this;
         if (!array && !fields) return null;
 
@@ -497,7 +650,7 @@
      * @param order 排序方式，asc升序，desc降序，默认为升序
      * @return {Array} 排序后的新数组
      */
-    u.sortArray = function (array, sort, order) {
+    u.array.sort = function (array, sort, order) {
         if (u.array.isEmpty(array)) return [];
         var result = array.concat([]);
         order = order || "asc";
@@ -509,51 +662,6 @@
             return 0;
         });
         return result;
-    };
-    /**
-     * @description 选择数组（对象）中的一个（多个）属性
-     * @param obj 源对象（数组）
-     * @param property 属性（集合）
-     * @return {Array} 新数组
-     */
-    u.selectProperties = function (source, property) {
-        if (!source) return [];
-        if (!u.isArray(source)) source = [source];
-
-        if (!property) return source;
-
-        var ret = [];
-        var isObject = u.isArray(property);
-        u.forEach(source, function (i, item) {
-            if (isObject) {
-                var obj = {};
-                u.forEach(property, function (j, p) {
-                    obj[p] = u.object.getPropertyValue(item, p, true);
-                });
-                ret.push(obj);
-            }
-            else {
-                ret.push(u.object.getPropertyValue(item, property, true));
-            }
-        });
-        return ret;
-    };
-    /**
-     * 数组去重
-     * @param {*} array 数组对象
-     */
-    u.array.unique = function(array){
-        if (u.array.isEmpty(array)) return;
-        return $.unique(array);
-    };
-    u.array.uniq = function(array){
-        var temp = []; //一个新的临时数组
-        for(var i = 0; i < array.length; i++){
-            if(temp.indexOf(array[i]) == -1){
-                temp.push(array[i]);
-            }
-        }
-        return temp;
     };
 
     /**
@@ -599,80 +707,6 @@
         return index;
     };
 
-
-    /**
-     * @description 方法返回在数组中可以找到一个给定元素的第一个索引，如果不存在，则返回-1
-     * @param array 数组对象
-     * @param searchElement 要查找的元素
-     * @param fromIndex 开始查找的位置
-     * @param useStrict 是否使用严格模式匹配查找
-     * @return 首个被找到的元素在数组中的索引位置; 若没有找到则返回 -1
-     */
-    u.array.indexOf = function (array, searchElement, fromIndex, useStrict) {
-        var k;
-
-        // 1. Let O be the result of calling ToObject passing
-        //    the this value as the argument.
-        if (array == null) {
-            return -1;
-        }
-
-        var O = Object(array);
-        fromIndex = fromIndex || 0;
-        useStrict = useStrict || false;
-
-        // 2. Let lenValue be the result of calling the Get
-        //    internal method of O with the argument "length".
-        // 3. Let len be ToUint32(lenValue).
-        var len = O.length >>> 0;
-
-        // 4. If len is 0, return -1.
-        if (len === 0) {
-            return -1;
-        }
-
-        // 5. If argument fromIndex was passed let n be
-        //    ToInteger(fromIndex); else let n be 0.
-        var n = +fromIndex || 0;
-
-        if (Math.abs(n) === Infinity) {
-            n = 0;
-        }
-
-        // 6. If n >= len, return -1.
-        if (n >= len) {
-            return -1;
-        }
-
-        // 7. If n >= 0, then Let k be n.
-        // 8. Else, n<0, Let k be len - abs(n).
-        //    If k is less than 0, then let k be 0.
-        k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
-
-        // 9. Repeat, while k < len
-        while (k < len) {
-            // a. Let Pk be ToString(k).
-            //   This is implicit for LHS operands of the in operator
-            // b. Let kPresent be the result of calling the
-            //    HasProperty internal method of O with argument Pk.
-            //   This step can be combined with c
-            // c. If kPresent is true, then
-            //    i.  Let elementK be the result of calling the Get
-            //        internal method of O with the argument ToString(k).
-            //   ii.  Let same be the result of applying the
-            //        Strict Equality Comparison Algorithm to
-            //        searchElement and elementK.
-            //  iii.  If same is true, return k.
-            if (k in O) {
-                if ((useStrict && O[k] === searchElement) || O[k] == searchElement) {
-                    return k;
-                }
-            }
-            k++;
-        }
-        return -1;
-    };
-
     /**
      * @description 删除数组中不合法的值（undefined,null,空字符串）
      *
@@ -703,35 +737,47 @@
     /*********************************************对象***************************************************/
     
     u.object = {};
-    
-    u.object.isEmpty = function (obj) {
-        if (JSON.stringify(obj) === '{}') {
-            return true;
+
+    var obj = {
+        id: 'a',
+        status: '1',
+        con: 'qwer',
+    };
+
+    /**
+     * @description 选择数组中的一个（多个）属性
+     * @param {Object} source 源数组 [{}]
+     * @param {String Array} keys 属性（集合）
+     * @return {Object} 新对象 
+     */
+    u.object.selectProperties = function (source, keys) {
+        if (u.isEmpty(source) || u.isEmpty(keys)) return {};
+
+        var ret = {};
+        if (u.isArray(keys)) {
+            u.forEach(keys, function (i, selectKey) {
+                ret[selectKey] = source[selectKey];
+            });
         }
-        return false;
-    }; 
-    
-    u.object.length = function(obj) {
-        var count = 0;
-        for(var i in obj){
-            count ++;
+        else {
+            ret[keys] = source[keys];
         }
-        return count;
+        return ret;
     };
 
     // 从对象中过滤出需要的字段
     u.object.getNeedData = function (needObj, obj){
         for(var key in needObj){
-            obj[key] ? needObj[key] = obj[key] : ''
+            obj[key] ? needObj[key] = obj[key] : '';
         }
-    }
+    };
 
     u.object.clear = function (obj){
         for (var key in obj) {
-            obj[key] = ''
+            obj[key] = '';
         }
-        return obj
-    }
+        return obj;
+    };
     /**
      * @description 删除对象中的属性
      * @param obj 对象
@@ -756,7 +802,7 @@
     u.object.getPropertyValue = function (obj, propertyName, ignoreCase) {
         var propertyValue = null;
         if (!obj) return propertyValue;
-        if (u.string.isEmpty(propertyName)) return propertyValue;
+        if (u.isEmpty(propertyName)) return propertyValue;
 
         var pointIndex = propertyName.indexOf('.');
         var isMultiPart = pointIndex > -1;
@@ -773,6 +819,7 @@
         });
         return propertyValue;
     };
+    
     //查找数组中符合条件的对象
     u.getByObject = function (array, paramObject) {
         if (array == undefined || array == null) { return };
