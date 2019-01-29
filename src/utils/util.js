@@ -128,6 +128,7 @@
         if (typeof (source) == 'object' && JSON.stringify(source) === '{}') return true;
         else return source.toString().length == 0;
     };
+
     /**
      * @description 判断元素是否为数组
      * @param {*} source 
@@ -137,6 +138,7 @@
         if (Array.isArray) return Array.isArray(source);
         else return source instanceof Array;
     };
+
     /**
      * @description 判断元素是否为对象
      * @param {*} source 
@@ -145,6 +147,7 @@
     u.isObject = function (source) {
         return Object.prototype.toString.call(source) === '[object Object]';
     };
+
     /**
      * @description 判断元素的长度
      * @param {*} source 
@@ -165,8 +168,7 @@
     
     /******************************************** 字符串 ***************************************************/
     
-    u.string = {};
-
+    
     /**
      * @description 字符串常用方法
      * indexOf(searchvalue, fromindex);     检索字符串。返回某个指定的字符串值在字符串中首次出现的位置，没有则返回 -1
@@ -181,6 +183,8 @@
      * toUpperCase();	                    把字符串转换为大写
      * fontcolor(color);                    使用指定的颜色来显示字符串。
      */
+
+    u.string = {};
     
     /**
      * @description 去除字符串前后空格
@@ -190,6 +194,7 @@
     u.trim = function (str) {
         return str.replace(/(^\s*)|(\s*$)/g, "");
     };
+
     /**
      * @description 去除字符串所有空格
      * @param {String} str
@@ -198,6 +203,7 @@
     u.trimAll = function (str) {
         return str.replace(/\s*/g, '');
     };
+
     /**
     * @description 判断两个字符串是否相等
     * @param {string} str1 
@@ -212,6 +218,7 @@
         }
         return str1 == str2;
     };
+
     /**
      * @description 判断字符串是否以指定字符串开头
      * @param {String} str 源字符串
@@ -228,6 +235,7 @@
         }
         return preSubStr === searchString;
     };
+
     /**
      * @description 判断字符串是否以指定字符串结束
      * @param {String} str 源字符串
@@ -244,6 +252,7 @@
         }
         return lastSubStr === searchString;
     };
+
     /**
     * @description 以指定的分割符分割字符串
     * @param {string} source 源字符串
@@ -265,6 +274,7 @@
         }
         return items;
     };
+
     /**
      * @description 首字母小写
      */
@@ -272,6 +282,7 @@
         if (u.isEmpty(str)) return str;
         return str.replace(/^\S/, function (s) { return s.toLowerCase(); });
     };
+
     /**
      * @description 首字母大写
      */
@@ -279,6 +290,7 @@
         if (u.isEmpty(str)) return str;
         return str.replace(/^\S/, function (s) { return s.toUpperCase(); });
     };
+
     /**
      * @description 字母和数字混合的编号自加1
      * @param {String} code 编号，字符串。例：'XM0001'
@@ -293,8 +305,18 @@
         for(var i = 0; i< zeroLen; i++){
             zero += '0';
         }
-        newCode = xyz + zero + newCount;
-        return newCode;
+        return xyz + zero + newCount;
+    };
+
+    /**
+     * @description 复制文本
+     * @param text {String} 需要复制的文本内容
+     */
+    u.string.copy = function (text) {
+        var input = window.document.createElement('input');
+        input.value = text;
+        input.select();
+        window.document.execCommand("copy");
     };
     
     /*********************************************数字***************************************************/
@@ -307,7 +329,7 @@
      * @param defaultValue 转换失败时的默认值
      * @return {int}
      */
-     u.number.parseInt = function (input, defaultValue) {
+    u.number.parseInt = function (input, defaultValue) {
         var value = parseInt(input);
         if (isNaN(value) || Infinity == value) {
             if (defaultValue == undefined) defaultValue = 0;
@@ -315,6 +337,7 @@
         }
         return value;
     };
+
     /**
      * @description 转换成float类型
      * @param input
@@ -329,6 +352,7 @@
         }
         return value;
     };
+
     /**
      * @description 使用定点表示法来格式化一个数
      * @param input 输入的数
@@ -339,6 +363,7 @@
         if (input == 0) return 0;
         return input.toFixed(digits || 0);
     };
+
     /**
      * @description 两数相乘
      */
@@ -348,6 +373,7 @@
 		 try{m+=s2.split(".")[1].length} catch(e){}    
 		 return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m)
     };
+
     /**
      * @description 两数相加
      */
@@ -358,6 +384,7 @@
     	m=Math.pow(10,Math.max(r1,r2))    
     	return (arg1*m+arg2*m)/m    
     };
+
     u.number.getRandom = function (min, max) {
         var random = 0;
         random = min + Math.random() * (max - min);
@@ -365,6 +392,20 @@
     };
     
     /*********************************************数组***************************************************/
+    
+    /**
+     * @description 字符串常用方法
+     * push()	            向数组的末尾添加一个或更多元素，并返回新的长度。
+     * unshift()	        向数组的开头添加一个或更多元素，并返回新的长度。
+     * shift()	            删除并返回数组的第一个元素。
+     * pop()	            删除并返回数组的最后一个元素。
+     * splice(index,howmany,itemX)  从数组中添加或删除元素。
+     * slice(start, end)	        返回一个新的数组，包含从 start 到 end （不包括该元素）的数组中的元素。
+     * reverse()	                反转数组的元素顺序。
+     * sort(sortby)	                对数组的元素进行排序。如果不传参数则按照字符编码的顺序
+     * forEach(function(item, index){})             调用数组的每个元素，并将元素传递给回调函数。（*** 不能break）
+     * filter(function(item, index){ return *** })  返回一个新的数组，新数组中的元素是 return true 的所有元素。不会改变原始数组
+     */
     
     u.array = {};
 
@@ -380,20 +421,6 @@
         { status: '2',id:'b' },
         { status: '3',id:'c' },
     ];
-
-    /**
-     * @description 字符串常用方法
-     * push()	            向数组的末尾添加一个或更多元素，并返回新的长度。
-     * unshift()	        向数组的开头添加一个或更多元素，并返回新的长度。
-     * shift()	            删除并返回数组的第一个元素。
-     * pop()	            删除并返回数组的最后一个元素。
-     * splice(index,howmany,itemX)  从数组中添加或删除元素。
-     * slice(start, end)	        返回一个新的数组，包含从 start 到 end （不包括该元素）的数组中的元素。
-     * reverse()	                反转数组的元素顺序。
-     * sort(sortby)	                对数组的元素进行排序。如果不传参数则按照字符编码的顺序
-     * forEach(function(item, index){})             调用数组的每个元素，并将元素传递给回调函数。（*** 不能break）
-     * filter(function(item, index){ return *** })  返回一个新的数组，新数组中的元素是 return true 的所有元素。不会改变原始数组
-     */
 
     /**
      * @description 遍历数组、对象。相比原生的 forEach() ，增加了break
@@ -530,6 +557,7 @@
         return ret;
     };
     // console.log(u.array.unique(arr1))
+
     /**
      * @description 筛选出符合条件的数组，生成新的数组
      * @param {Array} source 原数组 [{}]
@@ -558,6 +586,7 @@
         if(getDeleteData) return retByDelete;
         return ret;
     };
+
     /**
      * @description 选择数组中的一个（多个）属性
      * @param {Array} source 源数组 [{}]
@@ -583,6 +612,7 @@
         });
         return ret;
     };
+
     /**
      * @description 合并两个数组，生成新的数组
      * @param {Array} source 原数组
@@ -617,6 +647,7 @@
         }
         return ret;
     };
+
     /**
      * @description 对数组中的元素进行分组
      * @param array 数组对象
@@ -644,6 +675,7 @@
         });
         return result;
     };
+
     /**
      * @description 对数组排序
      * @param sort 排序字段
@@ -895,94 +927,167 @@
         }
         return query.length ? query.substr(0, query.length - 1) : query;
     };
-    u.isFunction = function (obj) {
-        if (typeof obj == "function") return true;
-        return false;
-    };
 
-    /******************************************** 日期 **************************************************/
+    /******************************************** 时间 **************************************************/
+
+    /**
+     * @description 时间常用方法
+     * Date.setMonth(month,day) 
+     */
 
     u.date = {};
 
     /**
      * @description 获取需要的时间格式
-     * @param
+     * @param {String Date} time 时间
+     * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
-    u.date.format = function (param){
-        var time    = param.time ? new Date(param.time) : new Date(),   //已知时间
-            format  = param.format || 'yyyy-MM-dd';                     //时间格式
-        function tf(i){return (i < 10 ? '0' : '') + i};  
-        return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function(a){  
+    u.date.format = function (time, format){
+        time = time ? new Date(time) : new Date();
+        format = format || 'YYYY-MM-DD';
+        function tf(i){return (i < 10 ? '0' : '') + i};
+        return format.replace(/YYYY|MM|DD|hh|mm|ss/g, function(a){  
             switch(a){  
-                case 'yyyy':  
+                case 'YYYY':  
                     return tf(time.getFullYear());
-                    break;  
+                    break;
                 case 'MM':  
-                    return tf(time.getMonth() + 1);  
+                    return tf(time.getMonth() + 1);
+                    break;
+                case 'DD':  
+                    return tf(time.getDate());
                     break;  
                 case 'mm':  
                     return tf(time.getMinutes());
                     break;  
-                case 'dd':  
-                    return tf(time.getDate());  
-                    break;  
-                case 'HH':  
-                    return tf(time.getHours());  
+                case 'hh':  
+                    return tf(time.getHours());
                     break;  
                 case 'ss':  
-                    return tf(time.getSeconds());  
+                    return tf(time.getSeconds());
                     break;  
             }  
-        })  
-    }
+        });
+    };
+
     /**
-     * @description 获取上个月的日期
-     * @param str
+     * @description 前后几月的日期
+     * @param {Number} MM 前后几月（正数代表后几个月，负数代表前几个月），默认上个月（-1）
+     * @param {String Date} time 时间
+     * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
-    u.date.lastMonth =  function (){
-        var now = u.getFormatDate()
-        var arr = now.split('-')
-        arr[1] = arr[1] - 1
-        if (arr[1] == 0) {
-            arr[0] = arr[0]-1
-            arr[1] = 12
-        }
-        if (arr[1]<10) {
-            arr[1] = '0' + arr[1]
-        }
-        var last = arr.join('-')
-        return last;
-    }
+    u.date.otherMonth = function (MM, time, format){
+        MM = !isNaN(MM) ? MM : -1;
+        time = time ? new Date(time) : new Date();
+        format = format || 'YYYY-MM-DD';
+        
+        var DD = format.indexOf('DD') > -1 ? time.getDate() : '1' ;
+        time.setMonth(time.getMonth()+MM, DD);
+        return u.date.format(time, format);
+    };
+
     /**
-     * @description 获取前后几月的日期
-     * @param 
+     * @description 当月的第一天
+     * @param {String Date} time 时间
+     * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
-    u.date.otherMonth = function (param){
-        var format  = param.format || 'yyyy-MM-dd',         //时间格式: ''
-            MM      = !isNaN(param.MM) ? param.MM : -1,     //前后几月: number
-            time    = new Date();
-        // 判断有没有‘日’
-        var dd = format.indexOf('dd') > -1 ? time.getDate() : '1' ;
-        time.setMonth(time.getMonth()+MM, dd);
-        var result = getFormatDate({time: time, format:format});
+    u.date.startOfMonth = function (time, format){
+        time = time ? new Date(time) : new Date();
+        format = format || 'YYYY-MM-DD';
+
+        time.setMonth(time.getMonth(), 1);
+        return u.date.format(time, format);
+    };
+
+    /**
+     * @description 当月的最后一天
+     * @param {String Date} time 时间
+     * @param {String} format 时间格式，默认'YYYY-MM-DD'
+     * @return {String} 格式化后的时间
+     */
+    u.date.endOfMonth = function (time, format){
+        time = time ? new Date(time) : new Date();
+        format = format || 'YYYY-MM-DD';
+
+        time.setMonth(time.getMonth()+1, 0);
+        return u.date.format(time, format);
+    };
+
+    /**
+     * @description 前后几周的日期
+     * @param {Number} WW 前后几周（正数代表后几周，负数代表前几周），默认本周（0）
+     * @param {String Date} time 时间
+     * @param {String} format 时间格式，默认'YYYY-MM-DD'
+     * @return {Array} ['当前周的第一天（星期一）', '当前周的最后一天（星期日）']
+     */
+    u.date.otherWeek = function (WW, time, format){
+        WW = !isNaN(WW) ? WW : -1;
+        time = time ? new Date(time) : new Date();
+        format = format || 'YYYY-MM-DD';
+
+        var ret = [];
+        var curWW = time.getDay();
+        curWW = curWW == 0 ? 7 : curWW;
+        var startTimestamp = time.getTime() + 3600 * 1000 * 24 * (7*WW - (curWW-1));
+        var endTimestamp = startTimestamp + 3600 * 1000 * 24 * 6;
+        ret.push(u.date.format(startTimestamp, format));
+        ret.push(u.date.format(endTimestamp, format));
+        return ret;
+    };
+    
+    /**
+     * @description 前后几天的日期
+     * @param {Number} DD 前后几天（正数代表后几天，负数代表前几天），默认过去一周的日期（-6）
+     * @param {String Date} time 时间
+     * @param {String} format 时间格式，默认'YYYY-MM-DD'
+     * @return {String} 格式化后的时间
+     */
+    u.date.otherDay = function (DD, time, format){
+        DD = !isNaN(DD) ? DD : -6;
+        time = time ? new Date(time) : new Date();
+        format = format || 'YYYY-MM-DD';
+
+        var timestamp = time.getTime() + 3600 * 1000 * 24 * DD;
+        return u.date.format(timestamp, format);
+    };
+
+    /**
+     * @description 查询两个日期之间的所有月份
+     * @param {String} start 'YYYY-MM'
+     * @param {String} end 'YYYY-MM'
+     * @return {Array}
+     */
+    u.date.getMonthBetween = function(start, end) {
+        var result = [];
+        var starts = start.split('-');
+        var ends = end.split('-');
+        var staYear = parseInt(starts[0]);
+        var staMon = parseInt(starts[1]);
+        var endYear = parseInt(ends[0]);
+        var endMon = parseInt(ends[1]);
+        while (staYear <= endYear) {
+            if (staYear === endYear) {
+                while (staMon <= endMon) {
+                    staMon = staMon > 9 ? staMon : '0'+staMon;
+                    result.push(staYear + '-' + staMon);
+                    staMon++;
+                }
+                staYear++;
+            } else {
+                if (staMon > 12) {
+                    staMon = 1;
+                    staYear++;
+                }
+                staMon = staMon > 9 ? staMon : '0'+staMon;
+                result.push(staYear + '-' + staMon);
+                staMon++;
+            }
+        }
         return result;
-    }
-    /**
-     * @description 获取前后几天的日期
-     * @param 
-     * @return {String} 格式化后的时间
-     */
-    u.date.getOtherDay = function (param){
-        var time    = param.time ? new Date(param.time) : new Date(),   //已知时间
-            format  = param.format || 'yyyy-MM-dd',                     //时间格式: ''
-            dd      = !isNaN(param.dd) ? param.dd : -6;                 //前后几天: number
-        var timestamp = time.getTime() + 3600 * 1000 * 24 * dd;
-        var otherDay = getFormatDate({time: timestamp,format:format});
-        return otherDay;
-    }
+    };
 
     /******************************************** base64 **************************************************/
     
@@ -1003,19 +1108,6 @@
         var str = CryptoJS.enc.Base64.parse(input).toString(CryptoJS.enc.Utf8);
         return str;
     };
-
-    /********************************************* 文本 ***************************************************/
-
-    /**
-     * @description 复制文本
-     * @param text {String} 需要复制的文本内容
-     */
-    u.copyText = function (text) {
-        var input = document.createElement('input');
-        input.value = text;
-        input.select();
-        document.execCommand("copy"); //执行浏览器复制命令
-    }
 
     /*********************************************浏览器/手机端***************************************************/
     
@@ -1053,43 +1145,43 @@
         if (u.browser.isSafari()) { return "safari";} 
         if (u.browser.isChrome()) { return "chrome";} 
         if (u.browser.isEdge()) { return "edge";} 
-    }
+    };
     /**
      * @description 判断是否是IE浏览器
      */
     u.browser.isIE = function () { 
         return userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !u.browser.isOpera(); 
-    }
+    };
     /**
      * @description 判断是否IE的Edge浏览器
      */
     u.browser.isEdge = function () { 
         return userAgent.indexOf("Windows NT 6.1; Trident/7.0;") > -1 && !u.browser.isIE();
-    }
+    };
     /**
      * @description 判断是否Safari浏览器
      */
     u.browser.isSafari = function () { 
         return userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1;
-    }
+    };
     /**
      * @description 判断是否是Chrome浏览器
      */
     u.browser.isChrome = function () { 
         return userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1;
-    }
+    };
     /**
      * @description 判断是否Firefox浏览器
      */
     u.browser.isFirefox = function () { 
         return userAgent.indexOf("Firefox") > -1;  
-    }
+    };
     /**
      * @description 判断是否Opera浏览器
      */
     u.browser.isOpera = function () { 
         return userAgent.indexOf("Opera") > -1;
-    }
+    };
     /**
      * @description 判断是否是微信浏览器
      */
@@ -1100,13 +1192,13 @@
         } else {
             return false;
         }
-    }
+    };
     /**
      * @description 判断是否是Android
      */
     u.browser.isAndroid = function(){
         return (/android/gi).test(navigator.appVersion);
-    } 
+    };
     /**
      * @description 判断是否是移动端
      */
@@ -1116,7 +1208,7 @@
         } else {
             return false;
         }
-    }
+    };
 
     window.util = u;
 })(window);
