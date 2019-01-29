@@ -34,12 +34,12 @@ var watch = require('gulp-watch');          // 监听文件（修改、新建、
 var runSequence = require('run-sequence');  // 按顺序执行task
 
 // 路径
-var html_path = 'src/html/**/*.html';
+var html_path = ['src/html/**/*.html', 'src/common/**/*.html'];
 var js_libs_path = 'src/libs/**/*.js';
 var js_main_path = ['src/js/**/*.js', 'src/utils/**/*.js'];
 var css_libs_path = 'src/libs/**/*.css';
 var css_main_path = 'src/css/**/*.css';
-var images_path = 'src/images/**';
+var images_path = ['src/images/**', 'favicon.ico'];
 var fonts_path = 'src/libs/**/fonts/**';
 
 // 设置环境变量
