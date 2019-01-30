@@ -6,7 +6,9 @@
 'use strict';
 
 (function (window) {
-    var u = {}; 
+    var u = {
+        equal: true
+    }; 
 
     /********************************************* cookie 缓存 ***************************************************/
 
@@ -217,6 +219,53 @@
             if (flag == false) break;
         }
     };
+
+    var arr1 = [2,['w','q','r'],['q'],{a:'1'}];
+    var arr3 = [2,['w','q','r'],['q'],{b:'1'}];
+
+    /**
+    * @description 判断两个元素是否相等
+    * @param {*} source1 
+    * @param {*} source2 
+    * @param {Boolean} ignoreCase 是否忽略掉大小写，不传则为false
+    * @param {Boolean} ignoreSort 是否忽略排序，不传则为false
+    * @return {Boolean} 是否相等
+    */
+    u.isEqual = function (source1, source2, ignoreCase, ignoreSort) {
+        // 同为数组或同为对象
+        if((u.isArray(source1) && u.isArray(source2)) || (u.isObject(source1) && u.isObject(source2))){
+            if(u.isArray(source1)){
+                if(source1.length != source2.length){
+                    u.equal = false;
+                    return false;
+                }
+                if(ignoreSort){
+                    source1.sort();
+                    source2.sort();
+                }
+            }else{
+                if(u.length(source1) != u.length(source2)){
+                    u.equal = false;
+                    return false;
+                }
+            }
+
+            u.forEach(source1, function(ikey, item){
+                return u.isEqual(item, source2[ikey], ignoreCase, ignoreSort);
+            });
+            return u.equal;
+        }
+        // 字符串
+        else{
+            if (ignoreCase) {
+                source1 = String.prototype.toLowerCase.call(source1.toString());
+                source2 = String.prototype.toLowerCase.call(source2.toString());
+            }
+            if(source1 != source2) u.equal = false;
+            return u.equal;
+        }
+    };
+    console.log(u.isEqual(arr1,arr3));
     
     /******************************************** string 字符串 ***************************************************/
     
@@ -259,7 +308,7 @@
     * @description 判断两个字符串是否相等
     * @param {string} str1 
     * @param {string} str2 
-    * @param {boolen} ignoreCase 是否忽略掉大小写，不传则为false
+    * @param {Boolean} ignoreCase 是否忽略掉大小写，不传则为false
     */
     u.string.equal = function (str1, str2, ignoreCase) {
         if (u.isEmpty(str1) && u.isEmpty(str2)) return true;
@@ -492,11 +541,6 @@
     
     u.array = {};
 
-    var arr1 = [1,['w','q','r'],['q','w']];
-    var arr3 = [2,['w','q','r'],['q','w']];
-    // var arr1 = ['w','q','r'];
-    // var arr3 = ['w','q','r'];
-
     var arr2 = [
         { status: '1',id:'a' },
         { status: '1',id:'a' },
@@ -506,65 +550,6 @@
     ];
 
     /**
-    * @description 判断两个数组是否相等
-    * @param {Array} arr1 
-    * @param {Array} arr2 
-    * @param {Boolean} ignoreSort 是否忽略排序，不传则为false
-    * @return {Boolean} 是否相等
-    */
-    u.array.equal = function (arr1, arr2, ignoreSort) {
-        if (!u.isArray(arr1) || !u.isArray(arr2)) return;
-        if(arr1.length != arr2.length) return false;
-        if(ignoreSort){
-            arr1.sort();
-            arr2.sort();
-        }
-        u.forEach(arr1, function(i, item){
-            if(u.isArray(item) && u.isArray(arr2[i])){
-                u.array.equal(item, arr2[i]);
-            }
-            else if(u.isObject(item) && u.isObject(arr2[i])){
-                u.object.equal(item, arr2[i]);
-            }
-            else{
-                u.string.equal(item, arr2[i]);
-            }
-        });
-        return arr1 == arr2;
-    };
-    u.equal = function (source1, source2, ignoreCase, ignoreSort) {
-        var equal = true;
-        // 同为数组或同为对象
-        if((u.isArray(source1) && u.isArray(source2)) || (u.isObject(source1) && u.isObject(source2))){
-            if(u.isArray(source1)){
-                if(source1.length != source2.length) return false;
-                if(ignoreSort){
-                    source1.sort();
-                    source2.sort();
-                }
-            }else{
-                if(u.object.length(source1) != u.object.length(source2)) return false;
-            }
-
-            u.forEach(source1, function(ikey, item){
-                return u.equal(item, source2[ikey], ignoreCase, ignoreSort);
-            });
-            return equal;
-        }
-        // 字符串
-        else{
-            if (ignoreCase) {
-                source1 = String.prototype.toLowerCase.call(source1.toString());
-                source2 = String.prototype.toLowerCase.call(source2.toString());
-            }
-            if(source1 != source2) equal = false;
-            return equal;
-        }
-        // return equal;
-    };
-    console.log(u.equal(arr1,arr3));
-
-    /**
      * @description 检索数组
      * @param {Array} source [''] [{}]
      * @param {*} searchElement '' 或 [''] 或 {id:'a'}
@@ -572,7 +557,7 @@
      */
     u.array.indexOf = function(source, searchElement){
         var index = -1;
-        // 元素为对象
+        // 子元素为对象
         if(u.isObject(searchElement)){
             u.forEach(source, function(i, item){
                 var searchValueString = '';
@@ -588,7 +573,7 @@
             });
             return index;
         }
-        // 元素为数组
+        // 子元素为数组
         if(u.isArray(searchElement)){
             u.forEach(source, function(i, item){
                 // if(item == searchElement){
@@ -598,7 +583,7 @@
             });
             return index;
         }
-        // 元素为字符串
+        // 子元素为字符串
         else{
             return source.indexOf(searchElement);
         }
