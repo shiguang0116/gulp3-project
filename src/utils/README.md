@@ -33,3 +33,9 @@
 ```
 
 #### 2、API说明
+
+#### 3、npm下载，下载完成之后复制util.js到项目，引用util.js即可
+
+```
+npm i sg-utils -D
+```

@@ -6,8 +6,55 @@
 'use strict';
 
 (function (window) {
-    var u = {};
+    var u = {}; 
+
+    /********************************************* cookie 缓存 ***************************************************/
+
+    u.cookie = {};
+
+    /**
+     * @description 设置缓存
+     * @param {String} name 缓存数据的名字
+     * @param {*} value 缓存数据的值
+     * @param {Number} expiredays 缓存数据的时间（天），默认 7 天
+     */
+    u.cookie.set = function (name, value, expiredays) {
+        expiredays = expiredays || 7;
+        var exdate = new Date();
+        exdate.setTime(exdate.getTime() + expiredays * 24 * 60 * 60 * 1000);
+        document.cookie = name + "=" + escape(value) + ";expires=" + exdate.toGMTString();
+    };
+
+    /**
+     * @description 获取缓存的数据
+     * @param {String} name 要获取的数据对应的名字
+     * @return {*}
+     */
+    u.cookie.get = function (name) {
+        var arr = document.cookie.split('; ');
+        for (var i = 0; i < arr.length; i++) {
+            var temp = arr[i].split('=');
+            if (temp[0] == name) return unescape(temp[1]);
+        }
+        return null;
+    };
     
+    /**
+     * @description 删除缓存中某些数据
+     * @param {String} name 要删除的数据对应的名字
+     */
+    u.cookie.remove = function (name) {
+        u.cookie.set(name, '', -1);
+    };
+    
+    /******************************************** localStorage 本地储存 **************************************************/
+    
+    u.storage = {};
+    
+    /**
+     * @description 获取localStorage对象，兼容android（android原生系统老系统不支持localstorage）
+     * @return localStorage对象
+     */
     function uzStorage() {
         var ls = window.localStorage;
         if (u.browser.isAndroid()) {
@@ -15,10 +62,6 @@
         }
         return ls;
     }
-
-    /******************************************** 本地储存 **************************************************/
-    
-    u.storage = {};
 
     /**
      * @description 设置本地储存
@@ -28,105 +71,77 @@
     u.storage.set = function (key, value) {
         if (arguments.length === 2) {
             var v = value;
-            if (typeof v == 'object') {
+            if (typeof v === 'object') {
                 v = JSON.stringify(v);
                 v = 'obj-' + v;
             } else {
                 v = 'str-' + v;
             }
             var ls = uzStorage();
-            if (ls) {
-                ls.setItem(key, v);
-            }
+            if (ls) ls.setItem(key, v);
         }
     };
+
     /**
      * @description 获取本地储存的数据
      * @param {String} key 要获取的数据对应的名字
+     * @return {*}
      */
     u.storage.get = function (key) {
         var ls = uzStorage();
         if (ls) {
             var v = ls.getItem(key);
-            if (!v) { return; }
-            if (v.indexOf('obj-') === 0) {
-                v = v.slice(4);
-                return JSON.parse(v);
-            } else if (v.indexOf('str-') === 0) {
-                return v.slice(4);
-            }
+            if (!v) return;
+            if (v.indexOf('obj-') === 0) return JSON.parse(v.slice(4));
+            else if (v.indexOf('str-') === 0)  return v.slice(4);
         }
     };
+
     /**
      * @description 删除本地储存中某些数据
      * @param {String} key 要删除的数据对应的名字
      */
     u.storage.remove = function (key) {
         var ls = uzStorage();
-        if (ls && key) {
-            ls.removeItem(key);
-        }
+        if (ls && key) ls.removeItem(key);
     };
+
     /**
      * @description 清空本地储存的所有数据
      */
     u.storage.clear = function () {
         var ls = uzStorage();
-        if (ls) {
-            ls.clear();
-        }
-    };
-
-    /********************************************* 缓存 ***************************************************/
-
-    u.cookie = {};
-
-    /**
-     * @description 设置缓存
-     * @param {String} name 缓存数据的名字
-     * @param {*} value 缓存数据的值
-     * @param {Number} expiredays 缓存数据的时间（天）
-     */
-    u.cookie.set = function (name, value, expiredays) {
-        var exdate = new Date();
-        exdate.setTime(exdate.getTime() +  u.number.parseInt(expiredays * 24 * 60 * 60 * 1000));
-        document.cookie = name + "=" + escape(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
-    };
-    /**
-     * @description 获取缓存的数据
-     * @param {String} name 要获取的数据对应的名字
-     */
-    u.cookie.get = function (name) {
-        var arr = document.cookie.split('; ');
-        for (var i = 0; i < arr.length; i++) {
-            var temp = arr[i].split('=');
-            if (temp[0] == name) {
-                return unescape(temp[1]);
-            }
-        }
-        return null;
-    };
-    /**
-     * @description 删除缓存中某些数据
-     * @param {String} name 要删除的数据对应的名字
-     */
-    u.cookie.remove = function (name) {
-        u.cookie.set(name, '', -1);
+        if (ls) ls.clear();
     };
     
-    /******************************************** 类型 ***************************************************/
-    
+    /******************************************** 数据类型 ***************************************************/
+
     /**
-     * @description 判断元素是否为空
-     * @param {*} source undefind/null/number/string/array/object
+     * @description JavaScript 数据类型
+     * 
+     * 基本类型        string number boolean null undefined
+     * 引用类型        array object function date 等
+     * 强制类型转换     Number() String() Boolean()
+     * 
+     * typeof       返回一个字符串 'undefined' 'boolean' 'number' 'string' 'function' 'symbol' 'object'
+     * toString()   转化为字符串
+     * 
+     * @description JavaScript 全局函数
+     * 
+     * isNaN()      判断元素是否为非数字，是数字则为false（包括 number 类型 和 由数字组成的 string 类型）
+     * parseInt()   解析一个字符串并返回一个整数 或 NaN
+     * parseFloat() 解析一个字符串并返回一个浮点数 或 NaN
+     * escape()	    对字符串进行编码
+     * unescape()   对字符串进行解码
+     */
+
+    /**
+     * @description 判断元素是否为字符串
+     * @param {*} source 
      * @return {Boolen}
      */
-    u.isEmpty = function (source) {
-        if (source == undefined || source == null) return true;
-        if (typeof (source) == 'string') return source.length == 0;
-        if (u.isArray(source)) return source.length == 0;
-        if (typeof (source) == 'object' && JSON.stringify(source) === '{}') return true;
-        else return source.toString().length == 0;
+    u.isString = function (source) {
+        return typeof (source) === 'string';
     };
 
     /**
@@ -149,15 +164,37 @@
     };
 
     /**
+     * @description 判断元素是否为函数
+     * @param {*} source 
+     * @return {Boolen}
+     */
+    u.isFunction = function (source) {
+        return typeof (source) === 'function';
+    };
+
+    /**
+     * @description 判断元素是否为空
+     * @param {*} source 
+     * @return {Boolen}
+     */
+    u.isEmpty = function (source) {
+        if (source == undefined || source == null) return true;
+        if (u.isString(source)) return source.length == 0;
+        if (u.isArray(source)) return source.length == 0;
+        if (u.isObject(source)) return JSON.stringify(source) === '{}';
+        else return source.toString().length == 0;
+    };
+
+    /**
      * @description 判断元素的长度
      * @param {*} source 
-     * @return {Number} len
+     * @return 
      */
-    u.length = function(source) {
+    u.length = function (source) {
         if (source == undefined || source == null) return 0;
-        if (typeof (source) == 'string') return source.length;
+        if (u.isString(source)) return source.length;
         if (u.isArray(source)) return source.length;
-        if (u.isObject()) {
+        if (u.isObject(source)) {
             var len = 0;
             for(var key in source){
                 len ++;
@@ -165,12 +202,27 @@
             return len;
         }
     };
+
+    /**
+     * @description 遍历数组、对象
+     * @param {*} source 对象或数组，（字符串也适用）
+     * @param {Function} func 执行函数，function(i, item) 或 function(key, value)。执行函数返回 false 时，循环终止。
+     */
+    u.forEach = function (source, func) {
+        if (u.isEmpty(source)) return;
+        if (typeof (func) != "function") return;
+        var i = 0;
+        for (var ikey in source) {
+            var flag = func.apply(window, [(typeof (source) === "object" ? ikey : i++), source[ikey]]);
+            if (flag == false) break;
+        }
+    };
     
-    /******************************************** 字符串 ***************************************************/
-    
+    /******************************************** string 字符串 ***************************************************/
     
     /**
-     * @description 字符串常用方法
+     * @description string 常用方法
+     * 
      * indexOf(searchvalue, fromindex);     检索字符串。返回某个指定的字符串值在字符串中首次出现的位置，没有则返回 -1
      * charAt(index);                       返回指定位置的字符，如果参数 index 不在 0 与 length 之间，则返回一个空字符串
      * sub();	                            把字符串显示为下标。
@@ -181,7 +233,6 @@
      * replace(regexp/substr, replacement); 在字符串中用一些字符替换另一些字符，或替换一个与正则表达式匹配的子串。
      * toLowerCase();	                    把字符串转换为小写
      * toUpperCase();	                    把字符串转换为大写
-     * fontcolor(color);                    使用指定的颜色来显示字符串。
      */
 
     u.string = {};
@@ -254,6 +305,22 @@
     };
 
     /**
+     * @description 首字母小写
+     */
+    u.string.firstLowerCase = function (str) {
+        if (u.isEmpty(str)) return str;
+        return str.replace(/^\S/, function (s) { return s.toLowerCase(); });
+    };
+
+    /**
+     * @description 首字母大写
+     */
+    u.string.firstUpperCase = function (str) {
+        if (u.isEmpty(str)) return str;
+        return str.replace(/^\S/, function (s) { return s.toUpperCase(); });
+    };
+
+    /**
     * @description 以指定的分割符分割字符串
     * @param {string} source 源字符串
     * @param {string} separator 分隔符
@@ -273,22 +340,6 @@
             items = tmp;
         }
         return items;
-    };
-
-    /**
-     * @description 首字母小写
-     */
-    u.string.firstLowerCase = function (str) {
-        if (u.isEmpty(str)) return str;
-        return str.replace(/^\S/, function (s) { return s.toLowerCase(); });
-    };
-
-    /**
-     * @description 首字母大写
-     */
-    u.string.firstUpperCase = function (str) {
-        if (u.isEmpty(str)) return str;
-        return str.replace(/^\S/, function (s) { return s.toUpperCase(); });
     };
 
     /**
@@ -319,20 +370,36 @@
         window.document.execCommand("copy");
     };
     
-    /*********************************************数字***************************************************/
+    /********************************************* number 数字 ***************************************************/
+
+    /**
+     * @description number 常用方法
+     * 
+     * toFixed(x)	    把数字转换为字符串，结果为小数点后有指定位数的数字。
+     * 
+     * @description Math 对象常用方法
+     * 
+     * ceil(x)	    上舍入
+     * floor(x)	    下舍入
+     * round(x)	    四舍五入
+     * random()	    返回 0 ~ 1 之间的随机数
+     * pow(x,y)	    返回 x 的 y 次幂
+     * max(x,y,z,...,n)	    返回 x,y,z,...,n 中的最高值
+     * min(x,y,z,...,n)	    返回 x,y,z,...,n 中的最低值
+     */
 
     u.number = {};
     
     /**
      * @description 转换成int类型
-     * @param input
-     * @param defaultValue 转换失败时的默认值
+     * @param {String Number} input 输入的数
+     * @param {Number} defaultValue 转换失败时的默认值
      * @return {int}
      */
     u.number.parseInt = function (input, defaultValue) {
         var value = parseInt(input);
         if (isNaN(value) || Infinity == value) {
-            if (defaultValue == undefined) defaultValue = 0;
+            defaultValue = defaultValue || 0;
             return defaultValue;
         }
         return value;
@@ -340,14 +407,14 @@
 
     /**
      * @description 转换成float类型
-     * @param input
-     * @param defaultValue 转换失败时的默认值
+     * @param {String Number} input 输入的数
+     * @param {Number} defaultValue 转换失败时的默认值
      * @return {float}
      */
     u.number.parseFloat = function (input, defaultValue) {
         var value = parseFloat(input);
         if (isNaN(value) || Infinity == value) {
-            if (defaultValue == undefined) defaultValue = 0;
+            defaultValue = defaultValue || 0;
             return defaultValue;
         }
         return value;
@@ -355,8 +422,9 @@
 
     /**
      * @description 使用定点表示法来格式化一个数
-     * @param input 输入的数
+     * @param {String Number} input 输入的数
      * @param digits 小数位数，默认0
+     * @return {String}
      */
     u.number.toFixed = function (input, digits) {
         input = u.number.parseFloat(input, 0);
@@ -366,35 +434,50 @@
 
     /**
      * @description 两数相乘
+     * @param {Number String} arg1 乘数
+     * @param {Number String} arg2 乘数
+     * @return {Number} 积
      */
-    u.number.Mul = function (arg1,arg2){
-		 var m=0,s1=arg1.toString(),s2=arg2.toString();    
-		 try{m+=s1.split(".")[1].length} catch(e){}
-		 try{m+=s2.split(".")[1].length} catch(e){}    
-		 return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m)
+    u.number.mul = function (arg1, arg2){
+        var m = 0,
+            s1 = arg1.toString(),
+            s2 = arg2.toString();
+        try{ m += s1.split(".")[1].length; } catch(e){}
+        try{ m += s2.split(".")[1].length; } catch(e){}    
+        return Number(s1.replace(".","")) * Number(s2.replace(".","")) / Math.pow(10,m);
     };
 
     /**
      * @description 两数相加
+     * @param {Number String} arg1 加数
+     * @param {Number String} arg2 加数
+     * @return {Number} 和
      */
-    u.number.Add = function (arg1,arg2){
-    	var r1,r2,m;    
-    	try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}    
-    	try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}    
-    	m=Math.pow(10,Math.max(r1,r2))    
-    	return (arg1*m+arg2*m)/m    
+    u.number.add = function (arg1, arg2){
+    	var r1, r2, m;
+    	try{ r1 = arg1.toString().split(".")[1].length; } catch(e){ r1=0; }
+    	try{ r2 = arg2.toString().split(".")[1].length; } catch(e){ r2=0; }
+    	m = Math.pow(10, Math.max(r1,r2));
+    	return (arg1*m + arg2*m) / m;
     };
 
+    /**
+     * @description 获取两个数之间的随机数
+     * @param {Number} min
+     * @param {Number} max
+     * @return {Number}
+     */
     u.number.getRandom = function (min, max) {
         var random = 0;
         random = min + Math.random() * (max - min);
         return Math.round(random);
     };
     
-    /*********************************************数组***************************************************/
+    /********************************************* array 数组 ***************************************************/
     
     /**
      * @description 字符串常用方法
+     * 
      * push()	            向数组的末尾添加一个或更多元素，并返回新的长度。
      * unshift()	        向数组的开头添加一个或更多元素，并返回新的长度。
      * shift()	            删除并返回数组的第一个元素。
@@ -422,20 +505,6 @@
         { status: '3',id:'c' },
     ];
 
-    /**
-     * @description 遍历数组、对象。相比原生的 forEach() ，增加了break
-     * @param {*} source 对象或数组，（字符串也适用）
-     * @param {Function} func 执行函数，function(i, item) 或 function(key, value)
-     */
-    u.forEach = function (source, func) {
-        if (u.isEmpty(source)) return;
-        if (typeof (func) != "function") return;
-        var i = 0;
-        for (var ikey in source) {
-            var flag = func.apply(window, [(typeof (source) === "object" ? ikey : i++), source[ikey]]);
-            if (flag == false) break;
-        }
-    };
     /**
     * @description 判断两个数组是否相等
     * @param {Array} arr1 
@@ -766,7 +835,7 @@
         });
     };
 
-    /*********************************************对象***************************************************/
+    /********************************************* object 对象 ***************************************************/
     
     u.object = {};
 
@@ -810,6 +879,7 @@
         }
         return obj;
     };
+
     /**
      * @description 删除对象中的属性
      * @param obj 对象
@@ -825,6 +895,7 @@
            } catch (e) { }
        });
     };
+
     /**
      * @description 获取对象的属性值
      * @param obj 对象
@@ -928,7 +999,7 @@
         return query.length ? query.substr(0, query.length - 1) : query;
     };
 
-    /******************************************** 时间 **************************************************/
+    /******************************************** date 时间 **************************************************/
 
     /**
      * @description 时间常用方法
@@ -946,27 +1017,22 @@
     u.date.format = function (time, format){
         time = time ? new Date(time) : new Date();
         format = format || 'YYYY-MM-DD';
-        function tf(i){return (i < 10 ? '0' : '') + i};
+        function tf(i){ return (i < 10 ? '0' : '') + i; }
         return format.replace(/YYYY|MM|DD|hh|mm|ss/g, function(a){  
             switch(a){  
                 case 'YYYY':  
                     return tf(time.getFullYear());
-                    break;
+                    // break;  
                 case 'MM':  
                     return tf(time.getMonth() + 1);
-                    break;
                 case 'DD':  
                     return tf(time.getDate());
-                    break;  
                 case 'mm':  
                     return tf(time.getMinutes());
-                    break;  
                 case 'hh':  
                     return tf(time.getHours());
-                    break;  
                 case 'ss':  
                     return tf(time.getSeconds());
-                    break;  
             }  
         });
     };
@@ -1109,10 +1175,10 @@
         return str;
     };
 
-    /*********************************************浏览器/手机端***************************************************/
+    /********************************************* 浏览器/手机端 ***************************************************/
     
     u.browser = {};
-    var userAgent = navigator.userAgent; //获取浏览器的userAgent字符串 
+    var userAgent = window.navigator.userAgent; //获取浏览器的userAgent字符串 
         
     /**
      * @description 判断当前浏览类型
@@ -1132,19 +1198,19 @@
             var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
             reIE.test(userAgent);
             var fIEVersion = parseFloat(RegExp["$1"]);
-            if (fIEVersion == 7) { return "ie7"; }
-            else if (fIEVersion == 8) { return "ie8"; }
-            else if (fIEVersion == 9) { return "ie9"; }
-            else if (fIEVersion == 10) { return "ie10"; }
-            else if (fIEVersion == 11) { return "ie11"; }
-            else { return false }   // IE版本过低 
+            if (fIEVersion == 7) return "ie7"; 
+            if (fIEVersion == 8) return "ie8"; 
+            if (fIEVersion == 9) return "ie9"; 
+            if (fIEVersion == 10) return "ie10"; 
+            if (fIEVersion == 11) return "ie11"; 
+            else return false;  // IE版本过低
         }
         
-        if (u.browser.isFirefox()) { return "firefox";} 
-        if (u.browser.isOpera()) { return "opera";} 
-        if (u.browser.isSafari()) { return "safari";} 
-        if (u.browser.isChrome()) { return "chrome";} 
-        if (u.browser.isEdge()) { return "edge";} 
+        if (u.browser.isFirefox()) return "firefox";
+        if (u.browser.isOpera()) return "opera";
+        if (u.browser.isSafari()) return "safari";
+        if (u.browser.isChrome()) return "chrome";
+        if (u.browser.isEdge()) return "edge";
     };
     /**
      * @description 判断是否是IE浏览器
@@ -1187,11 +1253,8 @@
      */
     u.browser.isWechat = function () {
         var ua = userAgent.toLowerCase();
-        if (ua.match(/MicroMessenger/i) == 'micromessenger') {
-            return true;
-        } else {
-            return false;
-        }
+        if (ua.match(/MicroMessenger/i) == 'micromessenger') return true;
+        else return false;
     };
     /**
      * @description 判断是否是Android
@@ -1205,9 +1268,8 @@
     u.browser.isMobile = function () {
         if ((userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
             return true;
-        } else {
-            return false;
-        }
+        } 
+        else return false;
     };
 
     window.util = u;

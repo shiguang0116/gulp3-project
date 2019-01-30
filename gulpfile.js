@@ -35,6 +35,7 @@ var runSequence = require('run-sequence');  // 按顺序执行task
 
 // 路径
 var html_path = ['src/html/**/*.html', 'src/common/**/*.html'];
+var html_main_path = ['src/html/**/*.html'];
 var js_libs_path = 'src/libs/**/*.js';
 var js_main_path = ['src/js/**/*.js', 'src/utils/**/*.js'];
 var css_libs_path = 'src/libs/**/*.css';
@@ -54,7 +55,7 @@ function set_env(type){
 
 // html模板处理
 gulp.task('html', function() {
-    return gulp.src(html_path)
+    return gulp.src(html_main_path)
         .pipe(htmltpl({
             tag: 'template',
             paths: ['src/common'],
