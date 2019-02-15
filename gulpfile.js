@@ -37,7 +37,7 @@ var runSequence = require('run-sequence');  // 按顺序执行task
 var html_path = ['src/html/**/*.html', 'src/common/**/*.html'];
 var html_main_path = ['src/html/**/*.html'];
 var js_libs_path = 'src/libs/**/*.js';
-var js_main_path = ['src/js/**/*.js', 'src/utils/**/*.js'];
+var js_main_path = ['src/utils/**/*.js', 'src/js/**/*.js'];
 var css_libs_path = 'src/libs/**/*.css';
 var css_main_path = 'src/css/**/*.css';
 var images_path = ['src/images/**', 'favicon.ico'];
@@ -80,8 +80,8 @@ gulp.task('js_libs', function(){
 });
 gulp.task('js_main', ['uglify_check'], function(){
     return gulp.src(js_main_path)
-        .pipe(concat('main.min.js'))    // 合并文件并命名
         .pipe(babel())                  // 编译es6语法
+        .pipe(concat('main.min.js'))    // 合并文件并命名
         .pipe(gulpif(env==='build', uglify()))  // 判断是否压缩js
         .pipe(gulp.dest('dist/js'));
 });
