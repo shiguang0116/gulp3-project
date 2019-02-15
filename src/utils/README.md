@@ -1,4 +1,4 @@
-﻿> JavaScript通用工具类
+﻿JavaScript通用工具类
 
 #### 1、如何使用
 

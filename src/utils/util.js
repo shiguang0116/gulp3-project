@@ -6,9 +6,7 @@
 'use strict';
 
 (function (window) {
-    var u = {
-        equal: true
-    }; 
+    var u = {}; 
 
     /********************************************* cookie 缓存 ***************************************************/
 
@@ -59,9 +57,8 @@
      */
     function uzStorage() {
         var ls = window.localStorage;
-        if (u.browser.isAndroid()) {
-            ls = os.localStorage();
-        }
+        var isAndroid = (/android/gi).test(window.navigator.appVersion);
+        if (isAndroid) ls = os.localStorage();
         return ls;
     }
 
@@ -220,9 +217,6 @@
         }
     };
 
-    var arr1 = [2,['w','q','r'],['q'],{a:'1'}];
-    var arr3 = [2,['w','q','r'],['q'],{b:'1'}];
-
     /**
     * @description 判断两个元素是否相等
     * @param {*} source1 
@@ -232,11 +226,12 @@
     * @return {Boolean} 是否相等
     */
     u.isEqual = function (source1, source2, ignoreCase, ignoreSort) {
+        u.prop_equal = true;
         // 同为数组或同为对象
         if((u.isArray(source1) && u.isArray(source2)) || (u.isObject(source1) && u.isObject(source2))){
             if(u.isArray(source1)){
                 if(source1.length != source2.length){
-                    u.equal = false;
+                    u.prop_equal = false;
                     return false;
                 }
                 if(ignoreSort){
@@ -245,7 +240,7 @@
                 }
             }else{
                 if(u.length(source1) != u.length(source2)){
-                    u.equal = false;
+                    u.prop_equal = false;
                     return false;
                 }
             }
@@ -253,7 +248,7 @@
             u.forEach(source1, function(ikey, item){
                 return u.isEqual(item, source2[ikey], ignoreCase, ignoreSort);
             });
-            return u.equal;
+            return u.prop_equal;
         }
         // 字符串
         else{
@@ -261,11 +256,10 @@
                 source1 = String.prototype.toLowerCase.call(source1.toString());
                 source2 = String.prototype.toLowerCase.call(source2.toString());
             }
-            if(source1 != source2) u.equal = false;
-            return u.equal;
+            if(source1 != source2) u.prop_equal = false;
+            return u.prop_equal;
         }
     };
-    console.log(u.isEqual(arr1,arr3));
     
     /******************************************** string 字符串 ***************************************************/
     
@@ -302,21 +296,6 @@
      */
     u.trimAll = function (str) {
         return str.replace(/\s*/g, '');
-    };
-
-    /**
-    * @description 判断两个字符串是否相等
-    * @param {string} str1 
-    * @param {string} str2 
-    * @param {Boolean} ignoreCase 是否忽略掉大小写，不传则为false
-    */
-    u.string.equal = function (str1, str2, ignoreCase) {
-        if (u.isEmpty(str1) && u.isEmpty(str2)) return true;
-        if (ignoreCase) {
-            str1 = String.prototype.toLowerCase.call(str1);
-            str2 = String.prototype.toLowerCase.call(str2);
-        }
-        return str1 == str2;
     };
 
     /**
@@ -432,6 +411,7 @@
      * floor(x)	    下舍入
      * round(x)	    四舍五入
      * random()	    返回 0 ~ 1 之间的随机数
+     * abs(x)       返回数的绝对值
      * pow(x,y)	    返回 x 的 y 次幂
      * max(x,y,z,...,n)	    返回 x,y,z,...,n 中的最高值
      * min(x,y,z,...,n)	    返回 x,y,z,...,n 中的最低值
@@ -525,7 +505,7 @@
     /********************************************* array 数组 ***************************************************/
     
     /**
-     * @description 字符串常用方法
+     * @description array 常用方法
      * 
      * push()	            向数组的末尾添加一个或更多元素，并返回新的长度。
      * unshift()	        向数组的开头添加一个或更多元素，并返回新的长度。
@@ -541,32 +521,29 @@
     
     u.array = {};
 
-    var arr2 = [
-        { status: '1',id:'a' },
-        { status: '1',id:'a' },
-        { status: '1',id:'b' },
-        { status: '2',id:'b' },
-        { status: '3',id:'c' },
-    ];
-
     /**
-     * @description 检索数组
-     * @param {Array} source [''] [{}]
-     * @param {*} searchElement '' 或 [''] 或 {id:'a'}
-     * @return {Number} 索引或-1
+     * @description 检索数组（子元素为数组、对象、字符串等）
+     * @param {Array} source [''] [[]] [{}]
+     * @param {String Array Object} searchElement
+     * @return {Number} 索引 或 -1
      */
     u.array.indexOf = function(source, searchElement){
         var index = -1;
         // 子元素为对象
         if(u.isObject(searchElement)){
             u.forEach(source, function(i, item){
-                var searchValueString = '';
-                var itemValueString = '';
+                var isHas = true;
                 u.forEach(searchElement, function(searchKey, searchValue){
-                    searchValueString += searchValue;
-                    itemValueString += item[searchKey];
+                    if(item[searchKey]){
+                        if(!u.isEqual(item[searchKey], searchValue)){
+                            isHas = false;
+                            return false;
+                        }
+                    }else{
+                        isHas = false;
+                    }
                 });
-                if(itemValueString == searchValueString){
+                if(isHas){
                     index = i;
                     return false;
                 }
@@ -576,10 +553,10 @@
         // 子元素为数组
         if(u.isArray(searchElement)){
             u.forEach(source, function(i, item){
-                // if(item == searchElement){
-                //     index = i;
-                //     return false;
-                // }
+                if(u.isEqual(item, searchElement)){
+                    index = i;
+                    return false;
+                }
             });
             return index;
         }
@@ -588,21 +565,56 @@
             return source.indexOf(searchElement);
         }
     };
-    // console.log(u.array.indexOf(arr1, ['w','q','r']));
 
     /**
-     * @description 数组去重（字符串或对象）
-     * @param {Array} array [''] [{}]
-     * @param {String Array} keys '' ['']
+     * @description 向数组的末尾添加一个或多个元素，并返回新的长度
+     * @param {Array} target 目标数组
+     * @param {Array} array 要添加的数组
+     * @return {Number} 新数组的长度
+     */
+    u.array.push = function (target, array) {
+        if (u.isEmpty(array)) return;
+        if (!u.isArray(array)) array = [array];
+        return Array.prototype.push.apply(target, array);
+    };
+
+    /**
+     * @description 对数组排序
+     * @param {Array} array 源数组
+     * @param {String} sort 排序字段
+     * @param {String} order 排序方式，asc升序，desc降序，默认为升序
+     * @return {Array} 排序后的新数组
+     */
+    u.array.sort = function (array, sort, order) {
+        if (u.isEmpty(array)) return [];
+        var ret = array.concat([]);
+        order = order || "asc";
+        ret.sort(function (a, b) {
+            var aVal = a[sort];
+            var bVal = b[sort];
+            if (aVal > bVal) return order == "asc" ? 1 : -1;
+            else if (aVal < bVal) return order == "asc" ? -1 : 1;
+            return 0;
+        });
+        return ret;
+    };
+
+    /**
+     * @description 数组去重（子元素为数组、对象、字符串等）
+     * @param {Array} array [''] [[]] [{}]
+     * @param {String Array} keys
      * @return {Array} 新数组 
      */
     u.array.unique = function(array, keys){
         var ret = []; 
         u.forEach(array, function(i, item){
-            if(keys){ //根据属性去重
+            if(keys){ //根据属性去重，去掉排在末位的对象
                 if (!u.isArray(keys)) keys = [keys];
-                var searchProperties = u.object.selectProperties(item, keys);
-                if(u.array.indexOf(ret, searchProperties) == -1) ret.push(item);
+                var searchObj = {};
+                u.forEach(keys, function (i, selectKey) {
+                    searchObj[selectKey] = item[selectKey];
+                });
+                if(u.array.indexOf(ret, searchObj) == -1) ret.push(item);
             }
             else{
                 if(u.array.indexOf(ret, item) == -1) ret.push(item);
@@ -610,7 +622,6 @@
         });
         return ret;
     };
-    // console.log(u.array.unique(arr1))
 
     /**
      * @description 筛选出符合条件的数组，生成新的数组
@@ -642,7 +653,7 @@
     };
 
     /**
-     * @description 选择数组中的一个（多个）属性
+     * @description 选择数组中的对象的一个（多个）属性
      * @param {Array} source 源数组 [{}]
      * @param {String Array} keys 属性（集合）
      * @return {Array} 新数组 [''] [{}]
@@ -671,131 +682,52 @@
      * @description 合并两个数组，生成新的数组
      * @param {Array} source 原数组
      * @param {Array} array 待合并的数组
-     * @param {Array} keys 数组元素主键，如允许重复可不设置此参数
+     * @param {String Array} keys 数组元素主键，如允许重复可不设置此参数
      * @return {Object} 
      */
     u.array.concat = function (source, array, keys) {
         if (u.isEmpty(source)) return array;
         if (u.isEmpty(array)) return source;
-        if (!u.isArray(keys)) keys = [keys];
-
+        
         var ret = [];
-        if (keys && keys.length) {
-            ret = source.concat([]);
-            u.forEach(array, function (i, item) {
-                var searchObj = {};
-                u.forEach(keys, function (j, key) {
-                    searchObj[key] = item[key];
-                });
-
-                //检查目标数组中是否存在该元素
-                var obj = u.getByObject(source, searchObj);
-                // u.object.selectProperties
-                if (!obj) {
-                    ret.push(item);
-                }
-            });
-        }
-        else {
-            ret = source.concat(array);
-        }
+        ret = source.concat(array);
+        ret = u.array.unique(ret, keys);
         return ret;
     };
 
     /**
      * @description 对数组中的元素进行分组
-     * @param array 数组对象
-     * @param fields 分组的依据字段
+     * @param {Array} array 数组
+     * @param {Array} fields 分组的依据字段
      * @return {Array} 分组后的新数组
      */
     u.array.group = function (array, fields) {
-        var self = this;
-        if (!array && !fields) return null;
+        if (u.isEmpty(array) || u.isEmpty(fields)) return null;
 
-        var result = [];
-        self.forEach(array, function (i, item) {
+        var ret = [];
+        u.forEach(array, function (i, item) {
+            if(!u.isArray(fields)) fields = [fields];
+
             var itemGroup = {};
-            var obj = {};
-            fields.forEach(function (field, k) {
-                obj[field] = item[field];
+            u.forEach(fields, function (i, field) {
+                itemGroup[field] = item[field];
             });
-            itemGroup = self.getByObject(result, obj);
-            if (!itemGroup) {
-                itemGroup = obj;
-                itemGroup.group = [];
-                result.push(itemGroup);
-            }
-            itemGroup.group.push(item);
-        });
-        return result;
-    };
-
-    /**
-     * @description 对数组排序
-     * @param sort 排序字段
-     * @param order 排序方式，asc升序，desc降序，默认为升序
-     * @return {Array} 排序后的新数组
-     */
-    u.array.sort = function (array, sort, order) {
-        if (u.array.isEmpty(array)) return [];
-        var result = array.concat([]);
-        order = order || "asc";
-        result.sort(function (a, b) {
-            var aVal = a[sort];
-            var bVal = b[sort];
-            if (aVal > bVal) return order == "asc" ? 1 : -1;
-            else if (aVal < bVal) return order == "asc" ? -1 : 1;
-            return 0;
-        });
-        return result;
-    };
-
-    /**
-     * 清空数组中的元素
-     * @param array 待清空的数组
-     */
-    u.array.clear = function (array) {
-        if (u.array.isEmpty(array)) return;
-
-        array.splice(0, array.length);
-    };
-
-    /**
-     * 方法可向数组的末尾添加一个或多个元素，并返回新的长度
-     * @targetArray 目标数组
-     * @array 要添加的数组
-     */
-    u.array.push = function (target, source) {
-        if (!target || !source) return;
-        if (!u.array.isArray(source)) source = [source];
-        return Array.prototype.push.apply(target, source);
-    };
-
-    /**
-     * 删除数组中的元素，并添加新的元素
-     * @param array 原数组
-     * @param item 待删除的对象
-     * @param newItem 添加的新对象
-     * @return 原数组
-     */
-    u.array.splice = function (array, item, newItem) {
-        var index = -1;
-        if (!u.array.isEmpty(array)) {
-            index = array.indexOf(item);
+            var index = u.array.indexOf(ret, itemGroup);
             if (index == -1) {
-                if (newItem != undefined) array.push(newItem);
+                itemGroup.group = [];
+                itemGroup.group.push(item);
+                ret.push(itemGroup);
             }
-            else {
-                if (newItem == undefined) array.splice(index, 1);
-                else array.splice(index, 1, newItem);
+            else{
+                ret[index].group.push(item);
             }
-        }
-        return index;
+        });
+        return ret;
     };
 
     /**
-     * @description 删除数组中不合法的值（undefined,null,空字符串）
-     *
+     * @description 删除数组中不合法的值（undefined, null, '')
+     * @param {Array} array 源数组
      */
     u.array.removeInvalidItems = function (array) {
         var i = array.length;
@@ -808,84 +740,124 @@
     };
 
     /**
-     * 创建内置key
-     * @param {*} array
-     * @param {*} keyField
+     * @description 清空数组中的元素
+     * @param {Array} array 源数组
      */
-    u.array.createInnerKey = function (array, keyField) {
-        if (u.array.isEmpty(array)) return;
-        keyField || (keyField = '__id');
-        u.forEach(array, function (i, item) {
-            item[keyField] = u.uuid();
-        });
+    u.array.clear = function (array) {
+        if (u.isEmpty(array)) return;
+
+        array.splice(0, array.length);
     };
 
     /********************************************* object 对象 ***************************************************/
-    
-    u.object = {};
-
-    var obj = {
-        id: 'a',
-        status: '1',
-        con: 'qwer',
-    };
 
     /**
-     * @description 选择数组中的一个（多个）属性
-     * @param {Object} source 源数组 [{}]
-     * @param {String Array} keys 属性（集合）
-     * @return {Object} 新对象 
+     * @description object 常用方法
+     * 
      */
-    u.object.selectProperties = function (source, keys) {
-        if (u.isEmpty(source) || u.isEmpty(keys)) return {};
 
-        var ret = {};
-        if (u.isArray(keys)) {
-            u.forEach(keys, function (i, selectKey) {
-                ret[selectKey] = source[selectKey];
-            });
+    u.object = {};
+
+    /**
+     * @description 获取对象的属性集合
+     * @param {Object} obj 源对象
+     * @return {Array} 属性数组 
+     */
+    u.object.keys = function (obj) {
+        if (u.isEmpty(obj)) return [];
+        
+        var ret = [];
+        try{ 
+            ret = Object.keys(obj);
         }
-        else {
-            ret[keys] = source[keys];
+        catch(e){
+            for(var key in obj){
+                ret.push(key);
+            }
         }
         return ret;
     };
 
-    // 从对象中过滤出需要的字段
-    u.object.getNeedData = function (needObj, obj){
-        for(var key in needObj){
-            obj[key] ? needObj[key] = obj[key] : '';
+    /**
+     * @description 获取对象属性的值 的集合
+     * @param {Object} obj 源对象
+     * @return {Array} 属性的值的数组 
+     */
+    u.object.values = function (obj) {
+        if (u.isEmpty(obj)) return [];
+
+        var ret = [];
+        try{ 
+            ret = Object.values(obj);
         }
+        catch(e){
+            for(var key in obj){
+                ret.push(obj[key]);
+            }
+        }
+        return ret;
     };
 
-    u.object.clear = function (obj){
-        for (var key in obj) {
-            obj[key] = '';
+    /**
+     * @description 合并对象
+     * @param {Object} obj1 目标对象
+     * @param {Object} obj2 obj2 中的属性会覆盖掉 obj1
+     */
+    u.object.assign = function (obj1, obj2) {
+        if (u.isEmpty(obj1) && u.isEmpty(obj2)) return {};
+
+        try{ 
+            Object.assign(obj1, obj2);
         }
-        return obj;
+        catch(e){
+            for(var key in obj2){
+                obj1[key] = obj2[key];
+            }
+        }
+        return obj1;
+    };
+
+    /**
+     * @description 选择对象中的一个（多个）属性
+     * @param {Object} obj 源对象
+     * @param {String Array} keys 属性数组
+     * @return {Object} 新对象 
+     */
+    u.object.selectProperties = function (obj, keys) {
+        if (u.isEmpty(obj) || u.isEmpty(keys)) return {};
+
+        var ret = {};
+        if (!u.isArray(keys)) keys = [keys];
+        u.forEach(keys, function (i, key) {
+            ret[key] = obj[key];
+        });
+        return ret;
     };
 
     /**
      * @description 删除对象中的属性
-     * @param obj 对象
-     * @param propertyNames 属性数组
-     * @return obj 对象
+     * @param {Object} obj 对象
+     * @param {String Array} keys 属性数组
+     * @return {Object} 新对象 
      */
-    u.object.deleteProperties = function (obj, propertyNames) {
-       if (!obj) return;
-       if (!u.array.isArray(propertyNames)) propertyNames = [propertyNames];
-       u.forEach(propertyNames, function (i, property) {
-           try {
-               delete obj[property];
-           } catch (e) { }
-       });
+    u.object.deleteProperties = function (obj, keys) {
+        if (u.isEmpty(obj) || u.isEmpty(keys)) return obj;
+
+        var ret = {};
+        if (!u.isArray(keys)) keys = [keys];
+        u.forEach(obj, function (key, value) {
+            if(keys.indexOf(key) == -1){
+                ret[key] = value;
+            }
+        });
+        return ret;
     };
 
     /**
      * @description 获取对象的属性值
-     * @param obj 对象
-     * @param propertyName 属性名
-     * @param ignoreCase 忽略属性名大小写
+     * @param {Object} obj 对象
+     * @param {String} propertyName 属性名 'data.child.name'
+     * @param {Boolean} ignoreCase 忽略属性名大小写，默认false
      */
     u.object.getPropertyValue = function (obj, propertyName, ignoreCase) {
         var propertyValue = null;
@@ -895,67 +867,26 @@
         var pointIndex = propertyName.indexOf('.');
         var isMultiPart = pointIndex > -1;
         if (isMultiPart) {
-            obj = obj[u.string.subString(propertyName, 0, pointIndex)];
-            return u.object.getPropertyValue(obj, u.string.subString(propertyName, pointIndex + 1), ignoreCase);
+            obj = obj[propertyName.substring(0, pointIndex)];
+            return u.object.getPropertyValue(obj, propertyName.substring(pointIndex + 1), ignoreCase);
         }
-
-        u.forEach(obj, function (key, value) {
-            if (u.string.equal(key, propertyName, ignoreCase)) {
-                propertyValue = value;
-                return false;
-            }
-        });
+        else {
+            u.forEach(obj, function (key, value) {
+                if (u.isEqual(key, propertyName, ignoreCase)) {
+                    propertyValue = value;
+                    return false;
+                }
+            });
+        }
         return propertyValue;
     };
-    
-    //查找数组中符合条件的对象
-    u.getByObject = function (array, paramObject) {
-        if (array == undefined || array == null) { return };
-        var equalFlag = false;
 
-        for (var i = 0; i < array.length; i++) {
-            equalFlag = true;
-            var item = array[i];
-            for (var property in paramObject) {
-                if (u.object.getPropertyValue(item, property, true) != paramObject[property]) {
-                    equalFlag = false;
-                    break;
-                }
-            }
-
-            if (equalFlag) {
-                return array[i];
-            }
-        }
-        return undefined;
-    };
-
-    //查找数组中符合条件的对象的索引
-    u.getIndexByObject = function (array, paramObject) {
-        if (array == undefined || array == null) { return };
-        var equalFlag = false;
-        var index = -1;
-
-        for (var i = 0; i < array.length; i++) {
-            equalFlag = true;
-            var item = array[i];
-            for (var property in paramObject) {
-                if (item[property] != paramObject[property]) {
-                    equalFlag = false;
-                    break;
-                }
-            }
-
-            if (equalFlag) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    };
-
-    //序列化对象
-    u.serialize = function (paramObj) {
+    /**
+     * @description 序列化对象
+     * @param {Object} paramObj 源对象
+     * @return {String}
+     */
+    u.object.serialize = function (paramObj) {
         var self = this;
         var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
         for (name in paramObj) {
@@ -966,7 +897,7 @@
                     fullSubName = name + '[' + i + ']';
                     innerObj = {};
                     innerObj[fullSubName] = subValue;
-                    query += self.serialize(innerObj) + '&';
+                    query += u.object.serialize(innerObj) + '&';
                 }
             }
             else if (value instanceof Object) {
@@ -975,7 +906,7 @@
                     fullSubName = name + '[' + subName + ']';
                     innerObj = {};
                     innerObj[fullSubName] = subValue;
-                    query += self.serialize(innerObj) + '&';
+                    query += u.object.serialize(innerObj) + '&';
                 }
             }
             else if (value !== undefined && value !== null)
@@ -984,18 +915,43 @@
         return query.length ? query.substr(0, query.length - 1) : query;
     };
 
+    /**
+     * @description 清空对象
+     * @param {Object} obj 源对象
+     * @param {Array} keys 属性数组，不传则清空全部属性
+     * @return {Object} 清空后的对象
+     */
+    u.object.clear = function (obj, keys){
+        if (u.isEmpty(obj)) return {};
+
+        if(keys){
+            if(!u.isArray(keys)) keys = [keys];
+            u.forEach(keys, function(i, key){
+                obj[key] = '';
+            });
+        }
+        else{
+            for (var key in obj) {
+                obj[key] = '';
+            }
+        }
+        return obj;
+    };
+
     /******************************************** date 时间 **************************************************/
 
     /**
-     * @description 时间常用方法
+     * @description date 常用方法
+     * 
      * Date.setMonth(month,day) 
+     * Date.parse(dateString) 返回该字符串所表示的日期与 1970 年 1 月 1 日午夜之间相差的毫秒数
      */
 
     u.date = {};
 
     /**
      * @description 获取需要的时间格式
-     * @param {String Date} time 时间
+     * @param {Date} time 时间
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
@@ -1007,7 +963,6 @@
             switch(a){  
                 case 'YYYY':  
                     return tf(time.getFullYear());
-                    // break;  
                 case 'MM':  
                     return tf(time.getMonth() + 1);
                 case 'DD':  
@@ -1023,25 +978,29 @@
     };
 
     /**
-     * @description 前后几月的日期
+     * @description 获取前后几月的日期
      * @param {Number} MM 前后几月（正数代表后几个月，负数代表前几个月），默认上个月（-1）
-     * @param {String Date} time 时间
+     * @param {Date} time 时间
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
     u.date.otherMonth = function (MM, time, format){
-        MM = !isNaN(MM) ? MM : -1;
+        MM = !isNaN(parseInt(MM)) ? parseInt(MM) : -1;
         time = time ? new Date(time) : new Date();
         format = format || 'YYYY-MM-DD';
         
-        var DD = format.indexOf('DD') > -1 ? time.getDate() : '1' ;
-        time.setMonth(time.getMonth()+MM, DD);
+        var oldDate = time.getDate();
+        time.setMonth(time.getMonth() + MM);
+        var newDate = time.getDate();
+        if (newDate < oldDate) {
+            time.setMonth(time.getMonth(), 0);
+        }
         return u.date.format(time, format);
     };
 
     /**
-     * @description 当月的第一天
-     * @param {String Date} time 时间
+     * @description 当前月的第一天
+     * @param {Date} time 时间
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
@@ -1054,8 +1013,8 @@
     };
 
     /**
-     * @description 当月的最后一天
-     * @param {String Date} time 时间
+     * @description 当前月的最后一天
+     * @param {Date} time 时间
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
@@ -1068,36 +1027,50 @@
     };
 
     /**
-     * @description 前后几周的日期
+     * @description 当前周的第一天（默认星期一）
      * @param {Number} WW 前后几周（正数代表后几周，负数代表前几周），默认本周（0）
-     * @param {String Date} time 时间
+     * @param {Date} time 时间
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
-     * @return {Array} ['当前周的第一天（星期一）', '当前周的最后一天（星期日）']
+     * @return {String} 
      */
-    u.date.otherWeek = function (WW, time, format){
-        WW = !isNaN(WW) ? WW : -1;
+    u.date.startOfWeek = function (WW, time, format){
+        WW = !isNaN(parseInt(WW)) ? parseInt(WW) : 0;
         time = time ? new Date(time) : new Date();
         format = format || 'YYYY-MM-DD';
 
-        var ret = [];
         var curWW = time.getDay();
         curWW = curWW == 0 ? 7 : curWW;
-        var startTimestamp = time.getTime() + 3600 * 1000 * 24 * (7*WW - (curWW-1));
-        var endTimestamp = startTimestamp + 3600 * 1000 * 24 * 6;
-        ret.push(u.date.format(startTimestamp, format));
-        ret.push(u.date.format(endTimestamp, format));
-        return ret;
+        var timestamp = time.getTime() + 3600 * 1000 * 24 * (7*WW - (curWW-1));
+        return u.date.format(timestamp, format);
+    };
+
+    /**
+     * @description 当前周的最后一天（默认星期日）
+     * @param {Number} WW 前后几周（正数代表后几周，负数代表前几周），默认本周（0）
+     * @param {Date} time 时间
+     * @param {String} format 时间格式，默认'YYYY-MM-DD'
+     * @return {String} 
+     */
+    u.date.endOfWeek = function (WW, time, format){
+        WW = !isNaN(parseInt(WW)) ? parseInt(WW) : 0;
+        time = time ? new Date(time) : new Date();
+        format = format || 'YYYY-MM-DD';
+
+        var curWW = time.getDay();
+        curWW = curWW == 0 ? 7 : curWW;
+        var timestamp = time.getTime() + 3600 * 1000 * 24 * (7*WW - (curWW-1) + 6);
+        return u.date.format(timestamp, format);
     };
     
     /**
      * @description 前后几天的日期
      * @param {Number} DD 前后几天（正数代表后几天，负数代表前几天），默认过去一周的日期（-6）
-     * @param {String Date} time 时间
+     * @param {Date} time 时间
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
     u.date.otherDay = function (DD, time, format){
-        DD = !isNaN(DD) ? DD : -6;
+        DD = !isNaN(parseInt(DD)) ? parseInt(DD) : -6;
         time = time ? new Date(time) : new Date();
         format = format || 'YYYY-MM-DD';
 
@@ -1106,38 +1079,62 @@
     };
 
     /**
-     * @description 查询两个日期之间的所有月份
-     * @param {String} start 'YYYY-MM'
-     * @param {String} end 'YYYY-MM'
+     * @description 两个时间之间相差多少天
+     * @param {Date} date1
+     * @param {Date} date2
+     * @return {Number}
+     */
+    u.date.howManyDays = function (date1, date2) {
+        var ret = '';
+        var timestamp1 = Date.parse(date1);
+        var timestamp2 = Date.parse(date2);
+        var dateSpan = Math.abs(timestamp2 - timestamp1);
+        ret = Math.floor(dateSpan / (24 * 3600 * 1000));
+        return ret;
+    };
+
+    /**
+     * @description 两个时间之间相差多少月
+     * @param {Date} date1
+     * @param {Date} date2
+     * @return {Number}
+     */
+    u.date.howManyMonths = function (date1, date2) {
+        var ret = '', months1, months2;
+        date1 = new Date(date1);
+        date2 = new Date(date2);
+        months1 = date1.getFullYear() * 12 + date1.getMonth() + 1;
+        months2 = date2.getFullYear() * 12 + date2.getMonth() + 1;
+        ret = Math.abs(months1 - months2);
+        return ret;   
+    };
+
+    /**
+     * @description 查询两个日期之间的所有日期
+     * @param {Date} date1
+     * @param {Date} date2
      * @return {Array}
      */
-    u.date.getMonthBetween = function(start, end) {
-        var result = [];
-        var starts = start.split('-');
-        var ends = end.split('-');
-        var staYear = parseInt(starts[0]);
-        var staMon = parseInt(starts[1]);
-        var endYear = parseInt(ends[0]);
-        var endMon = parseInt(ends[1]);
-        while (staYear <= endYear) {
-            if (staYear === endYear) {
-                while (staMon <= endMon) {
-                    staMon = staMon > 9 ? staMon : '0'+staMon;
-                    result.push(staYear + '-' + staMon);
-                    staMon++;
-                }
-                staYear++;
-            } else {
-                if (staMon > 12) {
-                    staMon = 1;
-                    staYear++;
-                }
-                staMon = staMon > 9 ? staMon : '0'+staMon;
-                result.push(staYear + '-' + staMon);
-                staMon++;
+    u.date.getDatesBetween = function(date1, date2, format) {
+        format = format || 'YYYY-MM-DD';
+
+        var ret = [], start, len;
+        start = Date.parse(date1) < Date.parse(date2) ? date1 : date2;
+        // 所有天
+        if(format.indexOf('DD') > -1){
+            len = u.date.howManyDays(date1, date2);
+            for(var i=0; i<=len; i++){
+                ret.push(u.date.otherDay(i, start, format));
             }
         }
-        return result;
+        // 所有月
+        else{
+            len = u.date.howManyMonths(date1, date2);
+            for(var i=0; i<=len; i++){
+                ret.push(u.date.otherMonth(i, start, format));
+            }
+        }
+        return ret;
     };
 
     /******************************************** base64 **************************************************/
@@ -1163,6 +1160,7 @@
     /********************************************* 浏览器/手机端 ***************************************************/
     
     u.browser = {};
+
     var userAgent = window.navigator.userAgent; //获取浏览器的userAgent字符串 
         
     /**
