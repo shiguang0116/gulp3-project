@@ -21,7 +21,7 @@
     u.cookie.set = function (name, value, expiredays) {
         expiredays = expiredays || 7;
         var exdate = new Date();
-        exdate.setTime(exdate.getTime() + expiredays * 24 * 60 * 60 * 1000);
+        exdate.setDate(exdate.getDate() + expiredays);
         document.cookie = name + "=" + escape(value) + ";expires=" + exdate.toGMTString();
     };
 
@@ -943,15 +943,30 @@
     /**
      * @description date 常用方法
      * 
-     * Date.setMonth(month,day) 
-     * Date.parse(dateString) 返回该字符串所表示的日期与 1970 年 1 月 1 日午夜之间相差的毫秒数
+     * new Date(time)   ios下，time如果是时间字符串的话，只支持以 '/' 连接的时间格式，如 '2019/02/19'
+     * 
+     * getFullYear()	返回年份
+     * getMonth()	    返回月份 (0 ~ 11)
+     * getDate()        返回一个月中的某一天 (1 ~ 31)
+     * getDay()	        返回一周中的某一天 (0 ~ 6)
+     * getHours()	    返回小时 (0 ~ 23)
+     * getMinutes()	    返回分钟 (0 ~ 59)
+     * getSeconds()	    返回秒数 (0 ~ 59)
+     * getTime()	    返回 1970 年 1 月 1 日至今的毫秒数
+     * 
+     * setFullYear()	    设置年份（四位数字）
+     * setMonth(month, day) 设置月份 (0 ~ 11)。day 为 0 时，Date 对象为上个月的最后一天
+     * setDate()	        设置月的某一天 (1 ~ 31)
+     * setTime()            以毫秒设置 Date 对象
+     * 
+     * Date.parse(dateString)   返回该字符串所表示的日期与 1970 年 1 月 1 日午夜之间相差的毫秒数
      */
 
     u.date = {};
 
     /**
      * @description 获取需要的时间格式
-     * @param {Date} time 时间
+     * @param {Date} time 时间、时间字符串、时间戳
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
@@ -980,7 +995,7 @@
     /**
      * @description 获取前后几月的日期
      * @param {Number} MM 前后几月（正数代表后几个月，负数代表前几个月），默认上个月（-1）
-     * @param {Date} time 时间
+     * @param {Date} time 时间、时间字符串、时间戳
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
@@ -989,47 +1004,51 @@
         time = time ? new Date(time) : new Date();
         format = format || 'YYYY-MM-DD';
         
-        var oldDate = time.getDate();
+        var oldTime = time.getDate();
         time.setMonth(time.getMonth() + MM);
-        var newDate = time.getDate();
-        if (newDate < oldDate) {
+        var newTime = time.getDate();
+        if (newTime < oldTime) {
             time.setMonth(time.getMonth(), 0);
         }
         return u.date.format(time, format);
     };
 
     /**
-     * @description 当前月的第一天
-     * @param {Date} time 时间
+     * @description 某一月的第一天
+     * @param {Number} MM 前后几月（正数代表后几个月，负数代表前几个月），默认本月（0）
+     * @param {Date} time 时间、时间字符串、时间戳
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
-    u.date.startOfMonth = function (time, format){
+    u.date.startOfMonth = function (MM, time, format){
+        MM = !isNaN(parseInt(MM)) ? parseInt(MM) : 0;
         time = time ? new Date(time) : new Date();
         format = format || 'YYYY-MM-DD';
 
-        time.setMonth(time.getMonth(), 1);
+        time.setMonth(time.getMonth()+MM, 1);
         return u.date.format(time, format);
     };
 
     /**
-     * @description 当前月的最后一天
-     * @param {Date} time 时间
+     * @description 某一月的最后一天
+     * @param {Number} MM 前后几月（正数代表后几个月，负数代表前几个月），默认本月（0）
+     * @param {Date} time 时间、时间字符串、时间戳
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
-    u.date.endOfMonth = function (time, format){
+    u.date.endOfMonth = function (MM, time, format){
+        MM = !isNaN(parseInt(MM)) ? parseInt(MM) : 0;
         time = time ? new Date(time) : new Date();
         format = format || 'YYYY-MM-DD';
 
-        time.setMonth(time.getMonth()+1, 0);
+        time.setMonth(time.getMonth()+MM+1, 0);
         return u.date.format(time, format);
     };
 
     /**
-     * @description 当前周的第一天（默认星期一）
+     * @description 某一周的第一天（默认星期一）
      * @param {Number} WW 前后几周（正数代表后几周，负数代表前几周），默认本周（0）
-     * @param {Date} time 时间
+     * @param {Date} time 时间、时间字符串、时间戳
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 
      */
@@ -1040,14 +1059,14 @@
 
         var curWW = time.getDay();
         curWW = curWW == 0 ? 7 : curWW;
-        var timestamp = time.getTime() + 3600 * 1000 * 24 * (7*WW - (curWW-1));
-        return u.date.format(timestamp, format);
+        time.setDate(time.getDate() + 7*WW - (curWW-1));
+        return u.date.format(time, format);
     };
 
     /**
-     * @description 当前周的最后一天（默认星期日）
+     * @description 某一周的最后一天（默认星期日）
      * @param {Number} WW 前后几周（正数代表后几周，负数代表前几周），默认本周（0）
-     * @param {Date} time 时间
+     * @param {Date} time 时间、时间字符串、时间戳
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 
      */
@@ -1058,24 +1077,24 @@
 
         var curWW = time.getDay();
         curWW = curWW == 0 ? 7 : curWW;
-        var timestamp = time.getTime() + 3600 * 1000 * 24 * (7*WW - (curWW-1) + 6);
-        return u.date.format(timestamp, format);
+        time.setDate(time.getDate() + 7*WW - (curWW-1) + 6);
+        return u.date.format(time, format);
     };
     
     /**
      * @description 前后几天的日期
      * @param {Number} DD 前后几天（正数代表后几天，负数代表前几天），默认过去一周的日期（-6）
-     * @param {Date} time 时间
+     * @param {Date} time 时间、时间字符串、时间戳
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
-    u.date.otherDay = function (DD, time, format){
+    u.date.otherDate = function (DD, time, format){
         DD = !isNaN(parseInt(DD)) ? parseInt(DD) : -6;
         time = time ? new Date(time) : new Date();
         format = format || 'YYYY-MM-DD';
 
-        var timestamp = time.getTime() + 3600 * 1000 * 24 * DD;
-        return u.date.format(timestamp, format);
+        time.setDate(time.getDate() + DD);
+        return u.date.format(time, format);
     };
 
     /**
@@ -1124,7 +1143,7 @@
         if(format.indexOf('DD') > -1){
             len = u.date.howManyDays(date1, date2);
             for(var i=0; i<=len; i++){
-                ret.push(u.date.otherDay(i, start, format));
+                ret.push(u.date.otherDate(i, start, format));
             }
         }
         // 所有月
@@ -1240,19 +1259,40 @@
         else return false;
     };
     /**
-     * @description 判断是否是Android
+     * @description 判断是否是 android
      */
     u.browser.isAndroid = function(){
         return (/android/gi).test(navigator.appVersion);
     };
     /**
+     * @description 判断是否是 ios
+     */
+    u.browser.isIOS = function() {
+        if (userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)) return true;
+        else return false;
+    };
+    /**
      * @description 判断是否是移动端
      */
     u.browser.isMobile = function () {
-        if ((userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+        if (userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
             return true;
         } 
         else return false;
+    };
+    /**
+     * @description 根据手机设备调取相机
+     * <input type="file" capture="camera" accept="image/*" multiple="multiple">
+     * Android：加上 capture 属性，可以同时调用相册和相机，否则只能调用相册；
+     * IOS：    加上 capture 属性，只能调相机，反之可以同时调用相册和相机。二者在 capture="camera" 上是相反的
+     */
+    u.browser.callCamera = function() {
+        if (u.browser.isIOS()) {
+            var file = window.document.querySelectorAll('input[capture=camera]');
+            for (var i = 0; i < file.length; i++) {
+                file[i].removeAttribute("capture");
+            }
+        }
     };
 
     window.util = u;
