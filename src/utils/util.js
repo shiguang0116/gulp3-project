@@ -580,18 +580,18 @@
 
     /**
      * @description 对数组排序
-     * @param {Array} array 源数组
-     * @param {String} sort 排序字段
+     * @param {Array} array 源数组 [{}]
+     * @param {String} sortKey 排序字段
      * @param {String} order 排序方式，asc升序，desc降序，默认为升序
      * @return {Array} 排序后的新数组
      */
-    u.array.sort = function (array, sort, order) {
+    u.array.sort = function (array, sortKey, order) {
         if (u.isEmpty(array)) return [];
         var ret = array.concat([]);
         order = order || "asc";
         ret.sort(function (a, b) {
-            var aVal = a[sort];
-            var bVal = b[sort];
+            var aVal = a[sortKey];
+            var bVal = b[sortKey];
             if (aVal > bVal) return order == "asc" ? 1 : -1;
             else if (aVal < bVal) return order == "asc" ? -1 : 1;
             return 0;
@@ -602,7 +602,7 @@
     /**
      * @description 数组去重（子元素为数组、对象、字符串等）
      * @param {Array} array [''] [[]] [{}]
-     * @param {String Array} keys
+     * @param {String Array} keys 根据属性去重
      * @return {Array} 新数组 
      */
     u.array.unique = function(array, keys){
@@ -1004,10 +1004,10 @@
         time = time ? new Date(time) : new Date();
         format = format || 'YYYY-MM-DD';
         
-        var oldTime = time.getDate();
+        var oldDate = time.getDate();
         time.setMonth(time.getMonth() + MM);
-        var newTime = time.getDate();
-        if (newTime < oldTime) {
+        var newDate = time.getDate();
+        if (newDate < oldDate) {
             time.setMonth(time.getMonth(), 0);
         }
         return u.date.format(time, format);
@@ -1293,6 +1293,58 @@
                 file[i].removeAttribute("capture");
             }
         }
+    };
+
+    /********************************************* validate 验证 ***************************************************/
+
+    u.validate = {};
+
+    /**
+     * @description 验证是否必填
+     * @param {String} input
+     */
+    u.validate.required = function (input) {
+        return u.isEmpty(input);
+    };
+    // 验证手机号码
+    u.validate.mobile = function (input) {
+        return /^1[34578][0-9]{9}$/.test(input);
+    };
+    // 验证座机号码
+    u.validate.telephone = function (input) {
+        return /^((0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/.test(input);
+    };
+    // 验证邮箱号码
+    u.validate.email = function (input) {
+        return /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/.test(input);
+    };
+    // 验证身份证号码
+    u.validate.IDcard = function (input) {
+        return /^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/.test(input);
+    };
+    // 验证 url
+    u.validate.url = function (input) {
+        return /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/.test(input);
+    };
+    // 验证整数
+    u.validate.integer = function (input) {
+        return /^(\+|-)?\d+$/.test(input);
+    };
+    // 验证正整数
+    u.validate.positiveInteger = function (input) {
+        return (/^(\+|-)?\d+$/.test(input) && input >= 0);
+    };
+    // 验证正数
+    u.validate.positive = function (input) {
+        return (/^[0-9]+.?[0-9]*$/.test(input) && input >= 0);
+    };
+    // 验证 两位小数的正数 或 正整数
+    u.validate.positiveToFixed = function (input) {
+        return /^\d+(\.\d{2})*$/.test(input);
+    };
+    // 验证是否相等
+    u.validate.equal = function (input1, input2) {
+        return u.isEqual(input1, input2);
     };
 
     window.util = u;
