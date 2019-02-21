@@ -437,7 +437,7 @@
     /**
      * @description 转换成float类型
      * @param {String Number} input 输入的数
-     * @param {Number} defaultValue 转换失败时的默认值
+     * @param {String Number} defaultValue 转换失败时的默认值
      * @return {float}
      */
     u.number.parseFloat = function (input, defaultValue) {
@@ -450,15 +450,45 @@
     };
 
     /**
-     * @description 使用定点表示法来格式化一个数
+     * @description 保留几位小数（四舍五入法）
      * @param {String Number} input 输入的数
-     * @param digits 小数位数，默认0
+     * @param {String Number} digits 小数位数，默认0
      * @return {String}
      */
     u.number.toFixed = function (input, digits) {
         input = u.number.parseFloat(input, 0);
         if (input == 0) return 0;
         return input.toFixed(digits || 0);
+    };
+
+    /**
+     * @description 保留几位小数（四舍五入法）
+     * @param {String Number} input 输入的数
+     * @param {String Number} digits 小数位数，默认0
+     * @return {Number}
+     */
+    u.number.round = function (input, digits) {
+        return Math.round(input * Math.pow(10, digits)) / Math.pow(10, digits);
+    };
+
+    /**
+     * @description 保留几位小数（进一法）
+     * @param {String Number} input 输入的数
+     * @param {String Number} digits 小数位数，默认0
+     * @return {Number}
+     */
+    u.number.ceil = function (input, digits) {
+        return Math.ceil(input * Math.pow(10, digits)) / Math.pow(10, digits);
+    };
+
+    /**
+     * @description 保留几位小数（舍一法）
+     * @param {String Number} input 输入的数
+     * @param {String Number} digits 小数位数，默认0
+     * @return {Number}
+     */
+    u.number.floor = function (input, digits) {
+        return Math.floor(input * Math.pow(10, digits)) / Math.pow(10, digits);
     };
 
     /**
@@ -967,14 +997,14 @@
     /**
      * @description 获取需要的时间格式
      * @param {Date} time 时间、时间字符串、时间戳
-     * @param {String} format 时间格式，默认'YYYY-MM-DD'
+     * @param {String} format 时间格式，默认'YYYY-MM-DD'。如果是'WW'，则返回星期（如：'日'）
      * @return {String} 格式化后的时间
      */
     u.date.format = function (time, format){
         time = time ? new Date(time) : new Date();
         format = format || 'YYYY-MM-DD';
         function tf(i){ return (i < 10 ? '0' : '') + i; }
-        return format.replace(/YYYY|MM|DD|hh|mm|ss/g, function(a){  
+        return format.replace(/YYYY|MM|DD|hh|mm|ss|WW/g, function(a){  
             switch(a){  
                 case 'YYYY':  
                     return tf(time.getFullYear());
@@ -988,6 +1018,8 @@
                     return tf(time.getHours());
                 case 'ss':  
                     return tf(time.getSeconds());
+                case 'WW':  
+                    return ['日', '一', '二', '三', '四', '五', '六'][time.getDay()];
             }  
         });
     };
@@ -1149,8 +1181,8 @@
         // 所有月
         else{
             len = u.date.howManyMonths(date1, date2);
-            for(var i=0; i<=len; i++){
-                ret.push(u.date.otherMonth(i, start, format));
+            for(var j=0; j<=len; j++){
+                ret.push(u.date.otherMonth(j, start, format));
             }
         }
         return ret;
@@ -1295,6 +1327,23 @@
         }
     };
 
+    /********************************************* url  ***************************************************/
+
+    u.url = {};
+
+    /**
+     * @description 获取url参数
+     * @param {String} name 参数名，不传则返回所有参数的对象
+     * @return {String Object} 
+     */
+    u.url.getParam = function(name){
+        var search = window.location.search.substr(1);
+        if(search){
+            var obj = JSON.parse('{"' + decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+            return name ? obj[name] : obj;
+        }
+    };
+
     /********************************************* validate 验证 ***************************************************/
 
     u.validate = {};
@@ -1304,7 +1353,7 @@
      * @param {String} input
      */
     u.validate.required = function (input) {
-        return u.isEmpty(input);
+        return !u.isEmpty(input);
     };
     // 验证手机号码
     u.validate.mobile = function (input) {
@@ -1338,7 +1387,7 @@
     u.validate.positive = function (input) {
         return (/^[0-9]+.?[0-9]*$/.test(input) && input >= 0);
     };
-    // 验证 两位小数的正数 或 正整数
+    // 验证精确到两位小数的正数
     u.validate.positiveToFixed = function (input) {
         return /^\d+(\.\d{2})*$/.test(input);
     };

@@ -1,6 +1,6 @@
 {
   "name": "sg-utils",
-  "version": "1.1.9",
+  "version": "1.2.1",
   "description": "javascript通用工具类",
   "main": "util.js",
   "scripts": {
