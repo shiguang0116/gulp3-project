@@ -1360,8 +1360,12 @@
         return /^1[34578][0-9]{9}$/.test(input);
     };
     // 验证座机号码
-    u.validate.telephone = function (input) {
+    u.validate.fixedPhone = function (input) {
         return /^((0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/.test(input);
+    };
+    // 验证手机或者座机号码
+    u.validate.phone = function (input) {
+        return u.validate.mobile() || u.validate.fixedPhone();
     };
     // 验证邮箱号码
     u.validate.email = function (input) {
@@ -1369,27 +1373,31 @@
     };
     // 验证身份证号码
     u.validate.IDcard = function (input) {
-        return /^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/.test(input);
+        return /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(input);
     };
     // 验证 url
     u.validate.url = function (input) {
         return /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/.test(input);
     };
-    // 验证整数
+    // 验证数字
+    u.validate.number = function (input) {
+        return /^(\+|-)?((0)|([1-9][0-9]*))$|^(\+|-)?((0)|([1-9][0-9]*)).[0-9]+$/.test(input);
+    };
+    // 验证整数（不包括0）
     u.validate.integer = function (input) {
-        return /^(\+|-)?\d+$/.test(input);
+        return /^(\+|-)?[1-9][0-9]*$/.test(input);
     };
-    // 验证正整数
+    // 验证正整数（不包括0）
     u.validate.positiveInteger = function (input) {
-        return (/^(\+|-)?\d+$/.test(input) && input >= 0);
+        return /^\+?[1-9][0-9]*$/.test(input);
     };
-    // 验证正数
+    // 验证正数（不包括0）
     u.validate.positive = function (input) {
-        return (/^[0-9]+.?[0-9]*$/.test(input) && input >= 0);
+        return /^[1-9][0-9]*$|^((0)|([1-9][0-9]*)).[0-9]+$/.test(input);
     };
-    // 验证精确到两位小数的正数
+    // 验证精确到两位小数的正数（不包括0）
     u.validate.positiveToFixed = function (input) {
-        return /^\d+(\.\d{2})*$/.test(input);
+        return /^[1-9][0-9]*$|^((0)|([1-9][0-9]*)).[0-9]{2}$/.test(input);
     };
     // 验证是否相等
     u.validate.equal = function (input1, input2) {
