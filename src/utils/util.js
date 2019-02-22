@@ -1383,7 +1383,7 @@
     };
     // 验证手机或者座机号码
     u.validate.phone = function (input) {
-        return u.validate.mobile() || u.validate.fixedPhone();
+        return u.validate.mobile(input) || u.validate.fixedPhone(input);
     };
     // 验证邮箱号码
     u.validate.email = function (input) {
