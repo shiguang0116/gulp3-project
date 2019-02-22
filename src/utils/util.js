@@ -299,6 +299,20 @@
     };
 
     /**
+    * @description 格式化字符串
+    * @param {String} str 源字符串。如：'确定要{0}单据【{1}】吗？'
+    * @param {*} args 要替换的参数。如：'删除', 'QZYDYJZB201901300002'
+    * @return {String} 如：'确定要删除单据【QZYDYJZB201901300002】吗？'
+    */
+    u.string.format = function (str, args) {
+        for (var i = 1; i < arguments.length; i++) {
+            var reg = new RegExp('\\{' + (i - 1) + '\\}', 'gm');
+            arguments[0] = arguments[0].replace(reg, arguments[i]);
+        }
+        return arguments[0];
+    };
+
+    /**
      * @description 判断字符串是否以指定字符串开头
      * @param {String} str 源字符串
      * @param {String} searchString 要查询的字符串
@@ -350,9 +364,9 @@
 
     /**
     * @description 以指定的分割符分割字符串
-    * @param {string} source 源字符串
-    * @param {string} separator 分隔符
-    * @param {boolen} ignoreSpaceOrEmpty 是否忽略掉空白，不传则为false
+    * @param {String} source 源字符串
+    * @param {String} separator 分隔符
+    * @param {Boolean} ignoreSpaceOrEmpty 是否忽略掉空白，不传则为false
     */
     u.string.split = function (source, separator, ignoreSpaceOrEmpty) {
         if (u.isEmpty(source)) return [];
@@ -492,32 +506,45 @@
     };
 
     /**
-     * @description 两数相乘
-     * @param {Number String} arg1 乘数
-     * @param {Number String} arg2 乘数
+     * @description 多个数相乘
+     * @param {Number String} args 乘数
      * @return {Number} 积
      */
-    u.number.mul = function (arg1, arg2){
-        var m = 0,
-            s1 = arg1.toString(),
-            s2 = arg2.toString();
-        try{ m += s1.split(".")[1].length; } catch(e){}
-        try{ m += s2.split(".")[1].length; } catch(e){}    
-        return Number(s1.replace(".","")) * Number(s2.replace(".","")) / Math.pow(10,m);
+    u.number.mul = function (args){
+        var m = 0, ret = 1;
+        for(var i = 0; i < arguments.length; i++){
+            arguments[i] = arguments[i].toString();
+            try{ 
+                m += arguments[i].split(".")[1].length; 
+            } catch(e){
+                m += 0;
+            }
+            ret = arguments[i].replace(".","") * ret;
+        }
+        ret = ret / Math.pow(10,m);
+        return ret;
     };
 
     /**
-     * @description 两数相加
-     * @param {Number String} arg1 加数
-     * @param {Number String} arg2 加数
+     * @description 多个数相加
+     * @param {Number String} args 加数
      * @return {Number} 和
      */
-    u.number.add = function (arg1, arg2){
-    	var r1, r2, m;
-    	try{ r1 = arg1.toString().split(".")[1].length; } catch(e){ r1=0; }
-    	try{ r2 = arg2.toString().split(".")[1].length; } catch(e){ r2=0; }
-    	m = Math.pow(10, Math.max(r1,r2));
-    	return (arg1*m + arg2*m) / m;
+    u.number.add = function (args){
+        var m = 0, ret = 0;
+        for(var i = 0; i < arguments.length; i++){
+            arguments[i] = arguments[i].toString();
+            try{ 
+                m += arguments[i].split(".")[1].length; 
+            } catch(e){
+                m += 0;
+            }
+        }
+        for(var j = 0; j < arguments.length; j++){
+            ret = arguments[j] * Math.pow(10,m) + ret;
+        }
+        ret = ret / Math.pow(10,m);
+        return ret;
     };
 
     /**
@@ -997,7 +1024,7 @@
     /**
      * @description 获取需要的时间格式
      * @param {Date} time 时间、时间字符串、时间戳
-     * @param {String} format 时间格式，默认'YYYY-MM-DD'。如果是'WW'，则返回星期（如：'日'）
+     * @param {String} format 时间格式，默认'YYYY-MM-DD'。如果是'星期WW'，则返回（如：'星期日'）
      * @return {String} 格式化后的时间
      */
     u.date.format = function (time, format){
@@ -1034,7 +1061,6 @@
     u.date.otherMonth = function (MM, time, format){
         MM = !isNaN(parseInt(MM)) ? parseInt(MM) : -1;
         time = time ? new Date(time) : new Date();
-        format = format || 'YYYY-MM-DD';
         
         var oldDate = time.getDate();
         time.setMonth(time.getMonth() + MM);
@@ -1055,7 +1081,6 @@
     u.date.startOfMonth = function (MM, time, format){
         MM = !isNaN(parseInt(MM)) ? parseInt(MM) : 0;
         time = time ? new Date(time) : new Date();
-        format = format || 'YYYY-MM-DD';
 
         time.setMonth(time.getMonth()+MM, 1);
         return u.date.format(time, format);
@@ -1071,7 +1096,6 @@
     u.date.endOfMonth = function (MM, time, format){
         MM = !isNaN(parseInt(MM)) ? parseInt(MM) : 0;
         time = time ? new Date(time) : new Date();
-        format = format || 'YYYY-MM-DD';
 
         time.setMonth(time.getMonth()+MM+1, 0);
         return u.date.format(time, format);
@@ -1087,7 +1111,6 @@
     u.date.startOfWeek = function (WW, time, format){
         WW = !isNaN(parseInt(WW)) ? parseInt(WW) : 0;
         time = time ? new Date(time) : new Date();
-        format = format || 'YYYY-MM-DD';
 
         var curWW = time.getDay();
         curWW = curWW == 0 ? 7 : curWW;
@@ -1105,7 +1128,6 @@
     u.date.endOfWeek = function (WW, time, format){
         WW = !isNaN(parseInt(WW)) ? parseInt(WW) : 0;
         time = time ? new Date(time) : new Date();
-        format = format || 'YYYY-MM-DD';
 
         var curWW = time.getDay();
         curWW = curWW == 0 ? 7 : curWW;
@@ -1123,7 +1145,6 @@
     u.date.otherDate = function (DD, time, format){
         DD = !isNaN(parseInt(DD)) ? parseInt(DD) : -6;
         time = time ? new Date(time) : new Date();
-        format = format || 'YYYY-MM-DD';
 
         time.setDate(time.getDate() + DD);
         return u.date.format(time, format);
@@ -1196,16 +1217,13 @@
      * @description base64 编码
      */
     u.base64.encrypt = function (input) {
-        var str = CryptoJS.enc.Utf8.parse(input);
-        var base64 = CryptoJS.enc.Base64.stringify(str);
-        return base64;
+        return CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(input));
     };
     /**
      * @description base64 解码
      */
     u.base64.decrypt = function (input) {
-        var str = CryptoJS.enc.Base64.parse(input).toString(CryptoJS.enc.Utf8);
-        return str;
+        return CryptoJS.enc.Base64.parse(input).toString(CryptoJS.enc.Utf8);
     };
 
     /********************************************* 浏览器/手机端 ***************************************************/
@@ -1395,9 +1413,11 @@
     u.validate.positive = function (input) {
         return /^[1-9][0-9]*$|^((0)|([1-9][0-9]*)).[0-9]+$/.test(input);
     };
-    // 验证精确到两位小数的正数（不包括0）
-    u.validate.positiveToFixed = function (input) {
-        return /^[1-9][0-9]*$|^((0)|([1-9][0-9]*)).[0-9]{2}$/.test(input);
+    // 验证精确到几位小数的正数（不包括0）
+    u.validate.positiveToFixed = function (input, digits) {
+        digits = digits || 2;
+        var reg = new RegExp('^[1-9][0-9]*$|^((0)|([1-9][0-9]*)).[0-9]{' + digits + '}$');
+        return reg.test(input);
     };
     // 验证是否相等
     u.validate.equal = function (input1, input2) {
