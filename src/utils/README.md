@@ -23,13 +23,13 @@
         return str.replace(/\s*/g, '');
     };
 
-    window.util = u;
+    window._util = u;
 })(window);
 ```
 
 ```javascript
-util.trim(' str ing '); //'str ing'
-util.trimAll(' str ing '); //'string'
+_util.trim(' str ing '); //'str ing'
+_util.trimAll(' str ing '); //'string'
 ```
 
 #### 2、API说明

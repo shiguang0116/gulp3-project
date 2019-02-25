@@ -1,5 +1,5 @@
 /**
- * @description: 通用工具类
+ * @description: js通用工具类
  * @author: guang.shi <https://blog.csdn.net/guang_s> 
  * @date: 2018-12-13 15:38:27 
  */
@@ -120,7 +120,7 @@
      * 
      * 基本类型        string number boolean null undefined
      * 引用类型        array object function date 等
-     * 强制类型转换     Number() String() Boolean()
+     * 强制类型转换     parseInt() parseFloat() Number() String() Boolean()
      * 
      * typeof       返回一个字符串 'undefined' 'boolean' 'number' 'string' 'function' 'symbol' 'object'
      * toString()   转化为字符串
@@ -266,16 +266,17 @@
     /**
      * @description string 常用方法
      * 
-     * indexOf(searchvalue, fromindex);     检索字符串。返回某个指定的字符串值在字符串中首次出现的位置，没有则返回 -1
-     * charAt(index);                       返回指定位置的字符，如果参数 index 不在 0 与 length 之间，则返回一个空字符串
-     * sub();	                            把字符串显示为下标。
-     * substr(start, length);               从起始索引号提取字符串中指定数目的字符。返回一个新的字符串，包含从 start（包括start）开始的 length 个字符。如果没有指定length，那么返回的字符串包含从 start 到结尾的字符。start 可以为负数（-1表示最后一个字符）
-     * substring(start, stop);	            提取字符串中两个指定的索引号之间的字符。返回一个新的字符串，包含从 start 处到 stop-1 处的所有字符，其长度为 stop 减 start。
-     * slice(start, end);                   提取字符串中两个指定的索引号之间的字符。返回一个新的字符串，包含从 start 处到 stop-1 处的所有字符，其长度为 stop 减 start。（参数可谓负数，-1 表示最后一个字符）
+     * indexOf(searchvalue, fromindex); 检索字符串。返回某个指定的字符串值在字符串中首次出现的位置，没有则返回 -1
+     * charAt(index);                   返回指定位置的字符，如果参数 index 不在 0 与 length 之间，则返回一个空字符串
+     * 
+     * sub();	                把字符串显示为下标。
+     * substring(start, stop);  提取字符串中两个指定的索引号之间的字符。返回一个新的字符串，包含从 start 处到 stop-1 处的所有字符，其长度为 stop 减 start。如果没有指定length，那么返回的字符串包含从 start 到结尾的字符。（参数为非负整数）
+     * slice(start, end);       提取字符串中两个指定的索引号之间的字符。返回一个新的字符串，包含从 start 处到 stop-1 处的所有字符，其长度为 stop 减 start。（参数可谓负数，-1 表示最后一个字符）
+     * 
      * split(separator, howmany);           把字符串分割为字符串数组。返回一个字符串数组
      * replace(regexp/substr, replacement); 在字符串中用一些字符替换另一些字符，或替换一个与正则表达式匹配的子串。
-     * toLowerCase();	                    把字符串转换为小写
-     * toUpperCase();	                    把字符串转换为大写
+     * toLowerCase();   把字符串转换为小写
+     * toUpperCase();   把字符串转换为大写
      */
 
     u.string = {};
@@ -321,7 +322,7 @@
      */
     u.string.isStartWith = function (str, searchString, ignoreCase) {
         if (str == null || str == undefined) return false;
-        var preSubStr = str.substr(0, searchString.length) + '';
+        var preSubStr = str.substring(0, searchString.length) + '';
         if (ignoreCase) {
             preSubStr = preSubStr.toLowerCase();
             searchString = (searchString + '').toLowerCase();
@@ -338,7 +339,7 @@
      */
     u.string.isEndWith = function (str, searchString, ignoreCase) {
         if (str == null || str == undefined) return false;
-        var lastSubStr = str.substr(str.length - searchString.length, searchString.length) + '';
+        var lastSubStr = str.substring(str.length - searchString.length, searchString.length) + '';
         if (ignoreCase) {
             lastSubStr = lastSubStr.toLowerCase();
             searchString = (searchString + '').toLowerCase();
@@ -945,7 +946,7 @@
      */
     u.object.serialize = function (paramObj) {
         var self = this;
-        var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
+        var ret = '', name, value, fullSubName, subName, subValue, innerObj, i;
         for (name in paramObj) {
             value = paramObj[name];
             if (value instanceof Array) {
@@ -954,7 +955,7 @@
                     fullSubName = name + '[' + i + ']';
                     innerObj = {};
                     innerObj[fullSubName] = subValue;
-                    query += u.object.serialize(innerObj) + '&';
+                    ret += u.object.serialize(innerObj) + '&';
                 }
             }
             else if (value instanceof Object) {
@@ -963,13 +964,14 @@
                     fullSubName = name + '[' + subName + ']';
                     innerObj = {};
                     innerObj[fullSubName] = subValue;
-                    query += u.object.serialize(innerObj) + '&';
+                    ret += u.object.serialize(innerObj) + '&';
                 }
             }
             else if (value !== undefined && value !== null)
-                query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
+                ret += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
         }
-        return query.length ? query.substr(0, query.length - 1) : query;
+        ret = ret.substring(0, ret.length - 1);
+        return ret;
     };
 
     /**
@@ -1345,7 +1347,7 @@
         }
     };
 
-    /********************************************* url  ***************************************************/
+    /********************************************* url 路径处理 ***************************************************/
 
     u.url = {};
 
@@ -1355,12 +1357,42 @@
      * @return {String Object} 
      */
     u.url.getParam = function(name){
-        var search = window.location.search.substr(1);
+        var search = window.location.search.substring(1);
         if(search){
             var obj = JSON.parse('{"' + decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
             return name ? obj[name] : obj;
         }
     };
+
+    /**
+     * @description 页面跳转
+     * @param {String} url 目标地址
+     * @return {Object} param 参数对象
+     */
+    u.url.jump = function(url, param){
+        if(param){
+            url = url + u.object.serialize(param);
+        }
+        window.location.href = url;
+    };
+
+    /**
+     * @description 页面跳转（需跳回）
+     * @param {String} url 目标地址
+     */
+    u.url.jumpFromReferrer = function(url){
+        window.location.href = url + '?' + encodeURIComponent('referrer=' + window.location.href);
+    };
+
+    /**
+     * @description 跳回到之前的页面
+     */
+    u.url.jumpToReferrer = function(){
+        var search = decodeURIComponent(window.location.search);
+        var url = search.split('referrer=')[1];
+        window.location.href = url;
+    };
+
 
     /********************************************* validate 验证 ***************************************************/
 
@@ -1424,5 +1456,5 @@
         return u.isEqual(input1, input2);
     };
 
-    window.util = u;
+    window._util = u;
 })(window);

@@ -11,7 +11,9 @@ const centerPage = {
     },
     bindEvent(){
         const self = this;
-        
+        $('#btn').click(function(){
+            _util.url.jumpToReferrer();
+        })
     },
     onLoad(){
         

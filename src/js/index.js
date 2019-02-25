@@ -5,16 +5,21 @@
  */
 'use strict';
 
-const indexPage = {
-    data : {
-        name: 'index'
+const page = {
+    el: 'indexPage',
+    data: {
+        name: 'indexName',
+        user: {
+            name: 'sg',
+            age: '23',
+        }
     },
     checkUtil(){
-        util.cookie.remove('name') 
-        util.storage.set('name', this.data)
+        _util.cookie.remove('name') 
+        _util.storage.set('user', this.data.user)
         
-        console.log(util.storage.get('name').name)
-        console.log(util.browser.type())
+        console.log(_util.storage.get('user'))
+        console.log(_util.browser.type())
     },
     checkEs6(){
         const foo = () => {
@@ -26,23 +31,31 @@ const indexPage = {
         var values = Object.values(this.data);
         $('.es6 span').html(values);
     },
-    bindEvent(){
-        const self = this;
-        
+    click1(){
+        console.log('onclick1');
     },
-    onLoad(){
-        // util.ajax({
-            // url: '/product/list',
-        // });
+    events(){
+        const self = this;
+        $('#btn').click(function(){
+            _util.url.jumpFromReferrer('./center.html');
+        })
     },
     init(){
         this.checkUtil();
         this.checkEs6();
-        this.bindEvent();
-        this.onLoad();
     }
 };
 
 $(function(){
-    $('#indexPage').length && indexPage.init();
-})
+    Page(page);
+});
+
+/**
+ * @description 页面构建
+ * @param {Object} param 参数对象
+ */
+function Page(param){
+    if(param.el && !document.getElementById(param.el)) return false;
+    param.init();
+    param.events();
+}
