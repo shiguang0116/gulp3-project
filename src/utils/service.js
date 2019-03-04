@@ -10,19 +10,35 @@
 
     /********************************************* 统一处理 ***************************************************/
 
-    // 返回首页
+    /**
+     * @description 返回首页
+     */
     s.goHome = function(){
         window.location.href = './index.html';
     };
-    // 统一登录处理
-    s.doLogin = function(){
-        _util.url.jump('./center.html');
+
+    /**
+     * @description 统一登录处理
+     * @param {Boolean} isReferrer 是否需要跳回，默认false
+     * @param {String} referrerURL 登录成功之后跳回的地址，默认当前页面路径
+     */
+    s.doLogin = function(isReferrer, referrerURL){
+        if(isReferrer){
+            return _util.url.jumpFromReferrer('./login.html', referrerURL);
+        }
+        window.location.href = './login.html';
     };
-    // 成功提示
+
+    /**
+     * @description 成功提示
+     */
     s.successTip = function(msg){
         alert(msg);
     };
-    // 错误提示
+
+    /**
+     * @description 错误提示
+     */
     s.errorTip = function(msg){
         alert(msg);
     };
@@ -104,9 +120,9 @@
     s.user.init = function (user) {
         var expireDays = 0.25; // cookie过期时间 默认6小时；如果记住密码，则7天
 
-        _util.setcookie('user_id', user.userId, expireDays);
-        _util.setcookie('user_name', user.userName, expireDays);
-        _util.setcookie('is_login', '1', expireDays);
+        _util.cookie.set('user_id', user.userId, expireDays);
+        _util.cookie.set('user_name', user.userName, expireDays);
+        _util.cookie.set('is_login', '1', expireDays);
     };
 
     /**
@@ -142,7 +158,7 @@
      * 判断用户是否登陆
      */
     s.user.isLogin = function () {
-        return _util.getcookie('is_login') == 1;
+        return _util.cookie.get('is_login') == 1;
     };
 
     /********************************************* menu 菜单 ***************************************************/

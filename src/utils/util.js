@@ -339,7 +339,7 @@
      */
     u.string.isEndWith = function (str, searchString, ignoreCase) {
         if (str == null || str == undefined) return false;
-        var lastSubStr = str.substring(str.length - searchString.length, searchString.length) + '';
+        var lastSubStr = str.substring(str.length - searchString.length, str.length) + '';
         if (ignoreCase) {
             lastSubStr = lastSubStr.toLowerCase();
             searchString = (searchString + '').toLowerCase();
@@ -361,6 +361,21 @@
     u.string.firstUpperCase = function (str) {
         if (u.isEmpty(str)) return str;
         return str.replace(/^\S/, function (s) { return s.toUpperCase(); });
+    };
+
+    /**
+    * @description 反转字符串的元素顺序
+    * @param {String} str 源字符串
+    * @return {String} 
+    */
+    u.string.reverse = function (str) {
+        if (u.isEmpty(str)) return '';
+
+        var newStr = '';
+        for (var i = str.length-1; i >= 0; i--) {
+            newStr += str[i];
+        }
+        return newStr;
     };
 
     /**
@@ -386,20 +401,26 @@
     };
 
     /**
-     * @description 字母和数字混合的编号自加1
-     * @param {String} code 编号，字符串。例：'XM0001'
-     * @param {String} xyz 不需要变动的字符串。例：'XM'
+     * @description 字母和数字混合的编号自加1（以数字结尾）
+     * @param {String} code 编号。例：'XM0001'
      * @return {String} 编号+1。例：'XM0002'
      */
-    u.string.getNext = function (code, xyz){
-        var count = code.split(xyz)[1];
-        var newCount = (parseInt(count)+1).toString();
-        var zeroLen = count.length - newCount.length;
-        var zero = '';
-        for(var i = 0; i< zeroLen; i++){
-            zero += '0';
+    u.string.getNext = function (code){
+        var part1, part2, splitStr = '';
+        if (/[a-z]/i.test(code)) {
+            var x = code.match(/[a-z]/ig);
+            splitStr = x[x.length - 1];
+            part1 = code.split(splitStr)[0] + splitStr;
+            part2 = code.split(splitStr)[1];
         }
-        return xyz + zero + newCount;
+        else {
+            part1 = '';
+            part2 = code;
+        }
+        var int = parseInt(part2);
+        var zero = (part2 + '.').split(int + '.')[0];
+        var newPart2 = zero + (int + 1).toString();
+        return part1 + newPart2;
     };
 
     /**
@@ -582,7 +603,7 @@
     /**
      * @description 检索数组（子元素为数组、对象、字符串等）
      * @param {Array} source [''] [[]] [{}]
-     * @param {String Array Object} searchElement
+     * @param {String Array Object} searchElement 当子元素为对象时，只用匹配该对象的某一个（几个）属性即可
      * @return {Number} 索引 或 -1
      */
     u.array.indexOf = function(source, searchElement){
@@ -660,19 +681,23 @@
     /**
      * @description 数组去重（子元素为数组、对象、字符串等）
      * @param {Array} array [''] [[]] [{}]
-     * @param {String Array} keys 根据属性去重
-     * @return {Array} 新数组 
+     * @param {String Array} keys 根据属性去重（针对子元素是对象时）
+     * @param {Boolean} ignoreSort 是否忽略排序（针对子元素是数组时）
+     * @return {Array}  
      */
-    u.array.unique = function(array, keys){
+    u.array.unique = function(array, keys, ignoreSort){
         var ret = []; 
         u.forEach(array, function(i, item){
-            if(keys){ //根据属性去重，去掉排在末位的对象
+            if(keys && u.isObject(item)){ //根据属性去重，去掉排在末位的对象
                 if (!u.isArray(keys)) keys = [keys];
                 var searchObj = {};
                 u.forEach(keys, function (i, selectKey) {
                     searchObj[selectKey] = item[selectKey];
                 });
                 if(u.array.indexOf(ret, searchObj) == -1) ret.push(item);
+            }
+            else if(ignoreSort && u.isArray(item)){
+                if(u.array.indexOf(ret, item.sort()) == -1) ret.push(item);
             }
             else{
                 if(u.array.indexOf(ret, item) == -1) ret.push(item);
@@ -711,14 +736,13 @@
     };
 
     /**
-     * @description 选择数组中的对象的一个（多个）属性
+     * @description 选择数组的子元素（对象）的一个（多个）属性
      * @param {Array} source 源数组 [{}]
      * @param {String Array} keys 属性（集合）
      * @return {Array} 新数组 [''] [{}]
      */
     u.array.selectProperties = function (source, keys) {
-        if (!source) return [];
-        if (u.isArray(source) || u.isEmpty(keys)) return source;
+        if (u.isEmpty(source) || u.isEmpty(keys)) return source;
 
         var ret = [];
         u.forEach(source, function (i, item) {
@@ -737,19 +761,37 @@
     };
 
     /**
+     * @description 给数组的子元素（对象）添加属性
+     * @param {Array} array 源数组 [{}]
+     * @param {Object} obj 待添加的对象
+     * @return {Array} 新数组 [{}]
+     */
+    u.array.addProperties = function (source, obj) {
+        if (u.isEmpty(source) || u.isEmpty(obj)) return source;
+
+        u.forEach(source, function (i, item) {
+            for(var key in obj){
+                item[key] = obj[key];
+            }
+        });
+        return source;
+    };
+
+    /**
      * @description 合并两个数组，生成新的数组
      * @param {Array} source 原数组
      * @param {Array} array 待合并的数组
-     * @param {String Array} keys 数组元素主键，如允许重复可不设置此参数
+     * @param {String Array} keys 根据属性去重（针对子元素是对象时）
+     * @param {Boolean} ignoreSort 是否忽略排序（针对子元素是数组时）
      * @return {Object} 
      */
-    u.array.concat = function (source, array, keys) {
+    u.array.concat = function (source, array, keys, ignoreSort) {
         if (u.isEmpty(source)) return array;
         if (u.isEmpty(array)) return source;
         
         var ret = [];
         ret = source.concat(array);
-        ret = u.array.unique(ret, keys);
+        ret = u.array.unique(ret, keys, ignoreSort);
         return ret;
     };
 
@@ -795,6 +837,7 @@
                 array.splice(i, 1);
             }
         }
+        return array;
     };
 
     /**
@@ -878,7 +921,7 @@
     /**
      * @description 选择对象中的一个（多个）属性
      * @param {Object} obj 源对象
-     * @param {String Array} keys 属性数组
+     * @param {String Array} keys 属性集合
      * @return {Object} 新对象 
      */
     u.object.selectProperties = function (obj, keys) {
@@ -995,6 +1038,42 @@
             }
         }
         return obj;
+    };
+
+    /******************************************** JSON **************************************************/
+
+    /**
+     * @description JSON 常用方法
+     * 
+     * JSON.parse(text[, reviver])      将数据转换为 JavaScript 对象
+     * JSON.stringify(value[, replacer[, space]])   将 JavaScript 对象转换为字符串
+     */
+
+    u.json = {};
+    
+    /**
+     * @description json格式转树状结构
+     * @param {JSON} data json数组 [{},{}]
+     * @param {String} id id 的字段名
+     * @param {String} pid 父id 的字段名
+     * @param {String} child child 的字段名
+     * @return {Array}
+     */
+    u.json.toTreeData = function (data, id, pid, child) {
+        var ret = [], hash = {}, i, len = (data || []).length;
+        for (i = 0; i < len; i++) {
+            hash[data[i][id]] = data[i];
+        }
+        for (i = 0; i < len; i++) {
+            var pidO = hash[data[i][pid]];
+            if (pidO) {
+                pidO[child] = pidO[child] || [];
+                pidO[child].push(data[i]);
+            } else {
+                ret.push(data[i]);
+            }
+        }
+        return ret;
     };
 
     /******************************************** date 时间 **************************************************/
@@ -1228,7 +1307,7 @@
         return CryptoJS.enc.Base64.parse(input).toString(CryptoJS.enc.Utf8);
     };
 
-    /********************************************* 浏览器/手机端 ***************************************************/
+    /********************************************* browser 浏览器/手机端 ***************************************************/
     
     u.browser = {};
 
@@ -1365,13 +1444,13 @@
     };
 
     /**
-     * @description 页面跳转
+     * @description 页面跳转（参数传递）
      * @param {String} url 目标地址
      * @return {Object} param 参数对象
      */
     u.url.jump = function(url, param){
         if(param){
-            url = url + u.object.serialize(param);
+            url = url + '?' + u.object.serialize(param);
         }
         window.location.href = url;
     };
@@ -1379,9 +1458,11 @@
     /**
      * @description 页面跳转（需跳回）
      * @param {String} url 目标地址
+     * @param {String} referrerURL 源地址，默认当前页面的地址
      */
-    u.url.jumpFromReferrer = function(url){
-        window.location.href = url + '?' + encodeURIComponent('referrer=' + window.location.href);
+    u.url.jumpFromReferrer = function(url, referrerURL){
+        referrerURL = referrerURL || window.location.href;
+        window.location.href = url + '?' + encodeURIComponent('referrer=' + referrerURL);
     };
 
     /**
@@ -1392,7 +1473,6 @@
         var url = search.split('referrer=')[1];
         window.location.href = url;
     };
-
 
     /********************************************* validate 验证 ***************************************************/
 
