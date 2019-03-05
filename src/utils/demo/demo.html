@@ -4,27 +4,90 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JavaScript工具类（用例）：util.js用法实例</title>
+  <title>JavaScript工具类：util.js用法实例</title>
   <link rel="stylesheet" href="https://stackedit.io/style.css" />
   <script src="../util.js"></script>
   <script src="./demo.js"></script>
 </head>
 
 <body class="stackedit">
-  <div class="stackedit__html"><h2><a id="_0"></a>一、数据类型通用方法</h2>
-<h5><a id="_utilisEmpty_2"></a>_util.isEmpty()</h5>
+  <div class="stackedit__html"><h2><a id="_0"></a>一、缓存方法</h2>
+<p>.</p>
+<h5><a id="_utilcookieset_2"></a>_util.cookie.set()</h5>
+<pre><code class="prism language-javascript">_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span><span class="token string">'user_name'</span><span class="token punctuation">,</span> <span class="token string">'guang'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>         <span class="token comment">// 关闭浏览器后失效。注：单独打开 demo.html 是没法缓存的，需要启动本地服务</span>
+_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span><span class="token string">'user_id'</span><span class="token punctuation">,</span> <span class="token string">'12'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>           <span class="token comment">// 保存一天</span>
+_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span><span class="token string">'user_type'</span><span class="token punctuation">,</span> <span class="token string">'admin'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token operator">/</span><span class="token number">24</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 保存一个小时</span>
+_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span><span class="token string">'is_login'</span><span class="token punctuation">,</span> <span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token operator">/</span><span class="token number">24</span><span class="token operator">/</span><span class="token number">60</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// 保存一分钟</span>
+</code></pre>
+<h5><a id="_utilcookieget_9"></a>_util.cookie.get()</h5>
+<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'user_name'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// guang</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'user_id'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token comment">// 12</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'user_type'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// admin</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'is_login'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment">// '1'</span>
+</code></pre>
+<h5><a id="_utilcookieremove_16"></a>_util.cookie.remove()</h5>
+<pre><code class="prism language-javascript">_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token string">'user_name'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token string">'user_id'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token string">'user_type'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+_util<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token string">'is_login'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>.</p>
+<h2><a id="_24"></a>二、本地储存方法</h2>
+<p>.</p>
+<h5><a id="_utilstorageset_26"></a>_util.storage.set()</h5>
+<pre><code class="prism language-javascript">_util<span class="token punctuation">.</span>storage<span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span><span class="token string">'user'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> name<span class="token punctuation">:</span> <span class="token string">'guang'</span><span class="token punctuation">,</span> age<span class="token punctuation">:</span> <span class="token string">'25'</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 'obj-{"name":"guang","age":"25"}'</span>
+_util<span class="token punctuation">.</span>storage<span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span><span class="token string">'lang'</span><span class="token punctuation">,</span> <span class="token string">'zh-cn'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                     <span class="token comment">// 'zh-cn'</span>
+</code></pre>
+<h5><a id="_utilstorageget_31"></a>_util.storage.get()</h5>
+<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>storage<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'user'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// { name: 'guang', age: '25'}</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>storage<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'lang'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// 'zh-cn'</span>
+</code></pre>
+<h5><a id="_utilstorageremove_36"></a>_util.storage.remove()</h5>
+<pre><code class="prism language-javascript">_util<span class="token punctuation">.</span>storage<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token string">'user'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">// 删除 user 及对应的值</span>
+</code></pre>
+<h5><a id="_utilstorageclear_40"></a>_util.storage.clear()</h5>
+<pre><code class="prism language-javascript">_util<span class="token punctuation">.</span>storage<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">// 清空所有 localStorage</span>
+</code></pre>
+<p>.</p>
+<h2><a id="_45"></a>三、数据类型通用方法</h2>
+<p>.</p>
+<h5><a id="_utilisEmpty_47"></a>_util.isEmpty()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>undefined<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// true</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// true</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// true</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// true</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// true</span>
 </code></pre>
-<h5><a id="_utillength_10"></a>_util.length()</h5>
-<pre><code class="prism language-javascript"><span class="token keyword">var</span> source <span class="token operator">=</span> <span class="token punctuation">{</span> id<span class="token punctuation">:</span><span class="token string">'a'</span><span class="token punctuation">,</span> status<span class="token punctuation">:</span><span class="token string">'0'</span> <span class="token punctuation">}</span>
-
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// 2</span>
+<h5><a id="_utilisString_55"></a>_util.isString()</h5>
+<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isString</span><span class="token punctuation">(</span><span class="token string">'q'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// true</span>
 </code></pre>
-<h5><a id="_utilforEach_16"></a>_util.forEach()</h5>
+<h5><a id="_utilisArray_59"></a>_util.isArray()</h5>
+<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isArray</span><span class="token punctuation">(</span><span class="token string">'q'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// false</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isArray</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'q'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// true</span>
+</code></pre>
+<h5><a id="_utilisObject_64"></a>_util.isObject()</h5>
+<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isObject</span><span class="token punctuation">(</span><span class="token string">'q'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token comment">// false</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isObject</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'q'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// false</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isObject</span><span class="token punctuation">(</span><span class="token punctuation">{</span>id<span class="token punctuation">:</span><span class="token string">'q'</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// true</span>
+</code></pre>
+<h5><a id="_utilisFunction_70"></a>_util.isFunction()</h5>
+<pre><code class="prism language-javascript"><span class="token keyword">var</span> <span class="token function-variable function">fn</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isFunction</span><span class="token punctuation">(</span>fn<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// true</span>
+</code></pre>
+<h5><a id="_utillength_76"></a>_util.length()</h5>
+<pre><code class="prism language-javascript"><span class="token keyword">var</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>
+    id<span class="token punctuation">:</span> <span class="token string">'a'</span><span class="token punctuation">,</span>
+    status<span class="token punctuation">:</span> <span class="token string">'0'</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'p'</span><span class="token punctuation">,</span><span class="token string">'o'</span><span class="token punctuation">,</span><span class="token string">'i'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">'yeah'</span><span class="token punctuation">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// 2</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// 3</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// 4</span>
+</code></pre>
+<h5><a id="_utilforEach_89"></a>_util.forEach()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> source <span class="token operator">=</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> id<span class="token punctuation">:</span> <span class="token string">'c'</span><span class="token punctuation">,</span> status<span class="token punctuation">:</span> <span class="token string">'3'</span><span class="token punctuation">,</span> count<span class="token punctuation">:</span> <span class="token string">'46'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span> id<span class="token punctuation">:</span> <span class="token string">'d'</span><span class="token punctuation">,</span> status<span class="token punctuation">:</span> <span class="token string">'1'</span><span class="token punctuation">,</span> count<span class="token punctuation">:</span> <span class="token string">'41'</span> <span class="token punctuation">}</span>
@@ -51,7 +114,7 @@ _util<span class="token punctuation">.</span><span class="token function">forEac
     <span class="token comment">// '3'</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<h5><a id="_utilisEqual_44"></a>_util.isEqual()</h5>
+<h5><a id="_utilisEqual_117"></a>_util.isEqual()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> source1 <span class="token operator">=</span> <span class="token punctuation">[</span>
     <span class="token string">'qw'</span><span class="token punctuation">,</span>
     <span class="token punctuation">[</span><span class="token string">'q'</span><span class="token punctuation">,</span><span class="token string">'w'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
@@ -62,98 +125,107 @@ _util<span class="token punctuation">.</span><span class="token function">forEac
     <span class="token punctuation">[</span><span class="token string">'q'</span><span class="token punctuation">,</span><span class="token string">'w'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span> id<span class="token punctuation">:</span> <span class="token string">'a'</span><span class="token punctuation">,</span> status<span class="token punctuation">:</span> <span class="token string">'2'</span><span class="token punctuation">,</span> count<span class="token punctuation">:</span> <span class="token string">'19'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
 <span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> source3 <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token string">'qw'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span><span class="token string">'q'</span><span class="token punctuation">,</span><span class="token string">'w'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> id<span class="token punctuation">:</span> <span class="token string">'b'</span><span class="token punctuation">,</span> status<span class="token punctuation">:</span> <span class="token string">'2'</span><span class="token punctuation">,</span> count<span class="token punctuation">:</span> <span class="token string">'19'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isEqual</span><span class="token punctuation">(</span>source1<span class="token punctuation">,</span> source2<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// true</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">isEqual</span><span class="token punctuation">(</span>source1<span class="token punctuation">,</span> source3<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// false</span>
 </code></pre>
 <p>.</p>
-<h2><a id="_59"></a>二、字符串方法</h2>
-<h5><a id="_utiltrim_60"></a>_util.trim()</h5>
+<h2><a id="_139"></a>四、字符串方法</h2>
+<p>.</p>
+<h5><a id="_utiltrim_141"></a>_util.trim()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">'  qwe  rty '</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token comment">// 'qwe  rty'</span>
 </code></pre>
-<h5><a id="_utiltrimAll_66"></a>_util.trimAll()</h5>
+<h5><a id="_utiltrimAll_147"></a>_util.trimAll()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">'  qwe  rty '</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span><span class="token function">trimAll</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// 'qwerty'</span>
 </code></pre>
-<h5><a id="_utilstringformat_72"></a>_util.string.format()</h5>
+<h5><a id="_utilstringformat_153"></a>_util.string.format()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">'确定要{0}单据【{1}】吗？'</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>string<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>str<span class="token punctuation">,</span> <span class="token string">'删除'</span><span class="token punctuation">,</span> <span class="token string">'QZYDYJZB201901300002'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// '确定要删除单据【QZYDYJZB201901300002】吗？'</span>
 </code></pre>
-<h5><a id="_utilstringisStartWith_78"></a>_util.string.isStartWith()</h5>
+<h5><a id="_utilstringisStartWith_159"></a>_util.string.isStartWith()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">'qwerty'</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> startStr <span class="token operator">=</span> <span class="token string">'qw'</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>string<span class="token punctuation">.</span><span class="token function">isStartWith</span><span class="token punctuation">(</span>str<span class="token punctuation">,</span> startStr'<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// true</span>
 </code></pre>
-<h5><a id="_utilstringisEndWith_85"></a>_util.string.isEndWith()</h5>
+<h5><a id="_utilstringisEndWith_166"></a>_util.string.isEndWith()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">'qwerty'</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> endStr <span class="token operator">=</span> <span class="token string">'ty'</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>string<span class="token punctuation">.</span><span class="token function">isEndWith</span><span class="token punctuation">(</span>str<span class="token punctuation">,</span> endStr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// true</span>
 </code></pre>
-<h5><a id="_utilstringfirstUpperCase_92"></a>_util.string.firstUpperCase()</h5>
+<h5><a id="_utilstringfirstUpperCase_173"></a>_util.string.firstUpperCase()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">'qwerty'</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>string<span class="token punctuation">.</span><span class="token function">firstUpperCase</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 'Qwerty'</span>
 </code></pre>
-<h5><a id="_utilstringreverse_98"></a>_util.string.reverse()</h5>
+<h5><a id="_utilstringreverse_179"></a>_util.string.reverse()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">'qwerty'</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>string<span class="token punctuation">.</span><span class="token function">reverse</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 'ytrewq'</span>
 </code></pre>
-<h5><a id="_utilstringsplit_104"></a>_util.string.split()</h5>
+<h5><a id="_utilstringsplit_185"></a>_util.string.split()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">'a,s,d'</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>string<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span>str<span class="token punctuation">,</span> <span class="token string">','</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// ["a", "s", "d"]</span>
 </code></pre>
-<h5><a id="_utilstringgetNext_110"></a>_util.string.getNext()</h5>
+<h5><a id="_utilstringgetNext_191"></a>_util.string.getNext()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">'XM0001'</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>string<span class="token punctuation">.</span><span class="token function">getNext</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 'XM0002'</span>
 </code></pre>
 <p>.</p>
-<h2><a id="_117"></a>三、数字方法</h2>
-<h5><a id="_utilnumberparseInt_119"></a>_util.number.parseInt()</h5>
+<h2><a id="_198"></a>五、数字方法</h2>
+<p>.</p>
+<h5><a id="_utilnumberparseInt_200"></a>_util.number.parseInt()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>number<span class="token punctuation">.</span><span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token string">'25.36'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 25</span>
 </code></pre>
-<h5><a id="_utilnumberparseFloat_123"></a>_util.number.parseFloat()</h5>
+<h5><a id="_utilnumberparseFloat_204"></a>_util.number.parseFloat()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>number<span class="token punctuation">.</span><span class="token function">parseFloat</span><span class="token punctuation">(</span><span class="token string">'25.36'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 25.36</span>
 </code></pre>
-<h5><a id="_utilnumbertoFixed_127"></a>_util.number.toFixed()</h5>
+<h5><a id="_utilnumbertoFixed_208"></a>_util.number.toFixed()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>number<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token string">'25.3682'</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// '25.37'</span>
 </code></pre>
-<h5><a id="_utilnumberround_131"></a>_util.number.round()</h5>
+<h5><a id="_utilnumberround_212"></a>_util.number.round()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>number<span class="token punctuation">.</span><span class="token function">round</span><span class="token punctuation">(</span><span class="token string">'25.3682'</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 25.37</span>
 </code></pre>
-<h5><a id="_utilnumberceil_135"></a>_util.number.ceil()</h5>
+<h5><a id="_utilnumberceil_216"></a>_util.number.ceil()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>number<span class="token punctuation">.</span><span class="token function">ceil</span><span class="token punctuation">(</span><span class="token string">'25.3612'</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 25.37</span>
 </code></pre>
-<h5><a id="_utilnumberfloor_139"></a>_util.number.floor()</h5>
+<h5><a id="_utilnumberfloor_220"></a>_util.number.floor()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>number<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span><span class="token string">'25.3682'</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 25.36</span>
 </code></pre>
-<h5><a id="_utilnumbermul_143"></a>_util.number.mul()</h5>
+<h5><a id="_utilnumbermul_224"></a>_util.number.mul()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> n1 <span class="token operator">=</span> <span class="token number">1.2</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> n2 <span class="token operator">=</span> <span class="token number">2.3</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> n3 <span class="token operator">=</span> <span class="token number">3.45</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>number<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>n1<span class="token punctuation">,</span> n2 <span class="token punctuation">,</span>n3<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 9.522</span>
 </code></pre>
-<h5><a id="_utilnumberadd_151"></a>_util.number.add()</h5>
+<h5><a id="_utilnumberadd_232"></a>_util.number.add()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> n1 <span class="token operator">=</span> <span class="token number">1.2</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> n2 <span class="token operator">=</span> <span class="token number">2.3</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> n3 <span class="token operator">=</span> <span class="token number">3.45</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>number<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>n1<span class="token punctuation">,</span> n2 <span class="token punctuation">,</span>n3<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 6.95</span>
 </code></pre>
-<h5><a id="_utilnumbergetRandom_159"></a>_util.number.getRandom()</h5>
+<h5><a id="_utilnumbergetRandom_240"></a>_util.number.getRandom()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>number<span class="token punctuation">.</span><span class="token function">getRandom</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 55</span>
 </code></pre>
 <p>.</p>
-<h2><a id="_164"></a>四、数组方法</h2>
+<h2><a id="_245"></a>六、数组方法</h2>
 <p>.</p>
-<h5><a id="_utilarrayindexOf_166"></a>_util.array.indexOf()</h5>
+<h5><a id="_utilarrayindexOf_247"></a>_util.array.indexOf()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span>
     <span class="token string">'qwert'</span><span class="token punctuation">,</span>
     <span class="token punctuation">[</span><span class="token string">'q'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">,</span> <span class="token string">'e'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
@@ -164,14 +236,14 @@ console<span class="token punctuation">.</span><span class="token function">log<
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>arr<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'q'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">,</span> <span class="token string">'e'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 1</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>arr<span class="token punctuation">,</span> <span class="token punctuation">{</span>id<span class="token punctuation">:</span> <span class="token string">'a'</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token comment">// 2。当检索数组中的对象时，只用匹配该对象的某一个（几个）属性即可查询到。</span>
 </code></pre>
-<h5><a id="_utilarraypush_178"></a>_util.array.push()</h5>
+<h5><a id="_utilarraypush_259"></a>_util.array.push()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'q'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> len <span class="token operator">=</span> _util<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>arr<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'w'</span><span class="token punctuation">,</span><span class="token string">'e'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// ["q", "w", "e"]</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>len<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 4</span>
 </code></pre>
-<h5><a id="_utilarraysort_186"></a>_util.array.sort()</h5>
+<h5><a id="_utilarraysort_267"></a>_util.array.sort()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> billNo<span class="token punctuation">:</span> <span class="token string">'CGAPD20190301000002'</span><span class="token punctuation">,</span> date<span class="token punctuation">:</span> <span class="token string">'2019-03-01'</span><span class="token punctuation">,</span> count<span class="token punctuation">:</span> <span class="token string">'22'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span> billNo<span class="token punctuation">:</span> <span class="token string">'CGAPD20190228000001'</span><span class="token punctuation">,</span> date<span class="token punctuation">:</span> <span class="token string">'2019-02-28'</span><span class="token punctuation">,</span> count<span class="token punctuation">:</span> <span class="token string">'14'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -185,7 +257,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token comment">//    { billNo: 'CGAPD20190301000002', date: '2019-03-01', count: '22' },</span>
 <span class="token comment">// ];</span>
 </code></pre>
-<h5><a id="_utilarrayunique_201"></a>_util.array.unique()</h5>
+<h5><a id="_utilarrayunique_282"></a>_util.array.unique()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span>
     <span class="token string">'qw'</span><span class="token punctuation">,</span>
     <span class="token string">'qw'</span><span class="token punctuation">,</span>
@@ -219,7 +291,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token comment">//     { id: 'a', status: '1', count: '22' },</span>
 <span class="token comment">// ]</span>
 </code></pre>
-<h5><a id="_utilarrayfilter_236"></a>_util.array.filter()</h5>
+<h5><a id="_utilarrayfilter_317"></a>_util.array.filter()</h5>
 <pre><code class="prism language-javascript">arr <span class="token operator">=</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> id<span class="token punctuation">:</span> <span class="token string">'a'</span><span class="token punctuation">,</span> status<span class="token punctuation">:</span> <span class="token string">'1'</span><span class="token punctuation">,</span> count<span class="token punctuation">:</span> <span class="token string">'22'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span> id<span class="token punctuation">:</span> <span class="token string">'b'</span><span class="token punctuation">,</span> status<span class="token punctuation">:</span> <span class="token string">'2'</span><span class="token punctuation">,</span> count<span class="token punctuation">:</span> <span class="token string">'19'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -250,7 +322,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token comment">//     { id: 'c', status: '3', count: '46' },</span>
 <span class="token comment">// ]</span>
 </code></pre>
-<h5><a id="_utilarrayselectProperties_268"></a>_util.array.selectProperties()</h5>
+<h5><a id="_utilarrayselectProperties_349"></a>_util.array.selectProperties()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> id<span class="token punctuation">:</span> <span class="token string">'a'</span><span class="token punctuation">,</span> status<span class="token punctuation">:</span> <span class="token string">'1'</span><span class="token punctuation">,</span> count<span class="token punctuation">:</span> <span class="token string">'22'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span> id<span class="token punctuation">:</span> <span class="token string">'b'</span><span class="token punctuation">,</span> status<span class="token punctuation">:</span> <span class="token string">'2'</span><span class="token punctuation">,</span> count<span class="token punctuation">:</span> <span class="token string">'19'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -265,7 +337,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token comment">//     { status: '3', count: '46' }</span>
 <span class="token comment">// ]</span>
 </code></pre>
-<h5><a id="_utilarrayaddProperties_284"></a>_util.array.addProperties()</h5>
+<h5><a id="_utilarrayaddProperties_365"></a>_util.array.addProperties()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> id<span class="token punctuation">:</span> <span class="token string">'a'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span> id<span class="token punctuation">:</span> <span class="token string">'b'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -277,13 +349,13 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token comment">//     { id: 'b', status: '1', count: '20' },</span>
 <span class="token comment">// ]</span>
 </code></pre>
-<h5><a id="_utilarrayconcat_297"></a>_util.array.concat()</h5>
+<h5><a id="_utilarrayconcat_378"></a>_util.array.concat()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> arr1 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'q'</span><span class="token punctuation">,</span><span class="token string">'w'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token keyword">var</span> arr2 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'q'</span><span class="token punctuation">,</span><span class="token string">'a'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span>arr1<span class="token punctuation">,</span> arr2<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// ["q", "w", "a"]</span>
 </code></pre>
-<h5><a id="_utilarraygroup_304"></a>_util.array.group()</h5>
+<h5><a id="_utilarraygroup_385"></a>_util.array.group()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> size<span class="token punctuation">:</span> <span class="token string">'S'</span><span class="token punctuation">,</span> color<span class="token punctuation">:</span> <span class="token string">'红色'</span><span class="token punctuation">,</span> price<span class="token punctuation">:</span> <span class="token string">'199'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span> size<span class="token punctuation">:</span> <span class="token string">'M'</span><span class="token punctuation">,</span> color<span class="token punctuation">:</span> <span class="token string">'蓝色'</span><span class="token punctuation">,</span> price<span class="token punctuation">:</span> <span class="token string">'299'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -325,22 +397,22 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token comment">//     }</span>
 <span class="token comment">// ]</span>
 </code></pre>
-<h5><a id="_utilarrayremoveInvalidItems_347"></a>_util.array.removeInvalidItems()</h5>
+<h5><a id="_utilarrayremoveInvalidItems_428"></a>_util.array.removeInvalidItems()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'sg'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> undefined<span class="token punctuation">]</span><span class="token punctuation">;</span>
 _util<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">removeInvalidItems</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// ["sg"]</span>
 </code></pre>
-<h5><a id="_utilarrayclear_354"></a>_util.array.clear()</h5>
+<h5><a id="_utilarrayclear_435"></a>_util.array.clear()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'s'</span><span class="token punctuation">,</span> <span class="token string">'h'</span><span class="token punctuation">,</span> <span class="token string">'i'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 _util<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// []</span>
 </code></pre>
 <p>.</p>
-<h2><a id="object_362"></a>四、object对象方法</h2>
+<h2><a id="_443"></a>七、对象方法</h2>
 <p>.</p>
-<h5><a id="_utilobjectkeys_364"></a>_util.object.keys()</h5>
+<h5><a id="_utilobjectkeys_445"></a>_util.object.keys()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>
     name<span class="token punctuation">:</span> <span class="token string">'guang'</span><span class="token punctuation">,</span>
     age<span class="token punctuation">:</span> <span class="token string">'25'</span>
@@ -348,7 +420,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>object<span class="token punctuation">.</span><span class="token function">keys</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// ["name", "age"]</span>
 </code></pre>
-<h5><a id="_utilobjectvalues_373"></a>_util.object.values()</h5>
+<h5><a id="_utilobjectvalues_454"></a>_util.object.values()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>
     name<span class="token punctuation">:</span> <span class="token string">'guang'</span><span class="token punctuation">,</span>
     age<span class="token punctuation">:</span> <span class="token string">'25'</span>
@@ -356,7 +428,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>object<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// ["guang", "25"]</span>
 </code></pre>
-<h5><a id="_utilobjectassign_382"></a>_util.object.assign()</h5>
+<h5><a id="_utilobjectassign_463"></a>_util.object.assign()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> obj2 <span class="token operator">=</span> <span class="token punctuation">{</span>
     type<span class="token punctuation">:</span> <span class="token string">'admin'</span><span class="token punctuation">,</span>
     age<span class="token punctuation">:</span> <span class="token string">'26'</span>
@@ -365,7 +437,7 @@ _util<span class="token punctuation">.</span>object<span class="token punctuatio
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// { name: "guang", age: "26", type: "admin" }</span>
 </code></pre>
-<h5><a id="_utilobjectselectProperties_392"></a>_util.object.selectProperties()</h5>
+<h5><a id="_utilobjectselectProperties_473"></a>_util.object.selectProperties()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>
     name<span class="token punctuation">:</span> <span class="token string">'guang'</span><span class="token punctuation">,</span>
     email<span class="token punctuation">:</span> <span class="token string">'123456@qq.com'</span><span class="token punctuation">,</span>
@@ -374,7 +446,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>object<span class="token punctuation">.</span><span class="token function">selectProperties</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">,</span> <span class="token string">'phone'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// {name: "guang", phone: "13566668888"}</span>
 </code></pre>
-<h5><a id="_utilobjectdeleteProperties_402"></a>_util.object.deleteProperties()</h5>
+<h5><a id="_utilobjectdeleteProperties_483"></a>_util.object.deleteProperties()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>
     name<span class="token punctuation">:</span> <span class="token string">'guang'</span><span class="token punctuation">,</span>
     email<span class="token punctuation">:</span> <span class="token string">'123456@qq.com'</span><span class="token punctuation">,</span>
@@ -383,7 +455,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>object<span class="token punctuation">.</span><span class="token function">deleteProperties</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">,</span> <span class="token string">'phone'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// {email: "123456@qq.com"}</span>
 </code></pre>
-<h5><a id="_utilobjectgetPropertyValue_412"></a>_util.object.getPropertyValue()</h5>
+<h5><a id="_utilobjectgetPropertyValue_493"></a>_util.object.getPropertyValue()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>
     name<span class="token punctuation">:</span> <span class="token string">'guang'</span><span class="token punctuation">,</span>
     child<span class="token punctuation">:</span> <span class="token punctuation">{</span>
@@ -393,7 +465,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>object<span class="token punctuation">.</span><span class="token function">getPropertyValue</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> <span class="token string">'child.name'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// lan</span>
 </code></pre>
-<h5><a id="_utilobjectserialize_423"></a>_util.object.serialize()</h5>
+<h5><a id="_utilobjectserialize_504"></a>_util.object.serialize()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>
     id<span class="token punctuation">:</span> <span class="token string">'a'</span><span class="token punctuation">,</span>
     billNo<span class="token punctuation">:</span> <span class="token string">'CGDD20190228000001'</span>
@@ -401,7 +473,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>object<span class="token punctuation">.</span><span class="token function">serialize</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// id=a&amp;billNo=CGDD20190228000001</span>
 </code></pre>
-<h5><a id="_utilobjectclear_432"></a>_util.object.clear()</h5>
+<h5><a id="_utilobjectclear_513"></a>_util.object.clear()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>
     id<span class="token punctuation">:</span> <span class="token string">'a'</span><span class="token punctuation">,</span>
     billNo<span class="token punctuation">:</span> <span class="token string">'CGDD20190228000001'</span>
@@ -411,9 +483,9 @@ _util<span class="token punctuation">.</span>object<span class="token punctuatio
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// {id: "", billNo: ""}</span>
 </code></pre>
 <p>.</p>
-<h2><a id="json_443"></a>五、json数据方法</h2>
+<h2><a id="json_524"></a>八、json数据方法</h2>
 <p>.</p>
-<h5><a id="_utiljsontoTreeData_445"></a>_util.json.toTreeData()</h5>
+<h5><a id="_utiljsontoTreeData_526"></a>_util.json.toTreeData()</h5>
 <pre><code class="prism language-javascript"><span class="token keyword">var</span> data <span class="token operator">=</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> <span class="token string">"id"</span><span class="token punctuation">:</span> <span class="token string">"1"</span><span class="token punctuation">,</span> <span class="token string">"level"</span><span class="token punctuation">:</span> <span class="token string">"1"</span><span class="token punctuation">,</span> <span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"基础平台"</span><span class="token punctuation">,</span> <span class="token string">"parentId"</span><span class="token punctuation">:</span> <span class="token keyword">null</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span> <span class="token string">"id"</span><span class="token punctuation">:</span> <span class="token string">"2"</span><span class="token punctuation">,</span> <span class="token string">"level"</span><span class="token punctuation">:</span> <span class="token string">"1"</span><span class="token punctuation">,</span> <span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"财务平台"</span><span class="token punctuation">,</span> <span class="token string">"parentId"</span><span class="token punctuation">:</span> <span class="token keyword">null</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -470,72 +542,109 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token comment">// ]</span>
 </code></pre>
 <p>.</p>
-<h2><a id="date_503"></a>六、date时间方法</h2>
+<h2><a id="_584"></a>九、时间方法</h2>
 <p>.</p>
-<h5><a id="_utildateformat_505"></a>_util.date.format()</h5>
+<h5><a id="_utildateformat_586"></a>_util.date.format()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">,</span> <span class="token string">'YYYY月MM年DD日'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">,</span> <span class="token string">'YYYY-MM-DD hh:mm:ss 星期WW'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<h5><a id="_utildateotherMonth_511"></a>_util.date.otherMonth()</h5>
-<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">otherMonth</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">otherMonth</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h5><a id="_utildateotherMonth_592"></a>_util.date.otherMonth()</h5>
+<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">otherMonth</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'2019-03-04'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">// 2019-02-04</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">otherMonth</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'2019-03-04'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">// 2019-04-04</span>
 </code></pre>
-<h5><a id="_utildateendOfMonth_516"></a>_util.date.endOfMonth()</h5>
-<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">endOfMonth</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">endOfMonth</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h5><a id="_utildatestartOfMonth_597"></a>_util.date.startOfMonth()</h5>
+<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">startOfMonth</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'2019-03-04'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">// '2019-03-01'</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">startOfMonth</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'2019-03-04'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">// '2019-02-01'</span>
 </code></pre>
-<h5><a id="_utildateendOfWeek_521"></a>_util.date.endOfWeek()</h5>
-<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">endOfWeek</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">endOfWeek</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h5><a id="_utildateendOfMonth_602"></a>_util.date.endOfMonth()</h5>
+<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">endOfMonth</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'2019-03-04'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">// '2019-03-31'</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">endOfMonth</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'2019-03-04'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">// '2019-02-28'</span>
 </code></pre>
-<h5><a id="_utildateotherDate_526"></a>_util.date.otherDate()</h5>
-<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">otherDate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">otherDate</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h5><a id="_utildatestartOfWeek_607"></a>_util.date.startOfWeek()</h5>
+<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">startOfWeek</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'2019-03-04'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>		<span class="token comment">// '2019-03-04'</span>
 </code></pre>
-<h5><a id="_utildatehowManyDays_531"></a>_util.date.howManyDays()</h5>
+<h5><a id="_utildateendOfWeek_611"></a>_util.date.endOfWeek()</h5>
+<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">endOfWeek</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'2019-03-04'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>		<span class="token comment">// '2019-03-10'</span>
+</code></pre>
+<h5><a id="_utildateotherDate_615"></a>_util.date.otherDate()</h5>
+<pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">otherDate</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">6</span><span class="token punctuation">,</span> <span class="token string">'2019-03-04'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment">// '2019-02-26'</span>
+</code></pre>
+<h5><a id="_utildatehowManyDays_619"></a>_util.date.howManyDays()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">howManyDays</span><span class="token punctuation">(</span><span class="token string">'2019-01-12'</span><span class="token punctuation">,</span> <span class="token string">'2019-02-01'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// 20</span>
 </code></pre>
-<h5><a id="_utildatehowManyMonths_535"></a>_util.date.howManyMonths()</h5>
+<h5><a id="_utildatehowManyMonths_623"></a>_util.date.howManyMonths()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">howManyMonths</span><span class="token punctuation">(</span><span class="token string">'2019-01'</span><span class="token punctuation">,</span> <span class="token string">'2018-05'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// 8</span>
 </code></pre>
-<h5><a id="_utildategetDatesBetween_539"></a>_util.date.getDatesBetween()</h5>
+<h5><a id="_utildategetDatesBetween_627"></a>_util.date.getDatesBetween()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">getDatesBetween</span><span class="token punctuation">(</span><span class="token string">'2019-01-25'</span><span class="token punctuation">,</span> <span class="token string">'2019-02-01'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// ["2019-01-25", "2019-01-26", "2019-01-27", "2019-01-28", "2019-01-29", "2019-01-30", "2019-01-31", "2019-02-01"]</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>date<span class="token punctuation">.</span><span class="token function">getDatesBetween</span><span class="token punctuation">(</span><span class="token string">'2019-01-25'</span><span class="token punctuation">,</span> <span class="token string">'2019-02-01'</span><span class="token punctuation">,</span> <span class="token string">'YYYY-MM'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ["2019-01", "2019-02"]</span>
 </code></pre>
 <p>.</p>
-<h2><a id="brower_545"></a>七、brower浏览器判断</h2>
+<h2><a id="_633"></a>十、浏览器判断方法</h2>
 <p>.</p>
-<h5><a id="_utilbrowsertype_547"></a>_util.browser.type()</h5>
+<h5><a id="_utilbrowsertype_635"></a>_util.browser.type()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>browser<span class="token punctuation">.</span><span class="token function">type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<h5><a id="_utilbrowserisChrome_551"></a>_util.browser.isChrome()</h5>
+<h5><a id="_utilbrowserisChrome_639"></a>_util.browser.isChrome()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>browser<span class="token punctuation">.</span><span class="token function">isChrome</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<h5><a id="_utilbrowserisIE_555"></a>_util.browser.isIE()</h5>
+<h5><a id="_utilbrowserisIE_643"></a>_util.browser.isIE()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>browser<span class="token punctuation">.</span><span class="token function">isIE</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<h5><a id="_utilbrowserisEdge_559"></a>_util.browser.isEdge()</h5>
+<h5><a id="_utilbrowserisEdge_647"></a>_util.browser.isEdge()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>browser<span class="token punctuation">.</span><span class="token function">isEdge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<h5><a id="_utilbrowserisSafari_563"></a>_util.browser.isSafari()</h5>
+<h5><a id="_utilbrowserisSafari_651"></a>_util.browser.isSafari()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>browser<span class="token punctuation">.</span><span class="token function">isSafari</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<h5><a id="_utilbrowserisFirefox_567"></a>_util.browser.isFirefox()</h5>
+<h5><a id="_utilbrowserisFirefox_655"></a>_util.browser.isFirefox()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>browser<span class="token punctuation">.</span><span class="token function">isFirefox</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<h5><a id="_utilbrowserisWechat_571"></a>_util.browser.isWechat()</h5>
+<h5><a id="_utilbrowserisWechat_659"></a>_util.browser.isWechat()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>browser<span class="token punctuation">.</span><span class="token function">isWechat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<h5><a id="_utilbrowserisAndroid_575"></a>_util.browser.isAndroid()</h5>
+<h5><a id="_utilbrowserisAndroid_663"></a>_util.browser.isAndroid()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>browser<span class="token punctuation">.</span><span class="token function">isAndroid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<h5><a id="_utilbrowserisIOS_579"></a>_util.browser.isIOS()</h5>
+<h5><a id="_utilbrowserisIOS_667"></a>_util.browser.isIOS()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>browser<span class="token punctuation">.</span><span class="token function">isIOS</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<h5><a id="_utilbrowserisMobile_583"></a>_util.browser.isMobile()</h5>
+<h5><a id="_utilbrowserisMobile_671"></a>_util.browser.isMobile()</h5>
 <pre><code class="prism language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>browser<span class="token punctuation">.</span><span class="token function">isMobile</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
+<p>.</p>
+<h2><a id="_676"></a>十一、表单验证方法</h2>
+<p>.</p>
+<h5><a id="_utilvalidatepositiveToFixed_678"></a>_util.validate.positiveToFixed()</h5>
+<pre><code class="prism language-javascript"><span class="token keyword">var</span> input <span class="token operator">=</span> <span class="token string">'12.345'</span><span class="token punctuation">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>validate<span class="token punctuation">.</span><span class="token function">positiveToFixed</span><span class="token punctuation">(</span>input<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// false</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_util<span class="token punctuation">.</span>validate<span class="token punctuation">.</span><span class="token function">positiveToFixed</span><span class="token punctuation">(</span>input<span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// true</span>
+</code></pre>
+<h5><a id="_685"></a>注：其他方法直接调用即可</h5>
+<p>.</p>
+<h2><a id="_688"></a>下载</h2>
+<pre><code>npm i sg-utils -D
+</code></pre>
+<h2><a id="_693"></a>相关文章</h2>
+<blockquote>
+<p><a href="https://blog.csdn.net/guang_s/article/details/86687188">JavaScript工具类（一）：util.js创建及上传</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/86687375">JavaScript工具类（二）：cookie缓存</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/86687438">JavaScript工具类（三）：localStorage本地储存</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/86689141">JavaScript工具类（四）：数据类型</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/86689325">JavaScript工具类（五）：string字符串</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/86693270">JavaScript工具类（六）：number数字</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/87364154">JavaScript工具类（七）：array数组</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/87364440">JavaScript工具类（八）：object对象</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/87364635">JavaScript工具类（九）：date日期</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/87364812">JavaScript工具类（十）：base64</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/87365038">JavaScript工具类（十一）：浏览器类型</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/87866894">JavaScript工具类（十二）：validate表单验证</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/88116102">JavaScript工具类（十三）：url路径处理：获取url参数、页面参数传递、跳回到来源页面等</a><br>
+<a href="https://blog.csdn.net/guang_s/article/details/88116410">JavaScript工具类（十四）：json数据转树状结构、字符串转js对象等</a><br>
+JavaScript工具类：util.js用法实例</p>
+</blockquote>
 </div>
 </body>
 

@@ -16,13 +16,16 @@
      * @description 设置缓存
      * @param {String} name 缓存数据的名字
      * @param {*} value 缓存数据的值
-     * @param {Number} expiredays 缓存数据的时间（天），默认 7 天
+     * @param {Number} expiredays 缓存数据的时间（天），默认关闭浏览器时失效。1/24 表示一个小时，1/24/60 表示一分钟
      */
     u.cookie.set = function (name, value, expiredays) {
-        expiredays = expiredays || 7;
-        var exdate = new Date();
-        exdate.setDate(exdate.getDate() + expiredays);
-        document.cookie = name + "=" + escape(value) + ";expires=" + exdate.toGMTString();
+        var expires = '';
+        if(expiredays){
+            var exdate = new Date();
+            exdate.setTime(exdate.getTime() + expiredays * (24*3600*1000));
+            expires = ";expires=" + exdate.toUTCString();
+        }
+        document.cookie = name + "=" + escape(value) + expires;
     };
 
     /**
@@ -68,17 +71,13 @@
      * @param {*} value 储存的值
      */
     u.storage.set = function (key, value) {
-        if (arguments.length === 2) {
-            var v = value;
-            if (typeof v === 'object') {
-                v = JSON.stringify(v);
-                v = 'obj-' + v;
-            } else {
-                v = 'str-' + v;
-            }
-            var ls = uzStorage();
-            if (ls) ls.setItem(key, v);
+        var v = value;
+        if (typeof v === 'object') {
+            v = JSON.stringify(v);
+            v = 'obj-' + v;
         }
+        var ls = uzStorage();
+        if (ls) ls.setItem(key, v);
     };
 
     /**
@@ -92,7 +91,7 @@
             var v = ls.getItem(key);
             if (!v) return;
             if (v.indexOf('obj-') === 0) return JSON.parse(v.slice(4));
-            else if (v.indexOf('str-') === 0)  return v.slice(4);
+            else return v;
         }
     };
 
@@ -1217,17 +1216,17 @@
     };
     
     /**
-     * @description 前后几天的日期
+     * @description 前后几天的日期（几小时、几分钟均可）
      * @param {Number} DD 前后几天（正数代表后几天，负数代表前几天），默认过去一周的日期（-6）
      * @param {Date} time 时间、时间字符串、时间戳
      * @param {String} format 时间格式，默认'YYYY-MM-DD'
      * @return {String} 格式化后的时间
      */
     u.date.otherDate = function (DD, time, format){
-        DD = !isNaN(parseInt(DD)) ? parseInt(DD) : -6;
+        DD = !isNaN(parseFloat(DD)) ? parseFloat(DD) : -6;
         time = time ? new Date(time) : new Date();
 
-        time.setDate(time.getDate() + DD);
+        time.setTime(time.getTime() + DD * (24*3600*1000));
         return u.date.format(time, format);
     };
 
@@ -1298,8 +1297,11 @@
      * @description base64 编码
      */
     u.base64.encrypt = function (input) {
-        return CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(input));
+        var str = CryptoJS.enc.Utf8.parse(input);
+        var base64 = CryptoJS.enc.Base64.stringify(str);
+        return base64;
     };
+
     /**
      * @description base64 解码
      */

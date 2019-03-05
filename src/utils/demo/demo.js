@@ -4,6 +4,42 @@
  * @date: 2019-03-04 12:45:43 
  */
 
+/********************************************* cookie 缓存 ***************************************************/
+
+// _util.cookie.set()
+_util.cookie.set('user_name', 'guang');         // 关闭浏览器后失效。注：单独打开 demo.html 是没法缓存的，需要启动本地服务
+_util.cookie.set('user_id', '12', 1);           // 保存一天
+_util.cookie.set('user_type', 'admin', 1/24);   // 保存一个小时
+_util.cookie.set('is_login', '1', 1/24/60);     // 保存一分钟
+
+// _util.cookie.get()
+console.group("_util.cookie.get()"); 
+    console.log(_util.cookie.get('user_name'));     // guang
+    console.log(_util.cookie.get('user_id'));       // 12
+    console.log(_util.cookie.get('user_type'));     // admin
+    console.log(_util.cookie.get('is_login'));      // '1'
+console.groupEnd();
+
+// _util.cookie.remove('user_name');
+// _util.cookie.remove('user_id');
+// _util.cookie.remove('user_type');
+// _util.cookie.remove('is_login');
+
+/********************************************* localStorage 本地储存 ***************************************************/
+
+// _util.storage.set()
+_util.storage.set('user', { name: 'guang', age: '25'}); // 'obj-{"name":"guang","age":"25"}'
+_util.storage.set('lang', 'zh-cn');                     // 'zh-cn'
+
+// _util.storage.get()
+console.group("_util.storage.get()"); 
+    console.log(_util.storage.get('user'));     // { name: 'guang', age: '25'}
+    console.log(_util.storage.get('lang'));     // 'zh-cn'
+console.groupEnd();
+
+// _util.storage.remove('user');	// 删除 user 及对应的值
+// _util.storage.clear();	        // 清空所有 localStorage
+
 /********************************************* 数据类型 ***************************************************/
 
 // _util.isEmpty()
@@ -15,9 +51,41 @@ console.group("_util.isEmpty()");
     console.log(_util.isEmpty({}));     // true
 console.groupEnd();
 
+// _util.isString()
+console.group("_util.isString()"); 
+    console.log(_util.isString('q'));  // true
+console.groupEnd();
+
+// _util.isArray()
+console.group("_util.isArray()"); 
+    console.log(_util.isArray('q'));    // false
+    console.log(_util.isArray(['q']));  // true
+console.groupEnd();
+
+// _util.isObject()
+console.group("_util.isObject()"); 
+    console.log(_util.isObject('q'));       // false
+    console.log(_util.isObject(['q']));     // false
+    console.log(_util.isObject({id:'q'}));  // true
+console.groupEnd();
+
+// _util.isFunction()
+var fn = function(){};
+console.group("_util.isFunction()"); 
+    console.log(_util.isFunction(fn));  // true
+console.groupEnd();
+
 // _util.length()
+var obj = {
+    id: 'a',
+    status: '0'
+};
+var arr = ['p','o','i'];
+var str = 'yeah';
 console.group("_util.length()"); 
-    console.log(_util.length({ id:'a', status:'0' }));     // 2
+    console.log(_util.length(obj));     // 2
+    console.log(_util.length(arr));     // 3
+    console.log(_util.length(str));     // 4
 console.groupEnd();
 
 // _util.forEach()
@@ -59,20 +127,27 @@ var source2 = [
     ['q','w'],
     { id: 'a', status: '2', count: '19' },
 ];
+var source3 = [
+    'qw',
+    ['q','w'],
+    { id: 'b', status: '2', count: '19' },
+];
 console.group("_util.isEqual()"); 
     console.log(_util.isEqual(source1, source2));     // true
+    console.log(_util.isEqual(source1, source3));     // false
 console.groupEnd();
 
 /********************************************* string 字符串 ***************************************************/
 
 // _util.trim()
+var str = '  qwe  rty ';
 console.group("_util.trim()"); 
-    console.log(_util.trim('  qwe  rty '));       // 'qwe  rty'
+    console.log(_util.trim(str));       // 'qwe  rty'
 console.groupEnd();
 
 // _util.trimAll()
 console.group("_util.trimAll()"); 
-    console.log(_util.trimAll('  qwe  rty '));    // 'qwerty'
+    console.log(_util.trimAll(str));    // 'qwerty'
 console.groupEnd();
 
 // _util.string.format()
@@ -544,6 +619,18 @@ console.group("_util.date.getDatesBetween()");
     console.log(_util.date.getDatesBetween('2019-01-25', '2019-02-01', 'YYYY-MM')); // ["2019-01", "2019-02"]
 console.groupEnd();
 
+/******************************************** base64 **************************************************/
+
+// // _util.base64.encrypt()
+// console.group("_util.base64.encrypt()");
+//     console.log(_util.base64.encrypt());
+// console.groupEnd();
+
+// // _util.base64.decrypt()
+// console.group("_util.base64.decrypt()");
+//     console.log(_util.base64.decrypt());
+// console.groupEnd();
+
 /******************************************** browser 浏览器/手机端 **************************************************/
 
 // _util.browser.type()
@@ -595,3 +682,38 @@ console.groupEnd();
 console.group("_util.browser.isMobile()");
     console.log(_util.browser.isMobile());
 console.groupEnd();
+
+/********************************************* url 路径处理 ***************************************************/
+
+// 注：这里默认当前页面路径为 http://218.242.249.186/index.html?id=a&billNo=abc100
+
+/**
+ *  _util.url.getParam()
+ */
+console.log(_util.url.getParam());      // { id: 'a', billNo: 'abc100' }
+console.log(_util.url.getParam('id'));  // 'a'
+
+/**
+ *  _util.url.jump()
+ */
+var param = {
+    id: 'q',
+    billNo: 'ert300'
+};
+// _util.url.jump('./detail.html', param);  // 跳转后的页面路径为 http://218.242.249.186/shop.html?id=q&billNo=ert300
+
+/**
+ *  _util.url.jumpFromReferrer()
+ */
+// _util.url.jumpFromReferrer('./login.html');  // 会将当前页面当做url参数传递
+
+/**
+ *  _util.url.jumpToReferrer()
+ */
+// _util.url.jumpToReferrer();  // 会跳回到之前的页面（当前url参数为之前的页面地址），需配合 _util.url.jumpFromReferrer() 方法使用
+
+/********************************************* validate 验证 ***************************************************/
+
+var input = '12.345';
+console.log(_util.validate.positiveToFixed(input, 2));  // false
+console.log(_util.validate.positiveToFixed(input, 3));  // true

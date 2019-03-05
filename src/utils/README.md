@@ -1,6 +1,6 @@
 ﻿# JavaScript通用工具类
 
-#### 1、使用文档
+#### 1、使用实例
 
 > [JavaScript工具类：util.js用法实例](https://blog.csdn.net/guang_s/article/details/88119343)
 
