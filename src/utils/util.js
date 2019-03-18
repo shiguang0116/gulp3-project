@@ -259,6 +259,29 @@
             return u.prop_equal;
         }
     };
+
+    /**
+     * @description 深拷贝 对象或数组
+     * @param {*} source 源数据
+     * @return {*} 
+     */
+    u.copy = function (source) {
+        var ret;
+        if(u.isObject(source)){
+            ret = {};
+            u.forEach(source, function (key, value) {
+                ret[key] = value;
+            });
+        }
+        else if(u.isArray(source)){
+            ret = [];
+            u.forEach(source, function (i, item) {
+                ret.push(item);
+            });
+        }
+        else return source;
+        return ret;
+    };
     
     /******************************************** string 字符串 ***************************************************/
     
@@ -348,17 +371,21 @@
 
     /**
      * @description 首字母小写
+     * @param {String} str 源字符串
+     * @return {String} 
      */
     u.string.firstLowerCase = function (str) {
-        if (u.isEmpty(str)) return str;
+        if (u.isEmpty(str)) return '';
         return str.replace(/^\S/, function (s) { return s.toLowerCase(); });
     };
 
     /**
      * @description 首字母大写
+     * @param {String} str 源字符串
+     * @return {String} 
      */
     u.string.firstUpperCase = function (str) {
-        if (u.isEmpty(str)) return str;
+        if (u.isEmpty(str)) return '';
         return str.replace(/^\S/, function (s) { return s.toUpperCase(); });
     };
 
@@ -436,6 +463,11 @@
     /********************************************* number 数字 ***************************************************/
 
     /**
+     * @description number 常用属性
+     * 
+     * Number.MAX_VALUE    返回Javascript中的最大数。
+     * Number.MIN_VALUE    返回Javascript中的最小数（接近 0 ，但不是负数）。
+     * 
      * @description number 常用方法
      * 
      * toFixed(x)	    把数字转换为字符串，结果为小数点后有指定位数的数字。
@@ -918,6 +950,39 @@
     };
 
     /**
+     * @description 删除对象中的属性
+     * @param {Object} obj 对象
+     * @param {String Array} keys 属性数组
+     * @return {Object} 新对象 
+     */
+    u.object.deleteProperties = function (obj, keys) {
+        if (u.isEmpty(obj) || u.isEmpty(keys)) return obj;
+
+        var es6 = true;
+        if (!u.isArray(keys)) keys = [keys];
+        u.forEach(keys, function (i, key) {
+            try {
+                delete obj[key];
+            } catch (e) { 
+                es6 = false;
+                return false;
+            }
+        });
+        if(es6){
+            return obj;
+        }
+        else{
+            var ret = {};
+            u.forEach(obj, function (key, value) {
+                if(keys.indexOf(key) == -1){
+                    ret[key] = value;
+                }
+            });
+            return ret;
+        }
+    };
+
+    /**
      * @description 选择对象中的一个（多个）属性
      * @param {Object} obj 源对象
      * @param {String Array} keys 属性集合
@@ -930,25 +995,6 @@
         if (!u.isArray(keys)) keys = [keys];
         u.forEach(keys, function (i, key) {
             ret[key] = obj[key];
-        });
-        return ret;
-    };
-
-    /**
-     * @description 删除对象中的属性
-     * @param {Object} obj 对象
-     * @param {String Array} keys 属性数组
-     * @return {Object} 新对象 
-     */
-    u.object.deleteProperties = function (obj, keys) {
-        if (u.isEmpty(obj) || u.isEmpty(keys)) return obj;
-
-        var ret = {};
-        if (!u.isArray(keys)) keys = [keys];
-        u.forEach(obj, function (key, value) {
-            if(keys.indexOf(key) == -1){
-                ret[key] = value;
-            }
         });
         return ret;
     };
@@ -1536,6 +1582,31 @@
     // 验证是否相等
     u.validate.equal = function (input1, input2) {
         return u.isEqual(input1, input2);
+    };
+
+    /********************************************* layout 布局 ***************************************************/
+
+    u.layout = {};
+
+    /**
+     * @description 固定页脚。页面内容的高度小于浏览器高度时，将页脚定位在底部；否则，不定位。（适用于任何一个div盒子里的页脚固定）
+     * @param {Dom Object} oBody  被定位元素的父级元素 的dom对象
+     * @param {Dom Object} oFooter  被定位元素的dom对象
+     */
+    u.layout.fixedFooter = function(oBody, oFooter) {
+        var sh, fh, h=0;
+        sh = document.documentElement.clientHeight; // 页面对象高度（即BODY对象高度加上Margin高）
+        fh = oFooter.offsetHeight;
+        if(u.browser.isWechat()) h = 64;    // 微信浏览器要去除状态栏的高度
+        // 处理父元素
+        oBody.style.position = 'relative'; 
+        oBody.style.minHeight = (sh - h) + 'px'; 
+        oBody.style.paddingBottom = fh + 'px'; 
+        oBody.style.boxSizing = 'border-box'; 
+        // 处理页脚元素
+        oFooter.style.position = 'absolute'; 
+        oFooter.style.bottom = '0' + 'px'; 
+        // oFooter.style.display = 'block'; 
     };
 
     window._util = u;
