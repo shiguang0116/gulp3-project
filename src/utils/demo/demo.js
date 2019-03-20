@@ -340,12 +340,13 @@ console.groupEnd();
 
 // _util.array.selectProperties()
 arr = [
-    { id: 'a', status: '1', count: '22' },
-    { id: 'b', status: '2', count: '19' },
-    { id: 'c', status: '3', count: '46' },
+    { id: 'a', status: '1', count: '22', child: { name: 'l', code: 'c' } },
+    { id: 'b', status: '2', count: '19', child: { name: 'la', code: 'co' } },
+    { id: 'c', status: '3', count: '46', child: { name: 'lan', code: 'cod' } },
 ];
 console.group("_util.array.selectProperties()");
     console.log(_util.array.selectProperties(arr, 'count'));    // ["22", "19", "46"]
+    console.log(_util.array.selectProperties(arr, 'child.name'));    // ["l", "la", "lan"]
     console.log(_util.array.selectProperties(arr, ['status', 'count']));    // 输出结果为：
     // [
     //     { status: '1', count: '22' },

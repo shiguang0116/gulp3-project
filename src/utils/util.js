@@ -742,7 +742,7 @@
      * @param {Array} source 原数组 [{}]
      * @param {Object} filterProperty 条件对象 {status: ['1','2']}
      * @param {Boolean} getDeleteData 是否返回被过滤掉的数组，默认false
-     * @return {Array} 新数组
+     * @return {Array} 符合条件的数据 或 不符合条件的数据
      */
     u.array.filter = function (source, filterProperty, getDeleteData) {
         if (u.isEmpty(source) || u.isEmpty(filterProperty)) return [];
@@ -770,7 +770,7 @@
      * @description 选择数组的子元素（对象）的一个（多个）属性
      * @param {Array} source 源数组 [{}]
      * @param {String Array} keys 属性（集合）
-     * @return {Array} 新数组 [''] [{}]
+     * @return {Array} 新数组 [''] 或 [{}]
      */
     u.array.selectProperties = function (source, keys) {
         if (u.isEmpty(source) || u.isEmpty(keys)) return source;
@@ -780,12 +780,12 @@
             if (u.isArray(keys)) {
                 var obj = {};
                 u.forEach(keys, function (j, key) {
-                    obj[key] = item[key];
+                    obj[key] = u.object.getPropertyValue(item, key);
                 });
                 ret.push(obj);
             }
             else {
-                ret.push(item[keys]);
+                ret.push(u.object.getPropertyValue(item, keys));
             }
         });
         return ret;
@@ -968,9 +968,7 @@
                 return false;
             }
         });
-        if(es6){
-            return obj;
-        }
+        if(es6) return obj;
         else{
             var ret = {};
             u.forEach(obj, function (key, value) {
