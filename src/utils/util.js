@@ -431,7 +431,7 @@
      * @param {String} code 编号。例：'XM0001'
      * @return {String} 编号+1。例：'XM0002'
      */
-    u.string.getNext = function (code){
+    u.string.next = function (code){
         var part1, part2, splitStr = '';
         if (/[a-z]/i.test(code)) {
             var x = code.match(/[a-z]/ig);
@@ -450,7 +450,7 @@
     };
 
     /**
-     * @description 复制文本
+     * @description 复制文本到剪切板
      * @param text {String} 需要复制的文本内容
      */
     u.string.copy = function (text) {
@@ -559,23 +559,15 @@
     };
 
     /**
-     * @description 多个数相乘
-     * @param {Number String} args 乘数
-     * @return {Number} 积
+     * @description 获取两个数之间的随机数
+     * @param {Number} min
+     * @param {Number} max
+     * @return {Number}
      */
-    u.number.mul = function (args){
-        var m = 0, ret = 1;
-        for(var i = 0; i < arguments.length; i++){
-            arguments[i] = arguments[i].toString();
-            try{ 
-                m += arguments[i].split(".")[1].length; 
-            } catch(e){
-                m += 0;
-            }
-            ret = arguments[i].replace(".","") * ret;
-        }
-        ret = ret / Math.pow(10,m);
-        return ret;
+    u.number.random = function (min, max) {
+        var random = 0;
+        random = min + Math.random() * (max - min);
+        return Math.round(random);
     };
 
     /**
@@ -601,15 +593,23 @@
     };
 
     /**
-     * @description 获取两个数之间的随机数
-     * @param {Number} min
-     * @param {Number} max
-     * @return {Number}
+     * @description 多个数相乘
+     * @param {Number String} args 乘数
+     * @return {Number} 积
      */
-    u.number.getRandom = function (min, max) {
-        var random = 0;
-        random = min + Math.random() * (max - min);
-        return Math.round(random);
+    u.number.mul = function (args){
+        var m = 0, ret = 1;
+        for(var i = 0; i < arguments.length; i++){
+            arguments[i] = arguments[i].toString();
+            try{ 
+                m += arguments[i].split(".")[1].length; 
+            } catch(e){
+                m += 0;
+            }
+            ret = arguments[i].replace(".","") * ret;
+        }
+        ret = ret / Math.pow(10,m);
+        return ret;
     };
     
     /********************************************* array 数组 ***************************************************/
@@ -634,7 +634,7 @@
     /**
      * @description 检索数组（子元素为数组、对象、字符串等）
      * @param {Array} source [''] [[]] [{}]
-     * @param {String Array Object} searchElement 当子元素为对象时，只用匹配该对象的某一个（几个）属性即可
+     * @param {*} searchElement 当子元素为对象时，只用匹配该对象的某一个（几个）属性即可
      * @return {Number} 索引 或 -1
      */
     u.array.indexOf = function(source, searchElement){
@@ -772,7 +772,7 @@
      * @param {String Array} keys 属性（集合）
      * @return {Array} 新数组 [''] 或 [{}]
      */
-    u.array.selectProperties = function (source, keys) {
+    u.array.select = function (source, keys) {
         if (u.isEmpty(source) || u.isEmpty(keys)) return source;
 
         var ret = [];
@@ -780,32 +780,15 @@
             if (u.isArray(keys)) {
                 var obj = {};
                 u.forEach(keys, function (j, key) {
-                    obj[key] = u.object.getPropertyValue(item, key);
+                    obj[key] = u.object.getValue(item, key);
                 });
                 ret.push(obj);
             }
             else {
-                ret.push(u.object.getPropertyValue(item, keys));
+                ret.push(u.object.getValue(item, keys));
             }
         });
         return ret;
-    };
-
-    /**
-     * @description 给数组的子元素（对象）添加属性
-     * @param {Array} array 源数组 [{}]
-     * @param {Object} obj 待添加的对象
-     * @return {Array} 新数组 [{}]
-     */
-    u.array.addProperties = function (source, obj) {
-        if (u.isEmpty(source) || u.isEmpty(obj)) return source;
-
-        u.forEach(source, function (i, item) {
-            for(var key in obj){
-                item[key] = obj[key];
-            }
-        });
-        return source;
     };
 
     /**
@@ -857,16 +840,26 @@
     };
 
     /**
-     * @description 删除数组中不合法的值（undefined, null, '')
-     * @param {Array} array 源数组
+     * @description 删除数组中 指定的元素 或 不合法的值（undefined, null, '')
+     * @param {Array} source 原数组
+     * @param {*} value 被删除的元素，不传则删除不合法的值
      */
-    u.array.removeInvalidItems = function (array) {
-        var i = array.length;
-        while (i--) {
-            var item = array[i];
-            if (item === null || item === undefined || item === '') {
-                array.splice(i, 1);
+    u.array.remove = function (array, value) {
+        if (u.isEmpty(array)) return [];
+        // 删除不合法的值
+        if (u.isEmpty(value)) {
+            var i = array.length;
+            while (i--) {
+                var item = array[i];
+                if (item === null || item === undefined || item === '') {
+                    array.splice(i, 1);
+                }
             }
+        }
+        // 删除指定的元素
+        else {
+            var index = u.array.indexOf(array, value);
+            if (index > -1) array.splice(index, 1);
         }
         return array;
     };
@@ -893,7 +886,7 @@
     /**
      * @description 获取对象的属性集合
      * @param {Object} obj 源对象
-     * @return {Array} 属性数组 
+     * @return {Array} 属性名的数组 
      */
     u.object.keys = function (obj) {
         if (u.isEmpty(obj)) return [];
@@ -913,7 +906,7 @@
     /**
      * @description 获取对象属性的值 的集合
      * @param {Object} obj 源对象
-     * @return {Array} 属性的值的数组 
+     * @return {Array} 属性值的数组 
      */
     u.object.values = function (obj) {
         if (u.isEmpty(obj)) return [];
@@ -950,12 +943,56 @@
     };
 
     /**
-     * @description 删除对象中的属性
-     * @param {Object} obj 对象
-     * @param {String Array} keys 属性数组
+     * @description 选择对象中的一个（多个）属性
+     * @param {Object} obj 源对象
+     * @param {String Array} keys 属性名集合
      * @return {Object} 新对象 
      */
-    u.object.deleteProperties = function (obj, keys) {
+    u.object.select = function (obj, keys) {
+        if (u.isEmpty(obj) || u.isEmpty(keys)) return {};
+
+        var ret = {};
+        if (!u.isArray(keys)) keys = [keys];
+        u.forEach(keys, function (i, key) {
+            ret[key] = obj[key];
+        });
+        return ret;
+    };
+
+    /**
+     * @description 获取对象的属性值（支持多层数据）
+     * @param {Object} obj 对象
+     * @param {String} propertyName 属性名 'data.child.name'
+     * @param {Boolean} ignoreCase 忽略属性名大小写，默认false
+     */
+    u.object.getValue = function (obj, propertyName, ignoreCase) {
+        var propertyValue = null;
+        if (!obj) return propertyValue;
+        if (u.isEmpty(propertyName)) return propertyValue;
+
+        var pointIndex = propertyName.indexOf('.');
+        if (pointIndex > -1) {
+            obj = obj[propertyName.substring(0, pointIndex)];
+            return u.object.getValue(obj, propertyName.substring(pointIndex + 1), ignoreCase);
+        }
+        else {
+            u.forEach(obj, function (key, value) {
+                if (u.isEqual(key, propertyName, ignoreCase)) {
+                    propertyValue = value;
+                    return false;
+                }
+            });
+        }
+        return propertyValue;
+    };
+
+    /**
+     * @description 删除对象中的属性
+     * @param {Object} obj 对象
+     * @param {String Array} keys 属性名集合
+     * @return {Object} 新对象 
+     */
+    u.object.remove = function (obj, keys) {
         if (u.isEmpty(obj) || u.isEmpty(keys)) return obj;
 
         var es6 = true;
@@ -981,48 +1018,26 @@
     };
 
     /**
-     * @description 选择对象中的一个（多个）属性
+     * @description 清空对象
      * @param {Object} obj 源对象
-     * @param {String Array} keys 属性集合
-     * @return {Object} 新对象 
+     * @param {Array} keys 属性名集合，不传则清空全部属性
+     * @return {Object} 清空后的对象
      */
-    u.object.selectProperties = function (obj, keys) {
-        if (u.isEmpty(obj) || u.isEmpty(keys)) return {};
+    u.object.clear = function (obj, keys){
+        if (u.isEmpty(obj)) return {};
 
-        var ret = {};
-        if (!u.isArray(keys)) keys = [keys];
-        u.forEach(keys, function (i, key) {
-            ret[key] = obj[key];
-        });
-        return ret;
-    };
-
-    /**
-     * @description 获取对象的属性值
-     * @param {Object} obj 对象
-     * @param {String} propertyName 属性名 'data.child.name'
-     * @param {Boolean} ignoreCase 忽略属性名大小写，默认false
-     */
-    u.object.getPropertyValue = function (obj, propertyName, ignoreCase) {
-        var propertyValue = null;
-        if (!obj) return propertyValue;
-        if (u.isEmpty(propertyName)) return propertyValue;
-
-        var pointIndex = propertyName.indexOf('.');
-        var isMultiPart = pointIndex > -1;
-        if (isMultiPart) {
-            obj = obj[propertyName.substring(0, pointIndex)];
-            return u.object.getPropertyValue(obj, propertyName.substring(pointIndex + 1), ignoreCase);
-        }
-        else {
-            u.forEach(obj, function (key, value) {
-                if (u.isEqual(key, propertyName, ignoreCase)) {
-                    propertyValue = value;
-                    return false;
-                }
+        if(keys){
+            if(!u.isArray(keys)) keys = [keys];
+            u.forEach(keys, function(i, key){
+                obj[key] = '';
             });
         }
-        return propertyValue;
+        else{
+            for (var key in obj) {
+                obj[key] = '';
+            }
+        }
+        return obj;
     };
 
     /**
@@ -1058,29 +1073,6 @@
         }
         ret = ret.substring(0, ret.length - 1);
         return ret;
-    };
-
-    /**
-     * @description 清空对象
-     * @param {Object} obj 源对象
-     * @param {Array} keys 属性数组，不传则清空全部属性
-     * @return {Object} 清空后的对象
-     */
-    u.object.clear = function (obj, keys){
-        if (u.isEmpty(obj)) return {};
-
-        if(keys){
-            if(!u.isArray(keys)) keys = [keys];
-            u.forEach(keys, function(i, key){
-                obj[key] = '';
-            });
-        }
-        else{
-            for (var key in obj) {
-                obj[key] = '';
-            }
-        }
-        return obj;
     };
 
     /******************************************** JSON **************************************************/
@@ -1481,7 +1473,7 @@
      * @param {String} name 参数名，不传则返回所有参数的对象
      * @return {String Object} 
      */
-    u.url.getParam = function(name){
+    u.url.getParams = function(name){
         var search = window.location.search.substring(1);
         if(search){
             var obj = JSON.parse('{"' + decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');

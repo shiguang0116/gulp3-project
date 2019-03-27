@@ -1,6 +1,16 @@
     <footer>
         <h1>footer</h1>
     </footer>
+
+	<script>
+        function Page(param){
+            if (param.el && $('#'+param.el).length == 0) return;
+            param.init();
+            (typeof param.event === 'function') && param.event();
+            return param;
+        }
+    </script>
+    
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <!-- 兼容ie8模板数据渲染 -->

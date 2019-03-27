@@ -5,7 +5,7 @@
  */
 'use strict';
 
-const page = {
+new Page({
     el: 'indexPage',
     data: {
         name: 'indexName',
@@ -34,7 +34,7 @@ const page = {
     click1(){
         console.log('onclick1');
     },
-    events(){
+    event(){
         const self = this;
         $('#btn').click(function(){
             _util.url.jumpFromReferrer('./center.html');
@@ -44,18 +44,4 @@ const page = {
         this.checkUtil();
         this.checkEs6();
     }
-};
-
-$(function(){
-    Page(page);
 });
-
-/**
- * @description 页面构建
- * @param {Object} param 参数对象
- */
-function Page(param){
-    if(param.el && !document.getElementById(param.el)) return false;
-    param.init();
-    param.events();
-}

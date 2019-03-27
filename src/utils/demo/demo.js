@@ -180,9 +180,10 @@ console.group("_util.string.split()");
     console.log(_util.string.split('a,s,d', ','));   // ["a", "s", "d"]
 console.groupEnd();
 
-// _util.string.getNext()
-console.group("_util.string.getNext()"); 
-    console.log(_util.string.getNext('XM0001'));   // 'XM0002'
+// _util.string.next()
+console.group("_util.string.next()"); 
+    console.log(_util.string.next('0001'));     // '0002'
+    console.log(_util.string.next('XM0001'));   // 'XM0002'
 console.groupEnd();
 
 /********************************************* number 数字 ***************************************************/
@@ -227,9 +228,9 @@ console.group("_util.number.add()");
     console.log(_util.number.add(1.2, 2.3 ,3.45));   // 6.95
 console.groupEnd();
 
-// _util.number.getRandom()
-console.group("_util.number.getRandom()"); 
-    console.log(_util.number.getRandom(1, 100));   // 
+// _util.number.random()
+console.group("_util.number.random()"); 
+    console.log(_util.number.random(1, 100));   // 
 console.groupEnd();
 
 /********************************************* array 数组 ***************************************************/
@@ -338,33 +339,20 @@ console.group("_util.array.filter()");
     // ]
 console.groupEnd();
 
-// _util.array.selectProperties()
+// _util.array.select()
 arr = [
     { id: 'a', status: '1', count: '22', child: { name: 'l', code: 'c' } },
     { id: 'b', status: '2', count: '19', child: { name: 'la', code: 'co' } },
     { id: 'c', status: '3', count: '46', child: { name: 'lan', code: 'cod' } },
 ];
-console.group("_util.array.selectProperties()");
-    console.log(_util.array.selectProperties(arr, 'count'));    // ["22", "19", "46"]
-    console.log(_util.array.selectProperties(arr, 'child.name'));    // ["l", "la", "lan"]
-    console.log(_util.array.selectProperties(arr, ['status', 'count']));    // 输出结果为：
+console.group("_util.array.select()");
+    console.log(_util.array.select(arr, 'count'));    // ["22", "19", "46"]
+    console.log(_util.array.select(arr, 'child.name'));    // ["l", "la", "lan"]
+    console.log(_util.array.select(arr, ['status', 'count']));    // 输出结果为：
     // [
     //     { status: '1', count: '22' },
     //     { status: '2', count: '19' },
     //     { status: '3', count: '46' }
-    // ]
-console.groupEnd();
-
-// _util.array.addProperties()
-arr = [
-    { id: 'a' },
-    { id: 'b' },
-];
-console.group("_util.array.addProperties()");
-    console.log(_util.array.addProperties(arr, { status: '1', count: '20'}));   // 输出结果为：
-    // [
-    //     { id: 'a', status: '1', count: '20' },
-    //     { id: 'b', status: '1', count: '20' },
     // ]
 console.groupEnd();
 
@@ -418,10 +406,10 @@ console.group("_util.array.group()");
     // ]
 console.groupEnd();
 
-// _util.array.removeInvalidItems()
+// _util.array.remove()
 arr = ['sg', '', null, undefined];
-_util.array.removeInvalidItems(arr);
-console.group("_util.array.removeInvalidItems()");
+_util.array.remove(arr);
+console.group("_util.array.remove()");
     console.log(arr);   // ["sg"]
 console.groupEnd();
 
@@ -460,30 +448,30 @@ console.group("_util.object.assign()");
     console.log(obj);   // { name: "guang", age: "26", type: "admin" }
 console.groupEnd();
 
-// _util.object.selectProperties()
+// _util.object.select()
 obj = {
     name: 'guang',
     email: '123456@qq.com',
     phone: '13566668888'
 };
-console.group("_util.object.selectProperties()");
-    console.log(_util.object.selectProperties(obj, ['name', 'phone'])); // {name: "guang", phone: "13566668888"}
+console.group("_util.object.select()");
+    console.log(_util.object.select(obj, ['name', 'phone'])); // {name: "guang", phone: "13566668888"}
 console.groupEnd();
 
-// _util.object.deleteProperties()
-console.group("_util.object.deleteProperties()");
-    console.log(_util.object.deleteProperties(obj, ['name', 'phone'])); // {email: "123456@qq.com"}
+// _util.object.remove()
+console.group("_util.object.remove()");
+    console.log(_util.object.remove(obj, ['name', 'phone'])); // {email: "123456@qq.com"}
 console.groupEnd();
 
-// _util.object.getPropertyValue()
+// _util.object.getValue()
 obj = {
     name: 'guang',
     child: {
         name: 'lan'
     }
 };
-console.group("_util.object.getPropertyValue()");
-    console.log(_util.object.getPropertyValue(obj, 'child.name'));  // lan
+console.group("_util.object.getValue()");
+    console.log(_util.object.getValue(obj, 'child.name'));  // lan
 console.groupEnd();
 
 // _util.object.serialize()
@@ -689,10 +677,10 @@ console.groupEnd();
 // 注：这里默认当前页面路径为 http://218.242.249.186/index.html?id=a&billNo=abc100
 
 /**
- *  _util.url.getParam()
+ *  _util.url.getParams()
  */
-console.log(_util.url.getParam());      // { id: 'a', billNo: 'abc100' }
-console.log(_util.url.getParam('id'));  // 'a'
+console.log(_util.url.getParams());      // { id: 'a', billNo: 'abc100' }
+console.log(_util.url.getParams('id'));  // 'a'
 
 /**
  *  _util.url.jump()
