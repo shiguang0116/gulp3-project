@@ -5,8 +5,8 @@
  */
 'use strict';
 
-new Page({
-    el: 'indexPage',
+const page = new Page({
+    el: 'index_page',
     data: {
         name: 'indexName',
         user: {

@@ -5,7 +5,8 @@
  */
 'use strict';
 
-const centerPage = {
+const page = new Page({
+    el: 'center_page',
     data : {
         name: 'center'
     },
@@ -24,8 +25,4 @@ const centerPage = {
         this.bindEvent();
         this.onLoad();
     }
-};
-
-$(function(){
-    $('#centerPage').length && centerPage.init();
-})
+});
