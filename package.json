@@ -1,13 +1,14 @@
 {
   "name": "gulp-project",
   "version": "1.0.0",
-  "description": "一个使用gulp构建的项目",
+  "description": "一个使用gulp3构建的项目",
   "main": "index.js",
   "author": "guang.shi",
   "license": "ISC",
   "scripts": {
     "dev": "gulp dev",
-    "build": "gulp build"
+    "build": "gulp build",
+    "check": "gulp uglify_check"
   },
   "devDependencies": {
     "@babel/core": "^7.1.6",
