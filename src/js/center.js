@@ -5,24 +5,16 @@
  */
 'use strict';
 
-const page = new Page({
+new Page({
     el: 'center_page',
     data : {
         name: 'center'
     },
-    bindEvent(){
+    event(){
         const self = this;
-        $('#btn').click(function(){
-            _util.url.jumpToReferrer();
-        })
-    },
-    onLoad(){
         
     },
     init(){
         console.log(this.data);
-
-        this.bindEvent();
-        this.onLoad();
     }
 });
