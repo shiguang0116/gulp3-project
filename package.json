@@ -36,6 +36,6 @@
   },
   "dependencies": {
     "gulp": "^3.9.1",
-    "sg-utils": "1.3.9"
+    "sg-utils": "^1.4.3"
   }
 }
