@@ -3,11 +3,11 @@
     </footer>
 
 	<script>
-        function Page(param){
-            if (param.el && $('#'+param.el).length == 0) return;
+        function Page(param) {
+            if (param.el && $('#' + param.el).length === 0) return
             param.init();
-            (typeof param.event === 'function') && param.event();
-            return param;
+            (typeof param.event === 'function') && param.event()
+            return param
         }
     </script>
     

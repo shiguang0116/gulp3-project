@@ -1,0 +1,4 @@
+# ESLint总是忽略 /node_modules/* 和 /bower_components/* 中的文件
+
+/dist/
+/src/libs/
