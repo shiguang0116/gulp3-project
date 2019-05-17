@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "gulp dev",
     "build": "gulp build",
+    "lint": "eslint --ext .js,.html src",
     "check": "gulp uglify_check"
   },
   "devDependencies": {
