@@ -14,11 +14,11 @@
   "devDependencies": {
     "@babel/core": "^7.1.6",
     "@babel/preset-env": "^7.1.6",
-    "art-template": "^4.13.2",
     "browser-sync": "^2.26.3",
     "eslint": "^5.16.0",
-    "eslint-config-vui": "^0.2.7",
+    "eslint-config-vui": "^1.0.1",
     "eslint-plugin-html": "^5.0.5",
+    "gulp": "^3.9.1",
     "gulp-autoprefixer": "^6.0.0",
     "gulp-babel": "^8.0.0",
     "gulp-cache": "^1.0.2",
@@ -39,7 +39,7 @@
     "run-sequence": "^2.2.1"
   },
   "dependencies": {
-    "gulp": "^3.9.1",
-    "sg-utils": "^1.4.3"
+    "art-template": "^4.13.2",
+    "sg-utils": "^1.4.6"
   }
 }
