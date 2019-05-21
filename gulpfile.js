@@ -43,11 +43,11 @@ var images_path = ['src/images/**', 'favicon.ico']
 var fonts_path = 'src/libs/**/fonts/**'
 
 // 设置环境变量
-var env = 'dev' // 用于执行gulp任务时的判断
+var env = '' // 用于执行gulp任务时的判断
 function set_env(type) {
-    env = type || 'dev'
+    env = process.env.NODE_ENV = type || 'dev'
     // 生成env.js文件，用于开发页面时，判断环境
-    fs.writeFile('dist/env.js', 'export default ' + env + ';', function(err) {
+    fs.writeFile('env.js', "export default '" + env + "'", function(err) {
         err && console.log(err)
     })
 }
