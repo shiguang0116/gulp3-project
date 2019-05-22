@@ -43,13 +43,9 @@ var images_path = ['src/images/**', 'favicon.ico']
 var fonts_path = 'src/libs/**/fonts/**'
 
 // 设置环境变量
-var env = '' // 用于执行gulp任务时的判断
+var env = ''
 function set_env(type) {
     env = process.env.NODE_ENV = type || 'dev'
-    // 生成env.js文件，用于开发页面时，判断环境
-    fs.writeFile('env.js', "export default '" + env + "'", function(err) {
-        err && console.log(err)
-    })
 }
 
 // html模板处理
@@ -61,7 +57,9 @@ gulp.task('html', function() {
             engine: function(template, data) {
                 return template && artTemplate.compile(template)(data)
             },
-            data: { // 初始化数据
+            // 传入页面的初始化数据
+            data: {
+                env: env, // 环境变量
                 header: false,
                 g2: false
             }

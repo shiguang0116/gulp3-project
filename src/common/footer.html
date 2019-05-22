@@ -2,7 +2,11 @@
         <h1>footer</h1>
     </footer>
 
-	<script>
+    <!-- 环境变量 -->
+    <script type="text/html" id="node_env">{{env}}</script>
+
+    <!-- 页面构造函数 -->
+    <script>
         function Page(param) {
             if (param.el && $('#' + param.el).length === 0) return
             param.init();
@@ -11,6 +15,7 @@
         }
     </script>
     
+    <!-- 资源文件 -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <!-- 兼容ie8模板数据渲染 -->
