@@ -2,10 +2,6 @@
  * @description: gulp配置文件
  * @author: guang.shi <https://blog.csdn.net/guang_s>
  * @date: 2018-12-13 17:53:40
- *
- * @task: npm run dev       开发环境
- * @task: npm run build     生产环境（打包）
- * @task: npm run check     检查js语法错误
  */
 'use strict'
 

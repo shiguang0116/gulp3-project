@@ -6,6 +6,7 @@
   "author": "guang.shi",
   "license": "ISC",
   "scripts": {
+    "start": "npm run dev",
     "dev": "gulp dev",
     "build": "gulp build",
     "lint": "eslint --ext .js,.html src",

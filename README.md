@@ -5,22 +5,22 @@
 ## 构建步骤
 
 ### 全局安装gulp
-``` bash
+```
 (sudo) npm i -g gulp@3
 ```
 
 ### 安装项目依赖
-``` bash
+```
 npm install
 ```
 
 ### 开发环境
-``` bash
+```
 npm run dev
 ```
 
 ### 生产环境
-``` bash
+```
 npm run build
 ```
 
