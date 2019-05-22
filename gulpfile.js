@@ -29,12 +29,12 @@ var watch = require('gulp-watch') // 监听文件（修改、新建、删除）
 var runSequence = require('run-sequence') // 按顺序执行task
 
 // 路径
-var html_path = ['src/html/**/*.html', 'src/common/**/*.html']
-var html_main_path = ['src/html/**/*.html']
+var html_path = 'src/{pages,common,components}/**/*.html'
+var html_main_path = 'src/pages/**/*.html'
 var js_libs_path = 'src/libs/**/*.js'
-var js_main_path = ['src/utils/**/*.js', 'src/js/**/*.js']
+var js_main_path = 'src/{utils,pages,common,components}/**/*.js'
 var css_libs_path = 'src/libs/**/*.css'
-var css_main_path = 'src/css/**/*.css'
+var css_main_path = 'src/{styles,pages,common,components}/**/*.{css,less}'
 var images_path = ['src/images/**', 'favicon.ico']
 var fonts_path = 'src/libs/**/fonts/**'
 
@@ -48,8 +48,8 @@ function set_env(type) {
 gulp.task('html', function() {
     return gulp.src(html_main_path)
         .pipe(htmltpl({
-            tag: 'template',
-            paths: ['src/common'],
+            tag: 'component',
+            paths: ['src/common', 'src/components'],
             engine: function(template, data) {
                 return template && artTemplate.compile(template)(data)
             },
@@ -59,6 +59,9 @@ gulp.task('html', function() {
                 header: false,
                 g2: false
             }
+        }))
+        .pipe(rename({
+            dirname: '' // 清空路径
         }))
         .pipe(gulp.dest('dist'))
 })

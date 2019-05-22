@@ -1,0 +1,31 @@
+<component src="header/index.html" title="首页" header></component>
+
+<section id="index_page" class="w">
+    <h1>首页</h1>
+	<div>
+		<h3>页面跳转</h3>
+		<a href="./center.html">to center.html</a>
+	</div>
+	<div>
+        <h3>点击</h3>
+        <button class="btn btn-primary">click me</button>
+	</div>
+	<div>
+		<h3>引入图片</h3>
+		<img src="../../images/logo.png" width="100" alt="logo">
+	</div>
+    <h3>引入背景</h3>
+	<div class="box"></div>
+    <h3>ES6 API</h3>
+    <div class="es6">
+        Object.values：
+        <span></span>
+    </div>
+	<!-- 引入组件 -->
+	<div style="width: 300px">
+		<h3>引入组件</h3>
+        <component src="empty/index.html" message="这里是通过属性传过来的信息"></component>
+    </div>
+</section>
+
+<component src="footer/index.html" g2></component>
