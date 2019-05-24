@@ -105,7 +105,7 @@ gulp.task('css_main', function() {
     return gulp.src(css_main_path)
         .pipe(less()) // 编译less
         .on('error', function(err) { // 解决编译出错，监听被阻断的问题
-            console.log('Less Error!', err.message)
+            console.log('\x1B[31m%s\x1B[0m', '\nLess Error: ' + err.message + '\n')
             this.end()
         })
         .pipe(autoprefixer({
