@@ -109,8 +109,11 @@ gulp.task('css_main', function() {
             this.end()
         })
         .pipe(autoprefixer({
-            browsers: ['last 2 versions'],
-            cascade: false // 是否美化
+            browsers: [
+                'last 2 versions',
+                'Firefox > 10',
+                'ie >= 8'
+            ]
         }))
         .pipe(concat('main.min.css'))
         .pipe(gulpif(env === 'build', csso())) // 判断是否压缩css
